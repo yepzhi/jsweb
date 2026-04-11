@@ -13,7 +13,8 @@ const CONFIG = {
     'proassistant', 
     'visitors', 
     'sensorapp',
-    'lot'
+    'lot',
+    'neosys'
   ],
   // Base origin (GitHub Pages)
   origin: 'https://yepzhi.github.io',
