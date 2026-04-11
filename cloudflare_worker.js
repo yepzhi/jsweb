@@ -19,7 +19,7 @@ const CONFIG = {
   origin: 'https://yepzhi.github.io',
   // Vercel Proxy Destination (Next.js Application)
   proxy: {
-    '/jsweb': 'https://jovenesstem-b86rmsj5g-yepzhi-3874s-projects.vercel.app'
+    '/jsweb': 'https://jovenesstem-web.vercel.app'
   }
 };
 
