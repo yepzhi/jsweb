@@ -1,6 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1A1F6E;
+  --color-secondary: #00A896;
+  --color-accent: #F5A623;
+  --color-dark-bg: #0D0F1A;
+  --color-dark-surface: #1C1F2E;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #8A8FAD;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --radius-button: 8px;
+  --radius-circle: 50%;
+}
 
 * {
   margin: 0;
