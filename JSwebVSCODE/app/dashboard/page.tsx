@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import ModuleCard from '@/components/ModuleCard';
+import DashboardLayout from '@/components/DashboardLayout';
+import ModuleCard, { ModuleHero } from '@/components/ModuleCard';
 import modules from '@/public/data/modules.json';
+import { Microscope, Zap, Code2, ChevronRight, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DashboardPage() {
-  const [userName] = useState('Estudiante');
-  const [streakDays] = useState(7);
+  const [userName] = useState('Alejandro');
   const [modulesProgress, setModulesProgress] = useState<Record<string, number>>({});
 
   // Demo data - in prod this would come from Supabase
@@ -23,134 +23,109 @@ export default function DashboardPage() {
     ch.modules.map((m) => ({ ...m, chapterId: ch.id, chapterTitle: ch.title }))
   );
 
-  const continueModule = allModules.find((m) => {
-    const progress = modulesProgress[m.id] || 0;
-    return progress > 0 && progress < 100;
-  }) || allModules[0];
+  const activeModule = allModules.find((m) => (modulesProgress[m.id] || 0) > 0 && (modulesProgress[m.id] || 0) < 100) || allModules[0];
+
+  if (!activeModule) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-muted-foreground">No hay módulos disponibles en este momento.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-bg-dark pb-20">
-      <Navbar isAuthenticated={true} userName={userName} />
+    <DashboardLayout>
+      {/* Header */}
+      <div className="animate-fade-in">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
+          ¡Hola, {userName}! 👋
+        </h1>
+        <p className="text-muted-foreground text-sm md:text-base">
+          Listo para continuar tu viaje por el universo STEM.
+        </p>
+      </div>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <div className="mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-2">¡Hola, {userName}! 👋</h1>
-          <p className="text-text-secondary text-lg">Tu viaje por el universo STEM continúa...</p>
+      {/* Continuar Módulo Card (Hero) */}
+      <ModuleHero 
+        id={activeModule.id}
+        title={activeModule.title}
+        chapter={activeModule.chapterTitle}
+        progress={modulesProgress[activeModule.id] || 0}
+      />
+
+      {/* Repasos Pendientes */}
+      <section className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl md:text-2xl font-bold text-foreground">
+            Repasos Pendientes
+          </h3>
+          <Link 
+            href="/repasos" 
+            className="flex items-center gap-1 text-primary text-sm font-semibold hover:underline"
+          >
+            Ver todos
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        {/* Streak & Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="card-base">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-text-secondary text-sm mb-2">Tu racha actual</p>
-                <p className="text-4xl font-bold text-accent">{streakDays} días</p>
-              </div>
-              <div className="text-6xl">🔥</div>
-            </div>
-          </div>
-
-          <div className="card-base">
-            <div>
-              <p className="text-text-secondary text-sm mb-2">Módulos completados</p>
-              <p className="text-4xl font-bold text-secondary">{Object.values(modulesProgress).filter((p) => p === 100).length}</p>
-            </div>
-          </div>
-
-          <div className="card-base">
-            <div>
-              <p className="text-text-secondary text-sm mb-2">Tiempo de aprendizaje</p>
-              <p className="text-4xl font-bold text-primary">12 horas</p>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <ModuleCard 
+            id="module-1-1"
+            title="Cosmos y Átomos"
+            subtitle="~3 min de repaso"
+            icon={Microscope}
+            badge="HOY"
+            badgeType="urgent"
+          />
+          <ModuleCard 
+            id="module-1-2"
+            title="Física del Movimiento"
+            subtitle="~5 min de repaso"
+            icon={Zap}
+            badge="EN 2 DÍAS"
+            badgeType="soon"
+          />
+          <ModuleCard 
+            id="module-1-3"
+            title="Lógica de Código"
+            subtitle="~4 min de repaso"
+            icon={Code2}
+            badge="EN 5 DÍAS"
+            badgeType="later"
+          />
         </div>
+      </section>
 
-        {/* Continue Module */}
-        {continueModule && (
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">Continúa tu aprendizaje</h2>
-            <Link href={`/modules/${continueModule.id}`}>
-              <div className="transform hover:scale-105 transition-transform">
-                <ModuleCard
-                  id={continueModule.id}
-                  title={continueModule.title}
-                  description={continueModule.description}
-                  duration={continueModule.duration}
-                  difficulty={continueModule.difficulty as 'beginner' | 'intermediate' | 'advanced'}
-                  progress={modulesProgress[continueModule.id] || 0}
-                />
-              </div>
-            </Link>
-          </div>
-        )}
-
-        {/* Repasos Pendientes */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">📝 Repasos pendientes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['ADN y Genética', 'Física Cuántica', 'Códigos'].map((topic, i) => (
-              <div key={i} className="card-base">
-                <p className="font-medium mb-2">{topic}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-amber-400">
-                    {i === 0 ? 'HOY' : `en ${2 + i} días`}
-                  </span>
-                  <button className="text-secondary hover:text-accent font-medium text-sm">
-                    Repasar →
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mapa STEM Preview */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold">🗺️ Tu Mapa STEM</h2>
-            <Link href="/mapa" className="text-secondary hover:text-accent text-sm font-medium">
-              Ver completo →
-            </Link>
-          </div>
-          <div className="card-base">
-            <p className="text-text-secondary mb-6">
-              Cada módulo que completas ilumina tu mapa personal del universo STEM.
+      {/* Mapa STEM Preview */}
+      <section className="space-y-6">
+        <h3 className="text-xl md:text-2xl font-bold text-foreground">
+          Tu Mapa STEM
+        </h3>
+        <div className="glass rounded-xl overflow-hidden flex flex-col md:flex-row min-h-[200px] border border-border group transition-all hover:border-primary/30">
+          <div className="flex-1 p-8 flex flex-col justify-center gap-3">
+            <h4 className="text-xl md:text-2xl font-bold text-foreground">Tu universo se expande</h4>
+            <p className="text-muted-foreground text-sm md:text-base max-w-lg leading-relaxed">
+              Has iluminado 4 constelaciones. Sigue explorando para expandir tu universo de conocimiento y dominar nuevas habilidades STEM.
             </p>
-            <div className="grid grid-cols-3 gap-4">
-              {modules.chapters.map((ch) => (
-                <div key={ch.id} className="text-center">
-                  <div className="text-4xl mb-2">{ch.emoji}</div>
-                  <p className="font-medium text-sm">{ch.title}</p>
-                  <p className="text-xs text-text-secondary mt-1">
-                    {ch.modules.length} módulos
-                  </p>
-                </div>
-              ))}
-            </div>
+            <Link 
+              href="/mapa" 
+              className="flex items-center gap-2 text-primary text-sm font-bold mt-2 hover:gap-3 transition-all"
+            >
+              Ver mapa completo
+              <ExternalLink className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="w-full md:w-[40%] h-48 md:h-auto relative bg-muted grayscale hover:grayscale-0 transition-all duration-500 overflow-hidden">
+            <img 
+              src="https://storage.googleapis.com/banani-generated-images/generated-images/0279fc75-0d1f-4460-ac54-c1f804ddfc12.jpg"
+              alt="Mapa STEM"
+              className="w-full h-full object-cover opacity-60 mix-blend-screen scale-110 group-hover:scale-100 transition-transform duration-700"
+            />
           </div>
         </div>
-
-        {/* All Modules */}
-        <div>
-          <h2 className="text-2xl font-bold mb-8">Todos los módulos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allModules.map((module) => (
-              <Link key={module.id} href={`/modules/${module.id}`}>
-                <ModuleCard
-                  id={module.id}
-                  title={module.title}
-                  description={module.description}
-                  duration={module.duration}
-                  difficulty={module.difficulty as 'beginner' | 'intermediate' | 'advanced'}
-                  progress={modulesProgress[module.id] || 0}
-                  completed={modulesProgress[module.id] === 100}
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </main>
-    </div>
+      </section>
+    </DashboardLayout>
   );
 }
