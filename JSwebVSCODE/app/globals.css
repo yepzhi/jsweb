@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0D0F1A;
+  color: #FFFFFF;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  color-scheme: dark;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8a8fad;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8adb8;
+}
+
+/* Buttons base styles */
+button {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Form inputs */
+input, textarea, select {
+  background-color: #1C1F2E;
+  color: #FFFFFF;
+  border: 1px solid rgba(138, 143, 173, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #00A896;
+  box-shadow: 0 0 0 1px #00A896;
+}
+
