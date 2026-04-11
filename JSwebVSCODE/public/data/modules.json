@@ -1,0 +1,144 @@
+{
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "title": "Capítulo I: Nuestra Ciencia",
+      "description": "Explora los fundamentos de la física, astronomía y química que gobiernan el universo",
+      "emoji": "🌌",
+      "color": "#1A1F6E",
+      "modules": [
+        {
+          "id": "module-1-1",
+          "title": "Historia del Universo",
+          "description": "Del Big Bang a la vida en la Tierra",
+          "duration": 18,
+          "difficulty": "beginner",
+          "concepts": ["universo", "big bang", "galaxia", "estrella"],
+          "content": "El universo nació hace aproximadamente 13.8 mil millones de años en un evento conocido como el Big Bang. En ese momento, toda la materia, energía y el espacio mismo estaban concentrados en un punto infinitesimalmente pequeño y caliente. \n\nInstantes después del Big Bang, el universo comenzó a expandirse a velocidades inimaginables. Los primeros elementos se formaron: hidrógeno y helio principalmente. Estos gases se agruparon bajo la gravedad, formando las primeras galaxias y estrellas.\n\nNuestro sistema solar se formó hace 4.6 mil millones de años. La Tierra se enfriaba lentamente, y hace aproximadamente 3.8 mil millones de años, la vida apareció en los océanos en forma de microbios simples.",
+          "keyPoints": [
+            "Big Bang: estado inicial infinitamente denso y caliente",
+            "Expansión del universo desde entonces",
+            "Formación de estrellas y galaxias",
+            "Nuestro sol tiene ~4.6 mil millones de años",
+            "La vida en la Tierra comenzó hace ~3.8 mil millones de años"
+          ]
+        },
+        {
+          "id": "module-1-2",
+          "title": "Los Átomos",
+          "description": "La unidad básica de toda la materia",
+          "duration": 16,
+          "difficulty": "beginner",
+          "concepts": ["átomo", "núcleo", "electrón", "protón", "neutrón"],
+          "content": "Un átomo es la unidad más pequeña de materia que puede existir y aún mantener las propiedades químicas de un elemento. Imaginemos el átomo como un miniatura sistema solar.\n\nEn el centro del átomo hay un núcleo compuesto de dos tipos de partículas: protones (positivos) y neutrones (sin carga). Alrededor del núcleo, los electrones (negativos) orbitan en niveles de energía llamados órbitas o capas electrónicas.\n\nLa mayoría del espacio en un átomo es vacío. Si el núcleo fuera del tamaño de una canica, los electrones estarían orbitando a cientos de metros de distancia. A pesar de esto, la atracción entre protones y electrones hold the atom together.\n\nDiferentes elementos tienen diferente número de protones. El hidrógeno tiene 1 protón, el carbono tiene 6, el oxígeno tiene 8, y así sucesivamente.",
+          "keyPoints": [
+            "Átomo = núcleo + electrones",
+            "Núcleo = protones + neutrones",
+            "Electrones orbitan el núcleo",
+            "Número de protones define el elemento",
+            "Mayoría del átomo es espacio vacío"
+          ]
+        },
+        {
+          "id": "module-1-3",
+          "title": "La Luz y el Espectro Electromagnético",
+          "description": "Entendiendo las ondas de energía que transforman el mundo",
+          "duration": 20,
+          "difficulty": "intermediate",
+          "concepts": ["luz", "onda", "fotón", "espectro", "frecuencia"],
+          "content": "La luz es una forma de energía que viaja en forma de ondas llamadas radiación electromagnética. Lo fascinante es que la luz también se comporta como partículas llamadas fotones.\n\nLa luz tiene una propiedad llamada longitud de onda: la distancia entre dos crestas consecutivas de la onda. Longitudes de onda más cortas tienen más energía, longitudes de onda más largas tienen menos energía.\n\nEl espectro electromagnético es el rango completo de todas las ondas electromagnéticas posibles. De mayor a menor energía (longitud de onda más corta a más larga), tenemos:\n1. Rayos Gamma (muy energéticos, peligrosos)\n2. Rayos X (usados en medicina)\n3. Luz Ultravioleta (causa quemaduras solares)\n4. Luz Visible (lo que nuestros ojos ven - 7 colores del arco iris)\n5. Luz Infrarroja (calor)\n6. Microondas (hornos de microondas, wifi)\n7. Ondas de Radio (radio, televisión, celulares)\n\nCada color del arco iris tiene una diferente longitud de onda. El rojo tiene la más larga, el violeta la más corta.",
+          "keyPoints": [
+            "Luz = radiación electromagnética",
+            "Se comporta como onda Y como partícula (fotón)",
+            "Longitud de onda = distancia entre crestas",
+            "Espectro EM = desde rayos gamma hasta ondas de radio",
+            "Mayor energía = longitud de onda más corta"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter-2",
+      "title": "Capítulo II: Nuestra Tecnología",
+      "description": "Descubre cómo funcionan los dispositivos que usas cada día",
+      "emoji": "⚙️",
+      "color": "#00A896",
+      "modules": [
+        {
+          "id": "module-2-1",
+          "title": "Redes Inalámbricas",
+          "description": "WiFi, Bluetooth y cómo se comunican los dispositivos",
+          "duration": 17,
+          "difficulty": "intermediate",
+          "concepts": ["wifi", "bluetooth", "red", "señal", "frecuencia"],
+          "content": "Las redes inalámbricas permiten que los dispositivos se comuniquen sin cables. Funcionan transmitiendo información a través de ondas de radio.\n\nWiFi (Wireless Fidelity) usa frecuencias de 2.4 GHz y 5 GHz para transmitir datos a través del aire. Un router WiFi recibe internet de tu proveedor de servicios y lo transmite en forma de ondas de radio. Tu teléfono, laptop y otros dispositivos tienen antenas que captan estas ondas.\n\nBluetooth es similar pero diseñado para distancias cortas (típicamente 10-100 metros). Es perfecto para auriculares inalámbricos, relojes inteligentes y controladores de juegos.\n\nLa velocidad de transmisión depende de varios factores:\n- Calidad de la señal (cuán fuerte es la onda)\n- Obstáculos entre el transmisor y receptor (paredes, metales)\n- Interferencia de otras redes\n- Distancia al router\n\nLa generación de redes celulares ha evolucionado: 1G (1980s) era voz analógica, 2G introdujo texto y datos, 3G ushered in smartphones, 4G brought fast mobile internet, y ahora estamos en 5G con velocidades ultra-rápidas.",
+          "keyPoints": [
+            "WiFi usa ondas de radio para transmitir datos",
+            "Funciona a 2.4 GHz y 5 GHz",
+            "Bluetooth es WiFi de corto rango",
+            "La señal se debilita con distancia y obstáculos",
+            "Generaciones Mobile: 1G→2G→3G→4G→5G"
+          ]
+        },
+        {
+          "id": "module-2-2",
+          "title": "Procesadores y CPU",
+          "description": "El cerebro de tus dispositivos electrónicos",
+          "duration": 19,
+          "difficulty": "intermediate",
+          "concepts": ["procesador", "cpu", "transistor", "circuito", "bit"],
+          "content": "Un procesador (CPU) es el cerebro de cualquier dispositivo electrónico. Realiza miles de millones de cálculos por segundo, haciendo posible todo lo que hace tu computadora o teléfono.\n\nEn el corazón de un procesador hay transistores: pequeños switches electrónicos que pueden estar encendidos (1) o apagados (0). Un procesador moderno contiene miles de millones de transistores.\n\nTodo lo que hace un procesador se reduce a operaciones binarias: manipular unos y ceros. Estos bits se combinan para:  \n- Realizar operaciones matemáticas\n- Almacenar información\n- Tomar decisiones lógicas (si esto, entonces aquello)\n\nLa velocidad de un procesador se mide en GHz (Gigahertz). Un procesador de 3 GHz puede realizar 3 mil millones de ciclos por segundo.\n\nExisten diferentes tipos de procesadores:\n- CPUs (procesadores generales) en computadoras\n- GPUs (procesadores gráficos) para videojuegos y cálculos rápidos\n- TPUs (procesadores de tensor) para inteligencia artificial\n- Procesadores especializados en teléfonos (A15 Bionic, Snapdragon, etc.)",
+          "keyPoints": [
+            "CPU = cerebro del dispositivo",
+            "Hecho de miles de millones de transistores",
+            "Trabaja con código binario (1s y 0s)",
+            "Velocidad medida en GHz",
+            "Tipos: CPU, GPU, TPU, chips especializados"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter-3",
+      "title": "Capítulo III: Nuestra Programación",
+      "description": "Aprende cómo se crean los programas que usas",
+      "emoji": "💻",
+      "color": "#F5A623",
+      "modules": [
+        {
+          "id": "module-3-1",
+          "title": "Fundamentos de Programación",
+          "description": "Variables, funciones y control de flujo",
+          "duration": 21,
+          "difficulty": "beginner",
+          "concepts": ["variable", "función", "bucle", "condicional", "algoritmo"],
+          "content": "La programación es el arte de dar instrucciones precisas a una computadora para que haga lo que quieres.\n\nTodos los programas se construyen con unos pocos bloques básicos:\n\n1. Variables: Contenedores que almacenan información. Por ejemplo, si hicieras un juego, tendrías variables para la posición del jugador, su salud, su puntuación, etc.\n\n2. Funciones: Bloques de código reutilizables que hacen una tarea específica. Por ejemplo, una función que calcula el resultado de disparar un arma, o una función que muestra un menú en la pantalla.\n\n3. Condicionales (if/else): Permiten a tu programa tomar decisiones. 'Si el jugador presiona el botón de salto, Y está en el suelo, ENTONCES haz que salte.'\n\n4. Bucles (loops): Permiten repetir una acción muchas veces. Por ejemplo, un bucle que revisa 60 veces por segundo si se presionó un botón.\n\n5. Estructuras de datos: Formas de organizar múltiples datos juntos, como arreglos (listas) y objetos (estructuras con múltiples propiedades).\n\nUn algoritmo es un conjunto de pasos ordenados para resolver un problema. Por ejemplo, el algoritmo de búsqueda binaria puede encontrar un número en una lista ordenada muy rápidamente.\n\nLenguajes de programación populares incluyen:\n- Python (fácil de aprender, usado en ciencia e IA)\n- JavaScript (para crear sitios web interactivos)\n- Java (para aplicaciones empresariales)\n- C++ (para videojuegos de alto rendimiento)",
+          "keyPoints": [
+            "Variables almacenan datos",
+            "Funciones reutilizan bloques de código",
+            "Condicionales (if/else) toman decisiones",
+            "Bucles repiten acciones",
+            "Algoritmos son pasos ordenados para resolver problemas",
+            "Existen muchos lenguajes de programación"
+          ]
+        },
+        {
+          "id": "module-3-2",
+          "title": "Inteligencia Artificial y Machine Learning",
+          "description": "Cómo las máquinas aprenden a tomar decisiones",
+          "duration": 22,
+          "difficulty": "advanced",
+          "concepts": ["IA", "machine learning", "red neuronal", "algoritmo", "datos"],
+          "content": "La Inteligencia Artificial (IA) es la capacidad de una máquina para realizar tareas que normalmente requerirían inteligencia humana.\n\nMachine Learning es un tipo de IA donde los algoritmos APRENDEN de los datos, sin ser programados explícitamente para cada situación.\n\nPiensa en cómo aprendes tú. Si te muestran 100 fotos de gatos y 100 de perros, eventualmente podrías reconocer un gato o un perro que jamás habías visto antes. Eso es porque tu cerebro found patterns en las imágenes.\n\nMachine Learning funciona así:\n\n1. Recopilar datos: Millones de ejemplos de lo que quieres que aprenda.\n2. Entrenar: Mostrar estos ejemplos al algoritmo una y otra vez.\n3. El algoritmo ajusta sus parámetros internos para predecir correctamente.\n4. Prueba: Medir qué tan bien hace predicciones en datos que nunca ha visto.\n5. Mejorar: Ajustar y entrenar de nuevo si es necesario.\n\nRedes Neuronales Artificiales están inspiradas en cómo funciona tu cerebro. Tienen capas de 'neuronas' (unidades de procesamiento) conectadas entre sí. Cada conexión tiene un 'peso' que se ajusta durante el entrenamiento.\n\nAplicaciones reales de IA/ML:\n- Reconocimiento de voz (Alexa, Siri)\n- Recomendaciones (Netflix sabe qué películas te gustarán)\n- Conducción autónoma (Tesla, Waymo)\n- Reconocimiento facial (desbloquear tu teléfono)\n- Traducción automática (Google Translate)\n- Diagnóstico médico (analizar radiografías)",
+          "keyPoints": [
+            "IA = capacidad de máquina de realizar tareas inteligentes",
+            "Machine Learning = aprender de datos, no de programación explícita",
+            "Redes Neuronales están inspiradas en el cerebro",
+            "Se entrena con millones de ejemplos",
+            "Aplicaciones: voz, recomendaciones, conducción, medicina"
+          ]
+        }
+      ]
+    }
+  ]
+}
