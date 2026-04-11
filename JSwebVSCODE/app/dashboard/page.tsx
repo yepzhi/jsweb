@@ -38,11 +38,11 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       {/* Header */}
-      <div className="animate-fade-in">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
+      <div className="animate-fade-in py-2">
+        <h1 className="text-3xl md:text-5xl font-black mb-2 text-foreground tracking-tighter">
           ¡Hola, {userName}! 👋
         </h1>
-        <p className="text-muted-foreground text-sm md:text-base">
+        <p className="text-muted-foreground text-sm md:text-base font-bold tracking-tight opacity-70">
           Listo para continuar tu viaje por el universo STEM.
         </p>
       </div>
@@ -58,19 +58,19 @@ export default function DashboardPage() {
       {/* Repasos Pendientes */}
       <section className="space-y-6">
         <div className="flex justify-between items-center">
-          <h3 className="text-xl md:text-2xl font-bold text-foreground">
+          <h3 className="text-xl md:text-2xl font-black text-foreground tracking-tighter">
             Repasos Pendientes
           </h3>
           <Link 
             href="/repasos" 
-            className="flex items-center gap-1 text-primary text-sm font-semibold hover:underline"
+            className="flex items-center gap-1 text-primary text-sm font-bold hover:underline"
           >
             Ver todos
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <ModuleCard 
             id="module-1-1"
             title="Cosmos y Átomos"
@@ -100,28 +100,28 @@ export default function DashboardPage() {
 
       {/* Mapa STEM Preview */}
       <section className="space-y-6">
-        <h3 className="text-xl md:text-2xl font-bold text-foreground">
+        <h3 className="text-xl md:text-2xl font-black text-foreground tracking-tighter">
           Tu Mapa STEM
         </h3>
-        <div className="glass rounded-xl overflow-hidden flex flex-col md:flex-row min-h-[200px] border border-border group transition-all hover:border-primary/30">
+        <div className="bg-card rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[220px] border border-border group transition-all hover:border-primary/30 shadow-sm">
           <div className="flex-1 p-8 flex flex-col justify-center gap-3">
-            <h4 className="text-xl md:text-2xl font-bold text-foreground">Tu universo se expande</h4>
-            <p className="text-muted-foreground text-sm md:text-base max-w-lg leading-relaxed">
+            <h4 className="text-xl md:text-2xl font-black text-foreground tracking-tight">Tu universo se expande</h4>
+            <p className="text-muted-foreground text-sm md:text-base max-w-lg leading-relaxed font-medium">
               Has iluminado 4 constelaciones. Sigue explorando para expandir tu universo de conocimiento y dominar nuevas habilidades STEM.
             </p>
             <Link 
               href="/mapa" 
-              className="flex items-center gap-2 text-primary text-sm font-bold mt-2 hover:gap-3 transition-all"
+              className="flex items-center gap-2 text-primary text-sm font-black mt-2 hover:gap-3 transition-all uppercase tracking-widest"
             >
               Ver mapa completo
               <ExternalLink className="w-4 h-4" />
             </Link>
           </div>
-          <div className="w-full md:w-[40%] h-48 md:h-auto relative bg-muted grayscale hover:grayscale-0 transition-all duration-500 overflow-hidden">
+          <div className="w-full md:w-[40%] h-48 md:h-auto relative bg-secondary/20 transition-all duration-500 overflow-hidden border-l border-border/50">
             <img 
               src="https://storage.googleapis.com/banani-generated-images/generated-images/0279fc75-0d1f-4460-ac54-c1f804ddfc12.jpg"
               alt="Mapa STEM"
-              className="w-full h-full object-cover opacity-60 mix-blend-screen scale-110 group-hover:scale-100 transition-transform duration-700"
+              className="w-full h-full object-cover opacity-80 mix-blend-multiply scale-110 group-hover:scale-100 transition-transform duration-700"
             />
           </div>
         </div>

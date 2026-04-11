@@ -29,16 +29,18 @@ export default function BottomNav() {
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center gap-1 transition-colors relative ${
-              isActive ? 'text-primary' : 'text-muted-foreground'
+              isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <div className="w-6 h-6 flex items-center justify-center">
-              <item.icon className="w-6 h-6" />
+              <item.icon className={`w-6 h-6 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
             </div>
-            <span className="text-[11px] font-medium">{item.name}</span>
+            <span className={`text-[11px] font-bold ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+              {item.name}
+            </span>
             
             {item.badge && (
-              <div className="absolute -top-1 right-0 bg-destructive text-destructive-foreground text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              <div className="absolute -top-1 right-0 bg-destructive text-destructive-foreground text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
                 {item.badge}
               </div>
             )}

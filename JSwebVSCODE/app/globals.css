@@ -1,39 +1,45 @@
 @import "tailwindcss";
 
+@import "tailwindcss";
+
 @theme {
-  --color-background: #0d0f1a;
-  --color-foreground: #ffffff;
-  --color-card: rgba(28, 31, 46, 0.7);
-  --color-card-foreground: #ffffff;
-  --color-primary: #00a896; /* Electric Cyan */
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-card: #fbfaf9;
+  --color-card-foreground: #111827;
+  --color-primary: #277eff; /* Brilliant Blue */
   --color-primary-foreground: #ffffff;
-  --color-secondary: #1a1f6e; /* Midnight Blue */
-  --color-secondary-foreground: #ffffff;
-  --color-muted: #2a2d3e;
-  --color-muted-foreground: #8a8fad;
-  --color-accent: #f5a623; /* Amber for Streak */
+  --color-secondary: #dbe7fb; /* Light Lavender/Blue */
+  --color-secondary-foreground: #277eff;
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
+  --color-accent: #f5a623; 
   --color-accent-foreground: #ffffff;
-  --color-destructive: #e24b4a;
+  --color-destructive: #ff0000;
   --color-destructive-foreground: #ffffff;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border: #e8e8e8;
   
   --font-sans: "Inter", "Geist", "DM Sans", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
   
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-xl: 24px;
 }
 
 @utility glass {
-  background-color: rgba(28, 31, 46, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e8e8e8;
 }
 
 @utility hero-gradient {
-  background: linear-gradient(135deg, #1c1f2e 0%, #111424 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+}
+
+@utility streak-gradient {
+  background: linear-gradient(135deg, rgba(245, 166, 35, 0.1) 0%, rgba(245, 166, 35, 0.05) 100%);
 }
 
 @utility streak-gradient {
