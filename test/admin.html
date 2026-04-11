@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIIP NextGEN | Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .admin-container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .results-table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+        }
+        th, td {
+            text-align: left;
+            padding: 16px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .score-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--secondary);
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <div class="admin-container">
+        <header class="admin-header">
+            <div>
+                <h1>Admin <span class="highlight">Dashboard</span></h1>
+                <p class="text-dim">Resultados masivos del Test Diagnóstico STEM</p>
+            </div>
+            <div class="admin-actions">
+                <button id="exportBtn" class="btn btn-primary">Descargar Excel (.xlsx)</button>
+                <a href="./" class="btn btn-secondary">Volver al Test</a>
+            </div>
+        </header>
+
+        <div class="results-table-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Email</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Escuela</th>
+                        <th>Edad</th>
+                        <th>Puntaje</th>
+                        <th>Categorías</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Data injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Config (Placeholder - User needs to provide actual credentials or I'll use a generic setup for now)
+        // Since I'm an AI, I'll set up the structure and ask the user to add the config, 
+        // OR I can use a default project if provided. 
+        // For now, I'll use a standard config block that the user can fill.
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyC4KzcV9qEWUyc0kmv4sN8Jqd__EC2hW0E",
+          authDomain: "entrytest-1080e.firebaseapp.com",
+          projectId: "entrytest-1080e",
+          storageBucket: "entrytest-1080e.firebasestorage.app",
+          messagingSenderId: "632427082682",
+          appId: "1:632427082682:web:7c01a82361ecefd372e383",
+          measurementId: "G-0GRNWR76Q7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Security: Simple redirect if not "logged in" (simulated for now since original request asked for a hidden password)
+        if (sessionStorage.getItem('adminAuth') !== 'true') {
+            window.location.href = './';
+        }
+
+        async function loadResults() {
+            const tbody = document.getElementById('resultsTableBody');
+            const q = query(collection(db, "results"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            tbody.innerHTML = '';
+            const allResults = [];
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                allResults.push(data);
+                const tr = document.createElement('tr');
+                const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'N/A';
+                
+                tr.innerHTML = `
+                    <td>${date}</td>
+                    <td>${data.email}</td>
+                    <td>${data.survey.firstName}</td>
+                    <td>${data.survey.lastName}</td>
+                    <td>${data.survey.school}</td>
+                    <td>${data.survey.age}</td>
+                    <td><span class="score-pill">${data.score} / 100</span></td>
+                    <td style="font-size: 0.8rem; color: var(--text-dim);">
+                        ${Object.entries(data.categories).map(([cat, score]) => `${cat}: ${score}`).join(' | ')}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            window.resultsData = allResults;
+        }
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            if (!window.resultsData) return;
+            
+            const worksheet = XLSX.utils.json_to_sheet(window.resultsData.map(r => ({
+                Fecha: r.timestamp ? new Date(r.timestamp.seconds * 1000).toLocaleString() : '',
+                Email: r.email,
+                Nombre: r.survey.firstName,
+                Apellido: r.survey.lastName,
+                Escuela: r.survey.school,
+                Edad: r.survey.age,
+                PuntajeTotal: r.score,
+                ...r.categories,
+                ...r.survey
+            })));
+            
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Resultados");
+            XLSX.writeFile(workbook, "Resultados_STEM_STEM.xlsx");
+        });
+
+        loadResults();
+    </script>
+</body>
+</html>

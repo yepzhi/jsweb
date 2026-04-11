@@ -1,0 +1,706 @@
+<div class="export-wrapper" style="
+    width: 1440px;
+    min-height: 812px;
+    position: relative;
+    font-family: var(--font-family-body);
+    background-color: var(--background);
+  ">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300;400;500;600;700;800;900&family=Geist:wght@100;200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:wght@200;300;400;500;600;700;800;900&family=PT+Serif:wght@400;700&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Shantell+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <html>
+
+  <head>
+    <style id="global-styles">
+      * {
+        box-sizing: border-box;
+      }
+    </style>
+
+    <style id="layout-styles">
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: var(--background);
+        color: var(--foreground);
+      }
+
+      .top-navbar {
+        height: 64px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        justify-content: space-between;
+        background-color: var(--background);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .main-layout {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background-color: var(--sidebar);
+        border-right: 1px solid var(--border);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+      }
+    </style>
+
+    <style id="component-styles">
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: var(--radius-md, 8px);
+        font-weight: 500;
+        font-size: 15px;
+        cursor: pointer;
+        color: var(--sidebar-foreground);
+      }
+
+      .nav-item.active {
+        background-color: var(--sidebar-primary);
+        color: var(--sidebar-primary-foreground);
+      }
+
+      .racha-card {
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg, 12px);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+      }
+
+      .continue-card {
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl, 16px);
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .continue-card-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .primary-btn {
+        background-color: var(--primary);
+        color: var(--primary-foreground);
+        border: none;
+        padding: 14px 28px;
+        border-radius: var(--radius-md, 8px);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+      }
+
+      .rep-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+      }
+
+      .rep-card {
+        background-color: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg, 12px);
+        padding: 20px;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: var(--radius-xl, 12px);
+        text-transform: uppercase;
+      }
+
+      .badge.urgent {
+        background-color: var(--destructive);
+        color: var(--destructive-foreground);
+      }
+
+      .badge.normal {
+        background-color: var(--muted);
+        color: var(--muted-foreground);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-container">
+      <!-- Navbar -->
+      <header class="top-navbar">
+        <div style="
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              font-size: 20px;
+              font-weight: 700;
+              color: var(--foreground);
+            ">
+          <div style="
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+            <iconify-icon icon="lucide:atom" style="font-size: 28px; color: var(--primary)"></iconify-icon>
+          </div>
+          <span>JóvenesSTEM®</span>
+        </div>
+        <div style="display: flex; gap: 32px; align-items: center">
+          <div data-media-type="banani-button" style="
+                color: var(--primary);
+                font-weight: 600;
+                cursor: pointer;
+                font-size: 15px;
+              ">
+            Dashboard
+          </div>
+          <div data-media-type="banani-button" style="
+                color: var(--muted-foreground);
+                font-weight: 500;
+                cursor: pointer;
+                font-size: 15px;
+              ">
+            Progreso
+          </div>
+          <div data-media-type="banani-button" style="
+                color: var(--muted-foreground);
+                font-weight: 500;
+                cursor: pointer;
+                font-size: 15px;
+              ">
+            Perfil
+          </div>
+          <div style="
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid var(--border);
+              ">
+            <img src="https://storage.googleapis.com/banani-avatars/avatar%2Fmale%2F18-25%2FHispanic%2F0"
+              style="width: 100%; height: 100%; object-fit: cover" alt="Avatar" />
+          </div>
+        </div>
+      </header>
+
+      <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div class="nav-item active" data-media-type="banani-button">
+              <div style="
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  ">
+                <iconify-icon icon="lucide:book-open" style="font-size: 20px; color: currentColor"></iconify-icon>
+              </div>
+              <span>Capítulos</span>
+            </div>
+            <div class="nav-item" data-media-type="banani-button">
+              <div style="
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  ">
+                <iconify-icon icon="lucide:refresh-cw" style="font-size: 20px; color: currentColor"></iconify-icon>
+              </div>
+              <span>Mis Repasos</span>
+              <div style="
+                    margin-left: auto;
+                    background-color: var(--destructive);
+                    color: var(--destructive-foreground);
+                    font-size: 12px;
+                    padding: 2px 8px;
+                    border-radius: var(--radius-xl);
+                    font-weight: 700;
+                  ">
+                3
+              </div>
+            </div>
+            <div class="nav-item" data-media-type="banani-button">
+              <div style="
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  ">
+                <iconify-icon icon="lucide:award" style="font-size: 20px; color: currentColor"></iconify-icon>
+              </div>
+              <span>Logros</span>
+            </div>
+            <div class="nav-item" data-media-type="banani-button">
+              <div style="
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  ">
+                <iconify-icon icon="lucide:user" style="font-size: 20px; color: currentColor"></iconify-icon>
+              </div>
+              <span>Mi Perfil</span>
+            </div>
+          </div>
+
+          <div class="racha-card" data-media-type="banani-button">
+            <div style="font-size: 32px; line-height: 1">🔥</div>
+            <div>
+              <div style="
+                    color: var(--muted-foreground);
+                    font-size: 13px;
+                    font-weight: 500;
+                    margin-bottom: 2px;
+                  ">
+                Racha actual
+              </div>
+              <div style="
+                    color: var(--accent);
+                    font-size: 20px;
+                    font-weight: 700;
+                  ">
+                7 días
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+          <!-- Header -->
+          <div>
+            <h1 style="
+                  font-size: 36px;
+                  font-weight: 700;
+                  margin: 0 0 8px 0;
+                  color: var(--foreground);
+                ">
+              ¡Hola, Alejandro! 👋
+            </h1>
+            <p style="
+                  color: var(--muted-foreground);
+                  font-size: 16px;
+                  margin: 0;
+                ">
+              Listo para continuar tu viaje por el universo STEM.
+            </p>
+          </div>
+
+          <!-- Continuar Módulo Card -->
+          <div class="continue-card" data-media-type="banani-button" style="border-color: var(--primary)">
+            <div style="
+                  position: absolute;
+                  top: -40px;
+                  right: -40px;
+                  opacity: 0.05;
+                ">
+              <iconify-icon icon="lucide:dna" style="font-size: 350px; color: var(--foreground)"></iconify-icon>
+            </div>
+            <div class="continue-card-content">
+              <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 16px;
+                  ">
+                <div style="
+                      background-color: var(--muted);
+                      color: var(--primary);
+                      padding: 6px 14px;
+                      border-radius: var(--radius-xl);
+                      font-size: 12px;
+                      font-weight: 700;
+                      letter-spacing: 0.5px;
+                      text-transform: uppercase;
+                    ">
+                  Capítulo 1
+                </div>
+              </div>
+              <h2 style="
+                    font-size: 36px;
+                    font-weight: 700;
+                    margin: 0 0 32px 0;
+                    color: var(--foreground);
+                  ">
+                ADN y Genética
+              </h2>
+
+              <div style="max-width: 480px; margin-bottom: 32px">
+                <div style="
+                      display: flex;
+                      justify-content: space-between;
+                      margin-bottom: 12px;
+                      font-size: 15px;
+                      font-weight: 500;
+                      color: var(--foreground);
+                    ">
+                  <span>Progreso del módulo</span>
+                  <span>75%</span>
+                </div>
+                <div style="
+                      height: 10px;
+                      background-color: var(--muted);
+                      border-radius: var(--radius-xl);
+                      overflow: hidden;
+                    ">
+                  <div style="
+                        height: 100%;
+                        width: 75%;
+                        background-color: var(--primary);
+                        border-radius: var(--radius-xl);
+                      "></div>
+                </div>
+              </div>
+
+              <button class="primary-btn" data-media-type="banani-button">
+                Continuar Módulo
+                <div style="
+                      width: 20px;
+                      height: 20px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    ">
+                  <iconify-icon icon="lucide:arrow-right" style="font-size: 20px; color: currentColor"></iconify-icon>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Repasos Pendientes -->
+          <div>
+            <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 24px;
+                ">
+              <h3 style="
+                    font-size: 24px;
+                    font-weight: 700;
+                    margin: 0;
+                    color: var(--foreground);
+                  ">
+                Repasos Pendientes
+              </h3>
+              <div data-media-type="banani-button" style="
+                    color: var(--primary);
+                    font-size: 15px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                  ">
+                Ver todos
+                <div style="
+                      width: 16px;
+                      height: 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    ">
+                  <iconify-icon icon="lucide:chevron-right" style="font-size: 16px; color: currentColor"></iconify-icon>
+                </div>
+              </div>
+            </div>
+
+            <div class="rep-grid">
+              <div class="rep-card" data-media-type="banani-button">
+                <div class="badge urgent">HOY</div>
+                <div style="
+                      width: 40px;
+                      height: 40px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      background-color: var(--muted);
+                      border-radius: var(--radius-md);
+                    ">
+                  <iconify-icon icon="lucide:atom" style="font-size: 24px; color: var(--accent)"></iconify-icon>
+                </div>
+                <div style="margin-top: 8px">
+                  <h4 style="
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin: 0 0 6px 0;
+                        color: var(--foreground);
+                      ">
+                    Cosmos y Átomos
+                  </h4>
+                  <div style="
+                        color: var(--muted-foreground);
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                      ">
+                    <div style="
+                          width: 16px;
+                          height: 16px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                        ">
+                      <iconify-icon icon="lucide:clock" style="font-size: 16px; color: currentColor"></iconify-icon>
+                    </div>
+                    ~3 min de repaso
+                  </div>
+                </div>
+              </div>
+
+              <div class="rep-card" data-media-type="banani-button">
+                <div class="badge normal">En 2 días</div>
+                <div style="
+                      width: 40px;
+                      height: 40px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      background-color: var(--muted);
+                      border-radius: var(--radius-md);
+                    ">
+                  <iconify-icon icon="lucide:rocket" style="font-size: 24px; color: var(--primary)"></iconify-icon>
+                </div>
+                <div style="margin-top: 8px">
+                  <h4 style="
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin: 0 0 6px 0;
+                        color: var(--foreground);
+                      ">
+                    Física del Movimiento
+                  </h4>
+                  <div style="
+                        color: var(--muted-foreground);
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                      ">
+                    <div style="
+                          width: 16px;
+                          height: 16px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                        ">
+                      <iconify-icon icon="lucide:clock" style="font-size: 16px; color: currentColor"></iconify-icon>
+                    </div>
+                    ~5 min de repaso
+                  </div>
+                </div>
+              </div>
+
+              <div class="rep-card" data-media-type="banani-button">
+                <div class="badge normal">En 5 días</div>
+                <div style="
+                      width: 40px;
+                      height: 40px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      background-color: var(--muted);
+                      border-radius: var(--radius-md);
+                    ">
+                  <iconify-icon icon="lucide:code" style="font-size: 24px; color: var(--secondary)"></iconify-icon>
+                </div>
+                <div style="margin-top: 8px">
+                  <h4 style="
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin: 0 0 6px 0;
+                        color: var(--foreground);
+                      ">
+                    Lógica de Código
+                  </h4>
+                  <div style="
+                        color: var(--muted-foreground);
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                      ">
+                    <div style="
+                          width: 16px;
+                          height: 16px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                        ">
+                      <iconify-icon icon="lucide:clock" style="font-size: 16px; color: currentColor"></iconify-icon>
+                    </div>
+                    ~4 min de repaso
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mapa STEM Preview -->
+          <div class="continue-card" style="
+                padding: 0;
+                min-height: 200px;
+                display: flex;
+                flex-direction: row;
+                border-color: var(--border);
+              " data-media-type="banani-button">
+            <div style="
+                  flex: 1;
+                  padding: 32px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                ">
+              <h3 style="
+                    font-size: 26px;
+                    font-weight: 700;
+                    margin: 0 0 12px 0;
+                    color: var(--foreground);
+                  ">
+                Tu Mapa STEM
+              </h3>
+              <p style="
+                    color: var(--muted-foreground);
+                    font-size: 16px;
+                    margin: 0 0 24px 0;
+                    max-width: 400px;
+                    line-height: 1.5;
+                  ">
+                Has iluminado 4 constelaciones. Sigue explorando para expandir
+                tu universo de conocimiento.
+              </p>
+              <div style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: var(--primary);
+                    font-weight: 600;
+                    font-size: 16px;
+                  ">
+                Ver mapa completo
+                <div style="
+                      width: 20px;
+                      height: 20px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    ">
+                  <iconify-icon icon="lucide:external-link" style="font-size: 20px; color: currentColor"></iconify-icon>
+                </div>
+              </div>
+            </div>
+            <div style="
+                  width: 40%;
+                  position: relative;
+                  background-color: var(--muted);
+                  overflow: hidden;
+                ">
+              <img data-aspect-ratio="16:9"
+                data-query="A dark space galaxy background with subtle connected glowing stars in teal and amber colors, abstract data visualization style"
+                style="
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    opacity: 0.6;
+                    mix-blend-mode: screen;
+                  "
+                src="https://storage.googleapis.com/banani-generated-images/generated-images/0279fc75-0d1f-4460-ac54-c1f804ddfc12.jpg" />
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+
+  </html>
+  <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #000000;
+      --border: #e8e8e8;
+      --input: #f8f8f7;
+      --primary: #277eff;
+      --primary-foreground: #ffffff;
+      --secondary: #dbe7fb;
+      --secondary-foreground: #277eff;
+      --muted: #e8e8e8;
+      --muted-foreground: #949494;
+      --success: #00c417;
+      --success-foreground: #ffffff;
+      --accent: #277eff;
+      --accent-foreground: #ffffff;
+      --destructive: #ff0000;
+      --destructive-foreground: #ffffff;
+      --warning: #ff7308;
+      --warning-foreground: #ffffff;
+      --card: #fbfaf9;
+      --card-foreground: #000000;
+      --sidebar: #ffffff;
+      --sidebar-foreground: #4a4a4a;
+      --sidebar-primary: #e8e8e8;
+      --sidebar-primary-foreground: #000000;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 24px;
+      --font-family-body: Inter;
+    }
+  </style>
+</div>
