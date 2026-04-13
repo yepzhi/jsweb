@@ -1,8 +1,25 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// ⚠️  This file runs CLIENT-SIDE. Do NOT import GoogleGenerativeAI directly here —
+// that would expose the API key in the browser bundle.
+// All Gemini calls go through /api/tutor (server-side route) via fetch.
 
-const apiKey = process.env['NEXT_PUBLIC_GEMINI_API_KEY'] || 'placeholder_key';
-const client = new GoogleGenerativeAI(apiKey);
-const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+type GeminiHistory = { role: 'user' | 'model'; parts: [{ text: string }] }[];
+
+async function callTutorAPI(
+  message: string,
+  history: GeminiHistory,
+  topic: string,
+  level: string,
+  step: string,
+): Promise<string> {
+  const res = await fetch('/api/tutor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, history, topic, level, step }),
+  });
+  if (!res.ok) throw new Error(`Tutor API error: ${res.status}`);
+  const data = await res.json();
+  return data.text || 'Interesante. ¿Puedes contarme más?';
+}
 
 const SYSTEM_PROMPT = `Eres StemBot, el tutor personal de JóvenesSTEM, creado por Alberto Yépiz.
 
@@ -70,32 +87,27 @@ export class StemBot {
   }
 
   async chat(userMessage: string): Promise<string> {
-    this.conversationHistory.push({
-      role: 'user',
-      content: userMessage,
-    });
+    this.conversationHistory.push({ role: 'user', content: userMessage });
+
+    // Build Gemini-format history (excluding the current message)
+    const history: GeminiHistory = this.conversationHistory.slice(0, -1).map((msg) => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }],
+    }));
+
+    const levelLabel =
+      this.studentAge <= 10 ? '6-10 años' :
+      this.studentAge <= 14 ? '11-14 años' : '15-18 años';
 
     try {
-      const response = await model.generateContent({
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: this.getAgeAdjustedPrompt() + 
-                      `\n\nTema actual: ${this.currentTopic}\n\n` +
-                      'Historial de conversación:\n' +
-                      this.conversationHistory
-                        .map((msg) => `${msg.role === 'user' ? 'Alumno' : 'StemBot'}: ${msg.content}`)
-                        .join('\n'),
-              },
-            ],
-          },
-        ],
-      });
+      const assistantMessage = await callTutorAPI(
+        userMessage,
+        history,
+        this.currentTopic,
+        levelLabel,
+        'socratic',
+      );
 
-      const assistantMessage = response.response.text();
-      
       this.conversationHistory.push({
         role: 'assistant',
         content: assistantMessage,

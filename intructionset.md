@@ -4,8 +4,9 @@
 
 > **Proyecto:** JóvenesSTEM Web AI Platform
 > **Autor:** Alberto Yépiz | yepzhi.com
-> **Última actualización:** Abril 2026
+> **Última actualización:** Abril 2026 — v2.1 (Light Mode Refactor)
 > **Estado:** En desarrollo — MVP Fase 1
+> **Nota de diseño:** El eje rector visual del proyecto son los prototipos `index.html`, `maindashboard.html` y `mobile.html` ubicados en `/Users/yepz/JSweb/`. Todo nuevo componente debe seguir ese sistema.
 
 ---
 
@@ -521,47 +522,144 @@ Costo en México (~$3/kWh):     ~$54-66 MXN/mes
 
 ---
 
-# 7. 🎨 UI SPEC PARA BANANI
+# 7. 🎨 UI SPEC — DESIGN SYSTEM ACTUALIZADO
 
-> **Este documento está dirigido al diseñador de UI/UX.**
-> Aquí se detallan todas las pantallas, componentes y flujos
-> necesarios para construir la interfaz de JóvenesSTEM Web AI Platform.
+> **Este documento está dirigido al diseñador de UI/UX y al desarrollador.**  
+> Eje rector visual: `index.html`, `maindashboard.html`, `mobile.html` en `/Users/yepz/JSweb/`  
+> **Stack:** Next.js 16 + TailwindCSS v4 + TypeScript  
+> **Última actualización:** Abril 2026 — Ronda 4 (Light Mode)
 
 ---
 
-## 7.1 Identidad Visual — Lineamientos
+## 7.1 Identidad Visual — Sistema de Colores OFICIAL
 
-### Paleta de colores
-```
-Color primario:     #1A1F6E  (Navy profundo — ciencia, confianza)
-Color secundario:   #00A896  (Teal — tecnología, frescura)
-Acento vibrante:    #F5A623  (Ámbar — logros, energía)
-Fondo principal:    #0D0F1A  (Casi negro — universo, inmersión)
-Fondo superficie:   #1C1F2E  (Azul muy oscuro — cards, paneles)
-Fondo claro:        #F0F2FF  (Para pantallas de lectura)
-Texto principal:    #FFFFFF
-Texto secundario:   #8A8FAD
-Éxito:              #02C39A
-Error / Alerta:     #E24B4A
+> [!IMPORTANT]
+> El diseño es **LIGHT MODE** con fondo blanco y azul eléctrico como color primario.  
+> La excepción es el **hero de la landing page**, que mantiene fondo oscuro (cosmos/stars).
+> Esto es intencional — crea contraste dramático en la primera impresión y luego el resto del sitio es limpio y blanco.
+
+### Paleta de colores (globals.css tokens)
+```css
+/* ── Fondos ── */
+--background:           #ffffff       /* Fondo global de todas las páginas */
+--card:                 #fbfaf9       /* Cards, paneles, superficies */
+--input:                #f8f8f7       /* Inputs de formularios */
+
+/* ── Primario — Azul Eléctrico ── */
+--primary:              #277eff       /* Color principal: botones, links, activos */
+--primary-foreground:   #ffffff
+
+/* ── Secundario — Azul claro ── */
+--secondary:            #dbe7fb       /* Tint de azul para hovers, tints */
+--secondary-foreground: #277eff
+
+/* ── Texto ── */
+--foreground:           #0a0a0a       /* Texto principal */
+--muted-foreground:     #949494       /* Texto secundario, placeholders */
+
+/* ── Borders ── */
+--border:               #e8e8e8       /* Bordes de cards, separadores */
+
+/* ── Sidebar ── */
+--sidebar:              #ffffff
+--sidebar-foreground:   #4a4a4a
+--sidebar-primary:      #e8e8e8       /* Fondo del item activo */
+--sidebar-primary-foreground: #0a0a0a
+
+/* ── Semánticos ── */
+--destructive:          #ff0000       /* Errores, badges urgentes */
+--success:              #00c417       /* Confirmaciones */
+--accent:               #f59e0b       /* Logros, racha, ámbar */
+
+/* ── Hero exception (SOLO en landing hero) ── */
+/* gradient: linear-gradient(160deg, #0D0F1A 0%, #1a2744 50%, #0D0F1A 100%) */
+/* dot-grid: radial-gradient(..., rgba(39,126,255,0.2) 1px) */
 ```
 
 ### Tipografía
 ```
-Headlines:    Space Grotesk Bold (futurista, tecnológica)
-Body text:    Inter Regular / Medium
-Código:       JetBrains Mono
+Headlines:    Outfit ExtraBold 800 (festivo, impactante)
+Body text:    Inter Regular 400 / Medium 500 / SemiBold 600
+Código:       IBM Plex Mono
+Google Fonts URL:
+  ?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&family=Space+Grotesk:wght@400;500;600;700
+
 Tamaños:
-  H1: 48px | H2: 36px | H3: 24px | H4: 20px
-  Body: 16px | Caption: 13px | Label: 11px
+  H1 landing: clamp(2.8rem, 8vw, 5rem) | font-family: Outfit
+  H1 dashboard: 36px  | H2: 26px | H3: 20px
+  Body: 16px | Caption: 13px | Label: 11px (uppercase + tracking)
+```
+
+### Botones
+```css
+.btn-primary {
+  background: #277eff;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  transition: background 200ms, transform 200ms;
+}
+.btn-primary:hover {
+  background: #1a6be8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(39,126,255,0.3);
+}
+
+/* Botón modo demo — dashed */
+.btn-demo {
+  background: rgba(39,126,255,0.06);
+  border: 1.5px dashed rgba(39,126,255,0.4);
+  color: #277eff;
+  border-radius: 12px;
+}
 ```
 
 ### Estilo general
 ```
-Border radius: 12px cards | 8px botones | 50% avatars/badges
-Sombras: Glow sutil en teal/navy para elementos activos
-Gradientes: navy → teal para elementos hero
-Iconografía: Lucide Icons o Phosphor Icons
-Fondo global: Dark (#0D0F1A) con partículas/estrellas sutiles
+Border radius: 16px cards grandes | 12px cards medianos | 8px botones/inputs
+Sombras: box-shadow: 0 4px 24px rgba(0,0,0,0.05)  — sutiles, no dramáticas
+Borders: 1px solid #e8e8e8  — siempre border visible en cards
+Iconografía: Lucide Icons (ya instalado en el proyecto)
+Fondo global: BLANCO (#ffffff)  — limpio, profesional
+Fondo hero landing: OSCURO con dot-grid azul  — impacto, cosmos
+No se usa glassmorphism — todo es sólido y limpio
+```
+
+### Componentes clave del dashboard
+```
+Sidebar:
+  - Fondo: #ffffff
+  - Ancho: 260px
+  - Border-right: 1px solid #e8e8e8
+  - Item activo: background #e8e8e8, texto negro
+  - Item inactivo: color #4a4a4a
+  - Streak widget: card con #fbfaf9, número en #277eff
+  - Avatar: gradiente initials (linear-gradient(135deg, #277eff, #00a896))
+
+Topbar (mobile):
+  - Fondo: #ffffff
+  - Border-bottom: 1px solid #e8e8e8
+  - Logo: ícono azul + Outfit 700
+
+Bottom Nav (mobile):
+  - Fondo: #ffffff
+  - Border-top: 1px solid #e8e8e8
+  - Active: #277eff
+  - Inactive: #949494
+  - Badge urgente: #ff0000
+
+Cards de contenido:
+  - Background: #fbfaf9
+  - Border: 1px solid #e8e8e8
+  - Border-radius: 16px
+  - Card destacada (continuar módulo): border-color: #277eff
+  - Hover: translateY(-4px) + shadow rgba(39,126,255,0.1)
+
+Badges:
+  - Urgente: background #ff0000, color #fff, texto UPPERCASE
+  - Normal: background #e8e8e8, color #949494
+  - Categoría: background #eff6ff, color #277eff
 ```
 
 ---

@@ -56,12 +56,12 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Network Background Dots */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-        style={{ 
-          backgroundImage: `radial-gradient(circle at 2px 2px, black 1px, transparent 0)`,
-          backgroundSize: '32px 32px'
+      {/* Cosmos background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, rgba(138,143,173,0.15) 1px, transparent 0)`,
+          backgroundSize: '32px 32px',
         }}
       />
       
@@ -69,8 +69,11 @@ export default function RegisterPage() {
         {/* Logo Section */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/" className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-              <Atom className="w-6 h-6 text-primary-foreground" />
+            <div
+              className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center"
+              style={{ boxShadow: '0 0 20px rgba(0,168,150,0.4)' }}
+            >
+              <Atom className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-black tracking-tighter">
               JóvenesSTEM<span className="text-primary">®</span>
@@ -200,10 +203,11 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 bg-primary text-primary-foreground rounded-2xl text-lg font-black shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4"
+              className="btn-primary w-full py-4 text-base mt-4"
+              style={{ borderRadius: '16px' }}
             >
               {isLoading ? 'Creando cuenta...' : 'Registrarme'}
-              {!isLoading && <ArrowRight className="w-5 h-5" />}
+              {!isLoading && <ArrowRight className="w-5 h-5 ml-2" />}
             </button>
           </form>
 

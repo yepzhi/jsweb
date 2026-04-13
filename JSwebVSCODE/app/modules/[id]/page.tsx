@@ -1,119 +1,152 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import modules from '@/public/data/modules.json';
+import { ArrowLeft, Clock, BarChart2, MessageCircle, ChevronRight } from 'lucide-react';
 
 export default function ModuleContent() {
   const params = useParams();
   const moduleId = params['id'] as string;
-  const [readTime, setReadTime] = useState(0);
 
-  // Find module
   const module = modules.chapters
     .flatMap((ch) => ch.modules)
     .find((m) => m.id === moduleId);
 
   if (!module) {
     return (
-      <div className="min-h-screen bg-dark-bg">
-        <Navbar isAuthenticated={true} />
-        <div className="flex items-center justify-center h-96">
-          <p className="text-text-secondary">Módulo no encontrado</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-muted-foreground">Módulo no encontrado</p>
+          <Link href="/dashboard" className="btn-primary px-6 py-3 text-sm inline-flex">
+            ← Volver al Dashboard
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg pb-20">
-      <Navbar isAuthenticated={true} />
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header
+        className="sticky top-0 z-40 glass flex items-center gap-4 px-5 py-4"
+        style={{ borderBottom: '1px solid rgba(138,143,173,0.15)' }}
+      >
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Dashboard
+        </Link>
+        <ChevronRight className="w-3 h-3 text-muted-foreground" />
+        <span className="text-sm font-medium text-white truncate">{module.title}</span>
+      </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 text-secondary hover:text-accent mb-4"
+      <main className="max-w-3xl mx-auto px-4 md:px-6 py-8 pb-16 space-y-8">
+        {/* Module meta */}
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+            <span
+              className="px-3 py-1 rounded-full font-bold uppercase tracking-widest"
+              style={{ background: 'rgba(0,168,150,0.1)', border: '1px solid rgba(0,168,150,0.2)', color: '#00A896' }}
+            >
+              Capítulo 1
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" />
+              {module.duration} min
+            </span>
+            <span className="flex items-center gap-1">
+              <BarChart2 className="w-3.5 h-3.5" />
+              {module.difficulty}
+            </span>
+          </div>
+          <h1
+            className="text-3xl md:text-4xl font-bold tracking-tight text-white"
+            style={{ fontFamily: '"Space Grotesk", sans-serif' }}
           >
-            ← Volver
-          </Link>
-          <h1 className="text-5xl font-bold mb-4">{module.title}</h1>
-          <p className="text-xl text-text-secondary">{module.description}</p>
+            {module.title}
+          </h1>
+          <p className="text-muted-foreground text-base leading-relaxed">{module.description}</p>
         </div>
 
-        {/* Content with light background for readability */}
-        <div className="bg-dark-surface rounded-lg p-8 mb-8">
-          <div className="prose prose-invert max-w-none">
-            {/* Key Concepts */}
-            <div className="mb-8 pb-8 border-b border-text-secondary border-opacity-20">
-              <h2 className="text-2xl font-bold mb-4">📌 Conceptos clave</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {module.keyPoints.map((point, i) => (
-                  <div
-                    key={i}
-                    className="p-3 bg-primary/20 border border-primary rounded-lg text-sm"
-                  >
-                    {point}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="mb-8 pb-8 border-b border-text-secondary border-opacity-20">
-              <h2 className="text-2xl font-bold mb-4">📚 Contenido</h2>
-              <div className="prose-p:mb-4 prose-p:leading-relaxed">
-                {module.content.split('\n\n').map((paragraph, i) => (
-                  <p key={i} className="text-text-primary leading-relaxed mb-4">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            {/* Conceptos */}
-            <div>
-              <h2 className="text-2xl font-bold mb-4">💡 Conceptos en este módulo</h2>
-              <div className="flex flex-wrap gap-2">
-                {module.concepts.map((concept, i) => (
-                  <span
-                    key={i}
-                    className="px-4 py-2 bg-secondary/20 text-secondary rounded-full text-sm"
-                  >
-                    {concept}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* Key concepts chips */}
+        <div
+          className="p-6 rounded-2xl space-y-4"
+          style={{ background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.1)' }}
+        >
+          <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            📌 Conceptos clave
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {module.keyPoints.map((point, i) => (
+              <span
+                key={i}
+                className="px-3 py-1.5 text-sm font-medium rounded-lg"
+                style={{ background: 'rgba(0,168,150,0.08)', border: '1px solid rgba(0,168,150,0.2)', color: '#00A896' }}
+              >
+                {point}
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* CTA to Tutor */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Main content — light surface for readability */}
+        <div
+          className="p-6 md:p-8 rounded-2xl space-y-4"
+          style={{ background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.1)' }}
+        >
+          <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            📚 Contenido
+          </h2>
+          <div className="space-y-4">
+            {module.content.split('\n\n').map((paragraph, i) => (
+              <p key={i} className="text-base leading-relaxed text-foreground/90">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* All concepts */}
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            💡 Todos los conceptos del módulo
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {module.concepts.map((concept, i) => (
+              <span
+                key={i}
+                className="px-4 py-2 text-sm font-medium rounded-full"
+                style={{ background: 'rgba(26,31,110,0.4)', border: '1px solid rgba(26,31,110,0.6)', color: '#8A8FAD' }}
+              >
+                {concept}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA — fixed on mobile, inline on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
           <Link
             href={`/modules/${moduleId}/tutor`}
-            className="block"
+            className="btn-primary flex items-center justify-center gap-2 py-4 text-base"
+            style={{ borderRadius: '16px' }}
           >
-            <button className="w-full btn-primary">
-              🤖 Hablar con StemBot →
-            </button>
+            <MessageCircle className="w-5 h-5" />
+            Hablar con StemBot
           </Link>
-          <Link href="/dashboard">
-            <button className="w-full btn-secondary">
-              ← Volver al Dashboard
-            </button>
+          <Link
+            href="/dashboard"
+            className="btn-secondary flex items-center justify-center gap-2 py-4 text-base"
+            style={{ borderRadius: '16px' }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Volver al Dashboard
           </Link>
-        </div>
-
-        {/* Info */}
-        <div className="mt-8 p-6 bg-dark-surface rounded-lg">
-          <div className="flex items-center justify-between text-text-secondary text-sm">
-            <span>⏱️ Duración aproximada: {module.duration} minutos</span>
-            <span>📊 Dificultad: {module.difficulty}</span>
-          </div>
         </div>
       </main>
     </div>

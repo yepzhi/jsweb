@@ -3,7 +3,7 @@ import translations from './translations.js';
 
 // --- Firebase Configuration ---
 const firebaseConfig = {
-  apiKey: "AIzaSyC4KzcV9qEWUyc0kmv4sN8Jqd__EC2hW0E",
+  apiKey: "REPLACED_BY_AI_FOR_SECURITY",
   authDomain: "entrytest-1080e.firebaseapp.com",
   projectId: "entrytest-1080e",
   storageBucket: "entrytest-1080e.firebasestorage.app",

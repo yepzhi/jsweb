@@ -102,17 +102,17 @@ export default function MicrophoneButton({
       {/* Status Text */}
       <div className="text-center h-12 flex flex-col items-center justify-center">
         {isProcessing && (
-          <p className="text-sm text-text-secondary font-medium animate-pulse">
-            Procesando audio...
+          <p className="text-sm text-muted-foreground font-medium animate-pulse">
+            Procesando...
           </p>
         )}
         {isListening && !isProcessing && (
-          <p className="text-sm text-red-500 font-bold animate-pulse">
+          <p className="text-sm font-bold animate-pulse" style={{ color: '#E24B4A' }}>
             🔴 Grabando...
           </p>
         )}
         {!isListening && !isProcessing && (
-          <p className="text-xs text-text-secondary">
+          <p className="text-xs text-muted-foreground">
             Presiona y mantén para hablar
           </p>
         )}

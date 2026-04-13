@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 import StemBotAvatar from '@/components/StemBotAvatar';
 import MicrophoneButton from '@/components/MicrophoneButton';
 import ConceptBadge from '@/components/ConceptBadge';
 import { SpeechRecognizer, TextToSpeech } from '@/lib/speech';
-import { StemBot } from '@/lib/gemini-tutor';
 import modules from '@/public/data/modules.json';
+import { ArrowLeft, Send } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -22,42 +22,35 @@ export default function TutorPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [avatarState, setAvatarState] = useState<'idle' | 'thinking' | 'speaking' | 'celebrating'>(
-    'idle'
-  );
+  const [avatarState, setAvatarState] = useState<'idle' | 'thinking' | 'speaking' | 'celebrating'>('idle');
   const [detectedConcepts, setDetectedConcepts] = useState<string[]>([]);
   const [userInput, setUserInput] = useState('');
 
   const speechRecognizer = useRef<SpeechRecognizer | null>(null);
   const tts = useRef<TextToSpeech | null>(null);
-  const stemBot = useRef<StemBot | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const conversationHistory = useRef<Array<{ role: 'user' | 'model'; parts: [{ text: string }] }>>([]);
 
   const module = modules.chapters
     .flatMap((ch) => ch.modules)
     .find((m) => m.id === moduleId);
 
   useEffect(() => {
-    // Initialize
+    // Initialize speech
     speechRecognizer.current = new SpeechRecognizer();
     tts.current = new TextToSpeech();
-    stemBot.current = new StemBot(15, module?.title || '');
 
-    // Setup speech recognizer callbacks
     if (speechRecognizer.current) {
       speechRecognizer.current.setOnStart(() => {
         setIsListening(true);
         setAvatarState('thinking');
       });
-
       speechRecognizer.current.setOnResult((transcript) => {
         handleUserMessage(transcript);
       });
-
       speechRecognizer.current.setOnEnd(() => {
         setIsListening(false);
       });
-
       speechRecognizer.current.setOnError((error) => {
         console.error('Speech error:', error);
         setIsListening(false);
@@ -65,89 +58,89 @@ export default function TutorPage() {
       });
     }
 
-    // Setup TTS callbacks
     if (tts.current) {
-      tts.current.setOnStart(() => {
-        setAvatarState('speaking');
-      });
-
-      tts.current.setOnEnd(() => {
-        setAvatarState('idle');
-      });
+      tts.current.setOnStart(() => setAvatarState('speaking'));
+      tts.current.setOnEnd(() => setAvatarState('idle'));
     }
 
     // Initial greeting
-    if (messages.length === 0 && stemBot.current) {
-      const greeting =
-        `Hola, soy StemBot, tu tutor personal. Acabas de estudiar "${module?.title}". ` +
-        `Ahora me gustaría entender qué aprendiste. ` +
-        `Cuéntame con tus propias palabras qué entendiste sobre este tema.`;
+    const greeting =
+      `Hola, soy StemBot 👋 Acabas de estudiar "${module?.title || 'este módulo'}". ` +
+      `Cuéntame con tus propias palabras: ¿qué entendiste sobre este tema?`;
 
-      setMessages([{ role: 'assistant', content: greeting, timestamp: new Date() }]);
-      if (tts.current?.isSupported()) {
-        tts.current.speak(greeting, 'es-MX');
-      }
-    }
+    setMessages([{ role: 'assistant', content: greeting, timestamp: new Date() }]);
+    tts.current?.speak(greeting, 'es-MX');
 
     return () => {
       speechRecognizer.current?.abort();
       tts.current?.stop();
     };
-  }, [module, messages.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleUserMessage = async (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() || isProcessing) return;
 
     setIsProcessing(true);
     setAvatarState('thinking');
+    setUserInput('');
 
-    // Add user message
-    const userMsg: Message = {
-      role: 'user',
-      content: text,
-      timestamp: new Date(),
-    };
+    const userMsg: Message = { role: 'user', content: text, timestamp: new Date() };
     setMessages((prev) => [...prev, userMsg]);
 
+    // Update local history for API
+    conversationHistory.current.push({ role: 'user', parts: [{ text }] });
+
     try {
-      // Get StemBot response
-      let response = await stemBot.current?.chat(text) || 'Interesante respuesta.';
+      // Call server-side API route (key is safe, server-only)
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          history: conversationHistory.current.slice(0, -1), // exclude current message
+          topic: module?.title || 'STEM',
+          level: '11-14 años',
+          step: 'socratic',
+        }),
+      });
 
-      // Detect concepts
-      const concepts = stemBot.current?.detectConcepts(text) || [];
-      setDetectedConcepts((prev) => [...new Set([...prev, ...concepts])]);
+      const data = await res.json();
+      const response: string = data.text || 'Interesante. ¿Puedes contarme más?';
 
-      // Add assistant message
-      const assistantMsg: Message = {
-        role: 'assistant',
-        content: response,
-        timestamp: new Date(),
+      // Update history with assistant response
+      conversationHistory.current.push({ role: 'model', parts: [{ text: response }] });
+
+      // Detect concepts from user message
+      const conceptKeywords: Record<string, string[]> = {
+        'universo': ['universo', 'cosmos', 'big bang', 'galaxia', 'estrella'],
+        'átomo': ['átomo', 'núcleo', 'electrón', 'protón', 'neutrón'],
+        'energía': ['energía', 'fuerza', 'potencia', 'cinética', 'potencial'],
+        'dna': ['adn', 'dna', 'gen', 'cromosoma', 'nucleótido', 'hélice'],
+        'código': ['código', 'programa', 'algoritmo', 'función', 'variable'],
+        'luz': ['luz', 'onda', 'fotón', 'rayo', 'espectro'],
       };
-      setMessages((prev) => [...prev, assistantMsg]);
 
-      // Speak response
-      if (tts.current?.isSupported()) {
-        setAvatarState('speaking');
-        await tts.current.speak(response, 'es-MX');
+      const lower = text.toLowerCase();
+      const found: string[] = [];
+      for (const [concept, keywords] of Object.entries(conceptKeywords)) {
+        if (keywords.some((kw) => lower.includes(kw))) found.push(concept);
       }
+      if (found.length) setDetectedConcepts((prev) => [...new Set([...prev, ...found])]);
+
+      setMessages((prev) => [...prev, { role: 'assistant', content: response, timestamp: new Date() }]);
+      tts.current?.speak(response, 'es-MX');
     } catch (error) {
-      console.error('Error getting response:', error);
-      setAvatarState('idle');
-      const errorMsg: Message = {
-        role: 'assistant',
-        content: 'Disculpa, tuve un problema procesando tu respuesta. Intenta de nuevo.',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      console.error('Tutor error:', error);
+      const errMsg = 'Disculpa, tuve un problemita. Intenta de nuevo.';
+      setMessages((prev) => [...prev, { role: 'assistant', content: errMsg, timestamp: new Date() }]);
     } finally {
       setIsProcessing(false);
-      setAvatarState('idle');
-      setUserInput('');
+      if (!tts.current?.isPlaying_()) setAvatarState('idle');
     }
   };
 
@@ -165,67 +158,60 @@ export default function TutorPage() {
 
   const handleTextSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (userInput.trim()) {
-      handleUserMessage(userInput);
-    }
+    handleUserMessage(userInput);
   };
 
   if (!module) {
     return (
-      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-        <Navbar isAuthenticated={true} />
-        <p className="text-text-secondary">Módulo no encontrado</p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Módulo no encontrado</p>
+          <Link href="/dashboard" className="btn-primary px-6 py-3 text-sm">
+            Volver al Dashboard
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg pb-8">
-      <Navbar isAuthenticated={true} />
-
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold mb-2">{module.title}</h1>
-          <p className="text-text-secondary">Conversación con StemBot</p>
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Header */}
+      <header
+        className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-6 py-4 glass"
+        style={{ borderBottom: '1px solid rgba(138,143,173,0.15)' }}
+      >
+        <Link
+          href={`/modules/${moduleId}`}
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="hidden sm:inline">{module.title}</span>
+          <span className="sm:hidden">Volver</span>
+        </Link>
+        <div className="flex items-center gap-2 text-sm font-bold text-primary">
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          StemBot activo
         </div>
+      </header>
+
+      {/* Main chat area */}
+      <main className="flex-1 flex flex-col max-w-2xl w-full mx-auto px-4 py-6 gap-6">
 
         {/* Avatar */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center">
           <StemBotAvatar state={avatarState} size="medium" />
         </div>
 
-        {/* Chat Messages */}
-        <div className="space-y-6 mb-12 h-96 overflow-y-auto">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-lg ${
-                  msg.role === 'user'
-                    ? 'bg-secondary text-white rounded-br-none'
-                    : 'bg-dark-surface text-text-primary rounded-bl-none border border-text-secondary border-opacity-20'
-                }`}
-              >
-                <p className="text-sm md:text-base">{msg.content}</p>
-                <p className="text-xs opacity-70 mt-1">
-                  {msg.timestamp.toLocaleTimeString('es-MX', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </p>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Detected Concepts */}
+        {/* Concept badges */}
         {detectedConcepts.length > 0 && (
-          <div className="mb-8 p-4 bg-dark-surface rounded-lg border border-secondary border-opacity-30">
-            <p className="text-sm text-text-secondary mb-3">✨ Conceptos que mencionaste:</p>
+          <div
+            className="p-4 rounded-xl"
+            style={{ background: 'rgba(0,168,150,0.05)', border: '1px solid rgba(0,168,150,0.2)' }}
+          >
+            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-widest font-bold">
+              ✨ Conceptos que mencionaste:
+            </p>
             <div className="flex flex-wrap gap-2">
               {module.concepts.map((concept) => (
                 <ConceptBadge
@@ -238,8 +224,46 @@ export default function TutorPage() {
           </div>
         )}
 
-        {/* Microphone Button */}
-        <div className="flex justify-center mb-8">
+        {/* Chat Messages — scrollable */}
+        <div className="flex-1 space-y-4 overflow-y-auto min-h-0" style={{ maxHeight: '40vh' }}>
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className="max-w-[85%] sm:max-w-sm md:max-w-md px-4 py-3 text-sm leading-relaxed"
+                style={{
+                  borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                  ...(msg.role === 'user'
+                    ? { background: '#00A896', color: '#fff' }
+                    : { background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.15)', color: '#fff' }),
+                }}
+              >
+                <p>{msg.content}</p>
+                <p className="text-[10px] opacity-50 mt-1">
+                  {msg.timestamp.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            </div>
+          ))}
+          {isProcessing && (
+            <div className="flex justify-start">
+              <div
+                className="px-4 py-3 flex items-center gap-1"
+                style={{ background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.15)', borderRadius: '18px 18px 18px 4px' }}
+              >
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Mic Button */}
+        <div className="flex justify-center">
           <MicrophoneButton
             isListening={isListening}
             isProcessing={isProcessing}
@@ -249,29 +273,30 @@ export default function TutorPage() {
           />
         </div>
 
-        {/* Text Input Alternative */}
-        <form onSubmit={handleTextSubmit} className="flex gap-2 mb-8">
+        {/* Text fallback */}
+        <form onSubmit={handleTextSubmit} className="flex gap-2">
           <input
             type="text"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             placeholder="O escribe tu respuesta aquí..."
-            className="flex-1"
             disabled={isProcessing}
+            className="flex-1"
+            style={{ borderRadius: '12px', padding: '0.75rem 1rem' }}
           />
           <button
             type="submit"
             disabled={isProcessing || !userInput.trim()}
-            className="px-6 py-2 bg-secondary text-white rounded-button hover:bg-opacity-90 disabled:opacity-50 transition-all"
+            className="btn-primary px-4 py-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ borderRadius: '12px', minWidth: '48px' }}
           >
-            Enviar
+            <Send className="w-4 h-4" />
           </button>
         </form>
 
-        {/* Help Text */}
-        <div className="text-center text-text-secondary text-sm">
-          <p>💡 Responde con tus propias palabras. StemBot te guiará haciendo preguntas.</p>
-        </div>
+        <p className="text-center text-xs text-muted-foreground pb-2">
+          💡 Responde con tus propias palabras. StemBot te guiará con preguntas.
+        </p>
       </main>
     </div>
   );

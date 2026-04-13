@@ -16,24 +16,14 @@ export default function ConceptBadge({
   return (
     <button
       onClick={onClick}
-      className={`
-        px-4 py-2 rounded-full text-sm font-medium
-        transition-all duration-200 transform hover:scale-105
-        ${
-          detected
-            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500 shadow-lg shadow-emerald-500/30'
-            : 'bg-gray-700/40 text-text-secondary border border-text-secondary border-opacity-30'
-        }
-      `}
+      className="px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2"
+      style={detected
+        ? { background: 'rgba(2,195,154,0.15)', border: '1px solid rgba(2,195,154,0.5)', color: '#02C39A' }
+        : { background: 'rgba(28,31,46,0.8)', border: '1px solid rgba(138,143,173,0.25)', color: '#8A8FAD' }
+      }
     >
-      <span className="flex items-center gap-2">
-        {detected ? (
-          <span className="text-lg">✅</span>
-        ) : (
-          <span className="text-lg">⬜</span>
-        )}
-        {concept}
-      </span>
+      {detected ? '✅' : '⬜'}
+      {concept}
     </button>
   );
 }
