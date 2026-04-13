@@ -1,121 +1,326 @@
 import React from 'react';
 import Link from 'next/link';
-import { Atom, ArrowRight, Zap, GraduationCap, Clock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-md border-b border-border z-50 px-6 md:px-12 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-            <Atom className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-black tracking-tighter text-foreground font-sans">
-            JóvenesSTEM<span className="text-primary">®</span>
-          </span>
-        </div>
+    <div className="min-h-screen bg-background text-foreground">
 
-        <div className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-bold text-muted-foreground hover:text-foreground transition-colors">Características</Link>
-          <Link href="#metodologia" className="text-sm font-bold text-muted-foreground hover:text-foreground transition-colors">Metodología</Link>
-          <Link href="/auth/login" className="text-sm font-bold text-foreground hover:text-primary transition-colors">Iniciar Sesión</Link>
-          <Link 
-            href="/auth/register" 
-            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"
+      {/* ── Navbar ─────────────────────────────────────────────────── */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5"
+        style={{
+          background: 'rgba(255, 255, 255, 0.88)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid #e8e8e8',
+        }}
+      >
+        <Link href="/" className="flex items-center gap-3 no-underline" style={{ textDecoration: 'none' }}>
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: '#277eff' }}
           >
-            Registrarse
+            {/* Atom icon — inline SVG to avoid iconify dependency */}
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/>
+            </svg>
+          </div>
+          <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '1.4rem', color: '#000' }}>
+            JóvenesSTEM<span style={{ color: '#277eff' }}>®</span>
+          </span>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-6">
+          <Link href="#proceso" style={{ color: '#949494', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none' }}>
+            ¿Cómo funciona?
+          </Link>
+          <Link href="/auth/login" style={{ color: '#949494', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none' }}>
+            Iniciar Sesión
+          </Link>
+          <Link href="/auth/login" className="btn-primary" style={{ padding: '10px 20px', fontSize: '0.9rem' }}>
+            Mi Dashboard
           </Link>
         </div>
 
-        <Link 
-          href="/auth/login" 
-          className="md:hidden px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-bold"
-        >
+        <Link href="/auth/login" className="md:hidden btn-primary" style={{ padding: '10px 18px', fontSize: '0.875rem' }}>
           Entrar
         </Link>
       </nav>
 
       <main>
-        {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center pt-20 px-6 overflow-hidden">
-          {/* Network Background Effects */}
-          <div 
-            className="absolute inset-0 pointer-events-none opacity-[0.05]" 
-            style={{ 
-              backgroundImage: `radial-gradient(circle at 2px 2px, black 1px, transparent 0)`,
+        {/* ── Hero Section ──────────────────────────────────────────── */}
+        <section
+          className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-5 overflow-hidden"
+          style={{
+            background: 'linear-gradient(160deg, #0D0F1A 0%, #1a2744 50%, #0D0F1A 100%)',
+          }}
+        >
+          {/* Network dot background — exact match to index.html */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(39,126,255,0.2) 1px, transparent 0)',
               backgroundSize: '40px 40px',
-              maskImage: 'radial-gradient(circle at center, black, transparent 80%)'
+              opacity: 0.7,
             }}
           />
-          
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-10 animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] -z-10" />
 
-          <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in relative z-10">
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.85] text-foreground font-sans">
-              CONECTANDO CIENCIA <br />
-              <span className="text-primary uppercase">y futuro</span>
+          {/* SVG path decoration */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <svg width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="none">
+              <path d="M100,200 Q400,100 800,350" stroke="rgba(39,126,255,0.12)" strokeWidth="2" fill="none"/>
+              <path d="M900,100 Q600,400 200,500" stroke="rgba(0,168,150,0.1)" strokeWidth="2" fill="none"/>
+              <circle cx="100" cy="200" r="4" fill="#277eff" opacity="0.5"/>
+              <circle cx="800" cy="350" r="5" fill="#277eff" opacity="0.4"/>
+              <circle cx="200" cy="500" r="3" fill="#00a896" opacity="0.5"/>
+            </svg>
+          </div>
+
+          {/* Hero content */}
+          <div className="relative z-10 text-center max-w-4xl mx-auto animate-slide-up">
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {['NGSS ✓', 'RENAC SEP ✓', 'BlueBook v1 ✓'].map((badge) => (
+                <span
+                  key={badge}
+                  style={{
+                    background: 'rgba(39,126,255,0.15)',
+                    border: '1px solid rgba(39,126,255,0.3)',
+                    color: '#277eff',
+                    padding: '4px 12px',
+                    borderRadius: '999px',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+
+            <h1
+              style={{
+                fontFamily: '"Outfit", sans-serif',
+                fontWeight: 800,
+                fontSize: 'clamp(2.8rem, 8vw, 5rem)',
+                lineHeight: 1.1,
+                letterSpacing: '-2px',
+                color: '#fff',
+                marginBottom: '24px',
+              }}
+            >
+              Conectando{' '}
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #277eff, #00a896)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Ciencia
+              </span>{' '}
+              y Futuro.
             </h1>
 
-            <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-bold tracking-tight">
-              Explora el universo STEM con ayuda de inteligencia artificial. <br className="hidden md:block" />
-              Un tutor personal disponible 24/7 para guiarte en cada paso.
+            <p
+              style={{
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                color: 'rgba(255,255,255,0.65)',
+                maxWidth: '680px',
+                margin: '0 auto 40px',
+                lineHeight: 1.7,
+              }}
+            >
+              Descubre tu potencial con diagnóstico STEM y aprendizaje adaptativo
+              impulsado por Inteligencia Artificial. En español, a tu ritmo.
             </p>
 
-            <div className="flex flex-col md:flex-row gap-4 justify-center items-center pt-6">
-              <Link 
-                href="/auth/register"
-                className="group px-10 py-4.5 bg-primary text-primary-foreground rounded-2xl text-xl font-black hover:scale-105 transition-all shadow-2xl shadow-primary/30 flex items-center gap-3 active:scale-95"
-              >
-                Iniciar Diagnóstico STEM
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/login" className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+                Iniciar Diagnóstico STEM ✦
               </Link>
-              <Link 
-                href="/auth/login"
-                className="px-10 py-4.5 bg-white border border-border text-foreground rounded-2xl text-xl font-black hover:bg-muted transition-all active:scale-95 shadow-sm"
+              <Link
+                href="#proceso"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '16px 32px',
+                  fontSize: '1.05rem',
+                  fontWeight: 600,
+                  color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  transition: 'background 200ms',
+                  background: 'rgba(255,255,255,0.05)',
+                }}
               >
-                Tengo cuenta
+                ¿Cómo funciona?
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Features / Statistics Bar */}
-        <section id="features" className="py-24 px-6 bg-card border-y border-border">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div className="flex flex-col items-center text-center gap-5">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-2 shadow-sm">
-                <Zap className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-2xl font-black tracking-tight">Aprendizaje Adaptativo</h3>
-              <p className="text-primary text-[10px] uppercase tracking-widest font-black bg-primary/5 px-3 py-1 rounded-full">Respuesta inmediata</p>
-              <p className="text-muted-foreground leading-relaxed text-base font-medium">La IA ajusta las explicaciones según tu nivel actual.</p>
-            </div>
-            
-            <div className="flex flex-col items-center text-center gap-5">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-2 shadow-sm">
-                <GraduationCap className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-2xl font-black tracking-tight">Método Socrático</h3>
-              <p className="text-primary text-[10px] uppercase tracking-widest font-black bg-primary/5 px-3 py-1 rounded-full">Guiado por preguntas</p>
-              <p className="text-muted-foreground leading-relaxed text-base font-medium">No te damos las respuestas, te enseñamos a encontrarlas.</p>
+        {/* ── El Ecosistema STEM ────────────────────────────────────── */}
+        <section id="proceso" style={{ padding: '100px 20px', background: '#fff' }}>
+          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+              <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '2.5rem', fontWeight: 800, marginBottom: '16px' }}>
+                El Ecosistema STEM
+              </h2>
+              <p style={{ color: '#949494', fontSize: '1.1rem' }}>
+                Una ruta de aprendizaje diseñada para los desafíos del mañana.
+              </p>
             </div>
 
-            <div className="flex flex-col items-center text-center gap-5">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-2 shadow-sm">
-                <Clock className="w-8 h-8 text-primary" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+              {[
+                {
+                  icon: '🧪',
+                  title: 'Diagnóstico PISA 2025',
+                  desc: 'Evaluación integral de habilidades científicas basada en estándares internacionales.',
+                },
+                {
+                  icon: '🤖',
+                  title: 'IA Adaptativa',
+                  desc: 'Contenido personalizado que evoluciona según tu progreso y áreas de interés.',
+                },
+                {
+                  icon: '🗺️',
+                  title: 'Mapas de Conocimiento',
+                  desc: 'Visualiza tu universo STEM y descubre las conexiones entre física, código y biología.',
+                },
+              ].map(({ icon, title, desc }) => (
+                <div
+                  key={title}
+                  style={{
+                    background: '#fbfaf9',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '16px',
+                    padding: '32px',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    cursor: 'default',
+                  }}
+                  className="hover:-translate-y-2"
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-8px)';
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(39,126,255,0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
+                  }}
+                >
+                  <div style={{ fontSize: '2.5rem', color: '#277eff', marginBottom: '20px' }}>{icon}</div>
+                  <h3 style={{ fontWeight: 700, fontSize: '1.2rem', marginBottom: '12px' }}>{title}</h3>
+                  <p style={{ color: '#949494', lineHeight: 1.7 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Portal del Estudiante ─────────────────────────────────── */}
+        <section
+          style={{
+            background: 'rgba(212, 228, 255, 0.15)',
+            borderTop: '1px solid #e8e8e8',
+            borderBottom: '1px solid #e8e8e8',
+            padding: '100px 20px',
+          }}
+        >
+          <div
+            style={{
+              maxWidth: '1100px',
+              margin: '0 auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '40px',
+            }}
+          >
+            <div style={{ flex: 1, minWidth: '300px' }}>
+              <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '2.2rem', fontWeight: 800, marginBottom: '20px' }}>
+                Tu Portal del{' '}
+                <span
+                  style={{
+                    background: 'linear-gradient(135deg, #277eff, #00a896)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Estudiante
+                </span>
+              </h2>
+              <p style={{ color: '#949494', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '32px' }}>
+                Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo.
+              </p>
+              <Link href="/auth/login" className="btn-primary" style={{ padding: '14px 28px' }}>
+                Ir al Portal →
+              </Link>
+            </div>
+
+            {/* Demo mode CTA card */}
+            <div style={{ flex: 1, minWidth: '300px' }}>
+              <div
+                style={{
+                  background: '#fff',
+                  border: '1px solid #e8e8e8',
+                  borderRadius: '20px',
+                  padding: '32px',
+                  textAlign: 'center',
+                  boxShadow: '0 8px 40px rgba(0,0,0,0.06)',
+                }}
+              >
+                <p style={{ fontSize: '3rem', marginBottom: '16px' }}>🚀</p>
+                <h3 style={{ fontWeight: 700, marginBottom: '8px' }}>Pruébalo ahora</h3>
+                <p style={{ color: '#949494', fontSize: '0.9rem', marginBottom: '20px' }}>
+                  Entra sin registrarte — explora el dashboard completo.
+                </p>
+                <Link
+                  href="/dashboard"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '12px 24px',
+                    background: 'rgba(39,126,255,0.08)',
+                    border: '1px dashed rgba(39,126,255,0.4)',
+                    borderRadius: '8px',
+                    color: '#277eff',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Modo Demo — sin datos
+                </Link>
               </div>
-              <h3 className="text-2xl font-black tracking-tight">Disponible 24/7</h3>
-              <p className="text-primary text-[10px] uppercase tracking-widest font-black bg-primary/5 px-3 py-1 rounded-full">A tu propio ritmo</p>
-              <p className="text-muted-foreground leading-relaxed text-base font-medium">Aprende cuando quieras, desde donde quieras.</p>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="py-16 px-6 border-t border-border text-center text-muted-foreground text-sm font-bold uppercase tracking-widest opacity-80">
-        <p>© 2024 JóvenesSTEM<span className="text-primary">®</span> - Alberto Yépiz | yepzhi.com</p>
+      {/* ── Footer ────────────────────────────────────────────────────── */}
+      <footer style={{ padding: '60px 20px', borderTop: '1px solid #e8e8e8', textAlign: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '16px' }}>
+          <div style={{ width: '28px', height: '28px', background: '#277eff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/>
+            </svg>
+          </div>
+          <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '1.2rem' }}>
+            JóvenesSTEM<span style={{ color: '#277eff' }}>®</span>
+          </span>
+        </div>
+        <p style={{ color: '#949494', fontSize: '0.875rem' }}>
+          © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM.
+        </p>
       </footer>
     </div>
   );

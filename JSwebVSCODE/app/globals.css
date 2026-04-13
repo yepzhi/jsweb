@@ -1,50 +1,107 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
+/* ============================================================
+   DESIGN SYSTEM — JóvenesSTEM Web Platform
+   EJE RECTOR: index.html / maindashboard.html / mobile.html
+   LIGHT MODE — Fondo blanco, Primary Azul Eléctrico #277eff
+   ============================================================ */
 
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #111827;
-  --color-card: #fbfaf9;
-  --color-card-foreground: #111827;
-  --color-primary: #277eff; /* Brilliant Blue */
+  /* ── Backgrounds ─────────────────────────────────────────── */
+  --color-background:    #ffffff;
+  --color-foreground:    #0a0a0a;
+
+  /* ── Surfaces / Cards ────────────────────────────────────── */
+  --color-card:          #fbfaf9;
+  --color-card-foreground: #0a0a0a;
+
+  /* ── Primary — Azul Eléctrico ────────────────────────────── */
+  --color-primary:       #277eff;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #dbe7fb; /* Light Lavender/Blue */
+
+  /* ── Secondary — Azul claro (hover states, tints) ────────── */
+  --color-secondary:     #dbe7fb;
   --color-secondary-foreground: #277eff;
-  --color-muted: #f3f4f6;
-  --color-muted-foreground: #6b7280;
-  --color-accent: #f5a623; 
+
+  /* ── Muted ───────────────────────────────────────────────── */
+  --color-muted:         #e8e8e8;
+  --color-muted-foreground: #949494;
+
+  /* ── Accent — Ámbar (logros, racha) ─────────────────────── */
+  --color-accent:        #277eff;
   --color-accent-foreground: #ffffff;
-  --color-destructive: #ff0000;
+
+  /* ── Semantic ────────────────────────────────────────────── */
+  --color-destructive:   #ff0000;
   --color-destructive-foreground: #ffffff;
-  --color-border: #e8e8e8;
-  
-  --font-sans: "Inter", "Geist", "DM Sans", system-ui, sans-serif;
+  --color-success:       #00c417;
+  --color-success-foreground: #ffffff;
+
+  /* ── Border / Input ──────────────────────────────────────── */
+  --color-border:        #e8e8e8;
+  --color-input:         #f8f8f7;
+  --color-ring:          #277eff;
+
+  /* ── Sidebar specific ─────────────────────────────────────── */
+  --color-sidebar:              #ffffff;
+  --color-sidebar-foreground:   #4a4a4a;
+  --color-sidebar-primary:      #e8e8e8;
+  --color-sidebar-primary-foreground: #0a0a0a;
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-sans: "Inter", "Space Grotesk", system-ui, sans-serif;
+  --font-head: "Outfit", "Space Grotesk", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
-  
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 24px;
+
+  /* ── Radius ──────────────────────────────────────────────── */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  24px;
 }
 
+/* ============================================================
+   GLOBAL UTILITIES
+   ============================================================ */
+
 @utility glass {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid #e8e8e8;
 }
 
-@utility hero-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+@utility glass-card {
+  background-color: #fbfaf9;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 28px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@utility glass-card-hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(39, 126, 255, 0.1);
+}
+
+@utility network-bg {
+  background-image: radial-gradient(circle at 2px 2px, rgba(39, 126, 255, 0.2) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, #277eff, #00a896);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @utility streak-gradient {
-  background: linear-gradient(135deg, rgba(245, 166, 35, 0.1) 0%, rgba(245, 166, 35, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(39, 126, 255, 0.08) 0%, rgba(39, 126, 255, 0.02) 100%);
 }
 
-@utility streak-gradient {
-  background: linear-gradient(135deg, rgba(245, 166, 35, 0.1) 0%, rgba(245, 166, 35, 0.05) 100%);
-}
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 
 * {
   margin: 0;
@@ -57,80 +114,148 @@ html {
 }
 
 body {
-  background-color: #0D0F1A;
-  color: #FFFFFF;
-  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  font-family: "Inter", "Space Grotesk", system-ui, sans-serif;
   line-height: 1.6;
-  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+/* ── Legacy dark aliases (no-op now — keep app from crashing) ── */
+.bg-dark-bg      { background-color: #f8f8f7; }
+.bg-dark-surface { background-color: #fbfaf9; }
+.text-text-primary   { color: #0a0a0a; }
+.text-text-secondary { color: #949494; }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #8a8fad;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8adb8;
-}
-
-/* Buttons base styles */
-button {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
-}
-
-/* Form inputs */
-input, textarea, select {
-  background-color: #1C1F2E;
-  color: #FFFFFF;
-  border: 1px solid rgba(138, 143, 173, 0.2);
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #277eff;
+  color: #ffffff;
   border-radius: 8px;
-  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 200ms ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1a6be8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(39, 126, 255, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 200ms ease;
+  border: 1px solid #e8e8e8;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #f8f8f7;
+  border-color: #277eff;
+  color: #277eff;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 200ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Form Elements ──────────────────────────────────────────── */
+input, textarea, select {
+  background-color: #f8f8f7;
+  color: #0a0a0a;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 0.625rem 1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: border-color 200ms, box-shadow 200ms;
+  width: 100%;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #949494;
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #00A896;
-  box-shadow: 0 0 0 1px #00A896;
+  border-color: #277eff;
+  box-shadow: 0 0 0 3px rgba(39, 126, 255, 0.12);
 }
 
+/* ── Custom Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #e8e8e8;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #277eff;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-12px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+.animate-fade-in    { animation: fadeIn    0.5s ease-out both; }
+.animate-slide-up   { animation: slideUp   0.5s ease-out both; }
+.animate-slide-down { animation: slideDown 0.4s ease-out both; }
+.animate-float      { animation: float     3s ease-in-out infinite; }
