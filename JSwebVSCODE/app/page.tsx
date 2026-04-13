@@ -196,6 +196,7 @@ export default function Home() {
               ].map(({ icon, title, desc }) => (
                 <div
                   key={title}
+                  className="hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(39,126,255,0.1)]"
                   style={{
                     background: '#fbfaf9',
                     border: '1px solid #e8e8e8',
@@ -203,15 +204,6 @@ export default function Home() {
                     padding: '32px',
                     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                     cursor: 'default',
-                  }}
-                  className="hover:-translate-y-2"
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-8px)';
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(39,126,255,0.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
                   }}
                 >
                   <div style={{ fontSize: '2.5rem', color: '#277eff', marginBottom: '20px' }}>{icon}</div>
