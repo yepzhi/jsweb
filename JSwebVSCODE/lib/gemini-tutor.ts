@@ -156,21 +156,3 @@ export class StemBot {
   }
 }
 
-export async function callGeminiAPI(
-  messages: ChatMessage[],
-  systemPrompt: string
-): Promise<string> {
-  try {
-    const response = await model.generateContent({
-      contents: messages.map((msg) => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }],
-      })),
-    });
-
-    return response.response.text();
-  } catch (error) {
-    console.error('Error calling Gemini:', error);
-    throw error;
-  }
-}

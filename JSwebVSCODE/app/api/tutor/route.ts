@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── API Key check (server-side only, never exposed to client) ────────────
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env['GEMINI_API_KEY'];
   if (!apiKey) {
     console.error('[StemBot] GEMINI_API_KEY not configured in environment');
     return NextResponse.json(
