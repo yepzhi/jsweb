@@ -218,7 +218,7 @@ export default function Home() {
         {/* ── Portal del Estudiante ─────────────────────────────────── */}
         <section
           style={{
-            background: 'rgba(212, 228, 255, 0.15)',
+            background: '#ffffff',
             borderTop: '1px solid #e8e8e8',
             borderBottom: '1px solid #e8e8e8',
             padding: '100px 20px',
@@ -311,7 +311,7 @@ export default function Home() {
           </span>
         </div>
         <p style={{ color: '#949494', fontSize: '0.875rem' }}>
-          © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM.
+          © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM. v1.1
         </p>
       </footer>
     </div>
