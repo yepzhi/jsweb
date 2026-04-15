@@ -172,12 +172,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── El Ecosistema STEM ────────────────────────────────────── */}
+        {/* ── El Ecosistema JóvenesSTEM ────────────────────────────── */}
         <section id="proceso" style={{ padding: '100px 20px', background: '#fff' }}>
           <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '64px' }}>
               <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '2.5rem', fontWeight: 800, marginBottom: '16px' }}>
-                El Ecosistema STEM
+                El Ecosistema JóvenesSTEM<span className="text-primary">®</span>
               </h2>
               <p style={{ color: '#949494', fontSize: '1.1rem' }}>
                 Una ruta de aprendizaje diseñada para los desafíos del mañana.
