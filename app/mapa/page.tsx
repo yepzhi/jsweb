@@ -21,10 +21,10 @@ export default function MapaPage() {
           <div className="w-16 h-16 rounded-2xl bg-secondary/30 flex items-center justify-center mb-2 text-primary">
             <Map className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-head font-extrabold text-foreground tracking-tight">
             Tu Mapa STEM
           </h1>
-          <p className="text-muted-foreground text-base max-w-lg font-bold opacity-90 mx-auto">
+          <p className="text-muted-foreground text-base max-w-lg font-medium opacity-90 mx-auto leading-relaxed">
             El universo gráfico de tu conocimiento. Desbloquea constelaciones al completar capítulos y dominar nuevos temas.
           </p>
         </div>

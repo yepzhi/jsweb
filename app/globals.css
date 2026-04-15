@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 /* ============================================================
    DESIGN SYSTEM — JóvenesSTEM Web Platform
@@ -48,9 +49,9 @@
   --color-sidebar-primary:      #e8e8e8;
   --color-sidebar-primary-foreground: #0a0a0a;
 
-  /* ── Typography — Apple Style ────────────────────────────── */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-head: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-head: "Outfit", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "JetBrains Mono", monospace;
 
   /* ── Radius ──────────────────────────────────────────────── */
@@ -116,10 +117,11 @@ html {
 body {
   background-color: #ffffff;
   color: #0a0a0a;
-  font-family: "Inter", "Space Grotesk", system-ui, sans-serif;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* Avoid horizontal scroll */
 }
 
 /* ── Legacy dark aliases (no-op now — keep app from crashing) ── */

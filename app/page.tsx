@@ -119,9 +119,9 @@ export default function Home() {
             </div>
 
             <h1
-              className="font-sans font-black text-foreground mb-8 leading-[1.05] tracking-[-0.04em]"
+              className="font-head font-extrabold text-foreground mb-8 leading-[1.1] tracking-tight"
               style={{
-                fontSize: 'clamp(3.5rem, 10vw, 6.5rem)',
+                fontSize: 'clamp(2.5rem, 8vw, 4.5rem)',
               }}
             >
               Conectando <span className="text-gradient">Ciencia</span> <br className="hidden md:block" /> y Futuro Estudiantil.
@@ -148,13 +148,13 @@ export default function Home() {
         </section>
 
         {/* ── El Ecosistema JóvenesSTEM ────────────────────────────── */}
-        <section id="proceso" className="py-24 md:py-32 px-6 bg-white border-b border-border reveal">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 md:mb-24">
-              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-6 tracking-tight">
+        <section id="proceso" className="py-20 md:py-28 px-6 bg-white border-b border-border reveal">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16 md:mb-20">
+              <h2 className="font-head font-extrabold text-3xl md:text-5xl text-foreground mb-5 tracking-tight">
                 El Ecosistema JóvenesSTEM<span className="text-primary">®</span>
               </h2>
-              <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
                 Una ruta de aprendizaje diseñada para los desafíos del mañana. SIIP NextGen Methodology.
               </p>
             </div>
@@ -191,10 +191,10 @@ export default function Home() {
         </section>
 
         {/* ── Pricing Section ────────────────────────────────────────── */}
-        <section id="pricing" className="py-24 md:py-32 px-6 bg-background reveal">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16 md:mb-24">
-              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-6 tracking-tight">
+        <section id="pricing" className="py-20 md:py-28 px-6 bg-background reveal">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 md:mb-20">
+              <h2 className="font-head font-extrabold text-3xl md:text-5xl text-foreground mb-5 tracking-tight">
                 Inversión <span className="text-gradient">Accesible</span>
               </h2>
               <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl mx-auto">
@@ -268,13 +268,13 @@ export default function Home() {
         </section>
 
         {/* ── Portal del Estudiante ─────────────────────────────────── */}
-        <section className="py-24 md:py-32 px-6 bg-card">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
+        <section className="py-20 md:py-28 px-6 bg-card">
+          <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="flex-1 text-center md:text-left">
-              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-8 tracking-tight">
+              <h2 className="font-head font-extrabold text-3xl md:text-5xl text-foreground mb-6 tracking-tight">
                 Tu Portal del <span className="text-gradient">Estudiante</span>
               </h2>
-              <p className="text-muted-foreground text-lg font-medium mb-12 leading-relaxed">
+              <p className="text-muted-foreground text-lg font-medium mb-10 leading-relaxed">
                 Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo.
               </p>
               <Link href="/auth/login" className="btn-primary" style={{ padding: '18px 40px' }}>

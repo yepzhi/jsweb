@@ -46,10 +46,10 @@ export default function LogrosPage() {
         <div className="w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center mb-2 text-[#00a896]">
           <Trophy className="w-8 h-8" />
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-head font-extrabold text-foreground tracking-tight">
           Tus Logros
         </h1>
-        <p className="text-muted-foreground text-base max-w-lg font-bold opacity-90 mx-auto">
+        <p className="text-muted-foreground text-base max-w-lg font-medium opacity-90 mx-auto leading-relaxed">
           Cada meta superada te otorga una insignia. Colecciónalas todas para desbloquear accesos especiales en la plataforma.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function LogrosPage() {
             <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 border ${item.color}`}>
               <item.icon className="w-8 h-8" />
             </div>
-            <h3 className={`text-xl font-black tracking-tight mb-2 ${item.unlocked ? 'text-foreground' : 'text-muted-foreground'}`}>
+            <h3 className={`text-xl font-head font-extrabold tracking-tight mb-2 ${item.unlocked ? 'text-foreground' : 'text-muted-foreground'}`}>
               {item.title}
             </h3>
             <p className="text-sm font-medium leading-relaxed text-muted-foreground max-w-[250px]">
