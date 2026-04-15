@@ -15,11 +15,11 @@ export default function ProfilePage() {
           </Link>
           
           {/* Avatar Area */}
-          <div className="w-32 h-32 mx-auto rounded-full bg-[linear-gradient(135deg,_#277eff,_#00a896)] flex items-center justify-center text-5xl text-white font-black shadow-lg shadow-primary/30 mb-6">
+          <div className="w-32 h-32 mx-auto rounded-full bg-[linear-gradient(135deg,_#277eff,_#00a896)] flex items-center justify-center text-5xl text-white font-head font-extrabold shadow-lg shadow-primary/30 mb-6">
             A
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tighter">Alex C.</h1>
+          <h1 className="text-3xl md:text-4xl font-head font-extrabold text-foreground mb-2 tracking-tight">Alex C.</h1>
           <p className="text-muted-foreground font-semibold uppercase tracking-widest text-sm mb-6">
             Estudiante de Preparatoria
           </p>
@@ -27,13 +27,13 @@ export default function ProfilePage() {
           <div className="flex justify-center gap-6 mb-8">
             <div className="flex flex-col items-center px-4 py-3 bg-muted/30 rounded-2xl border border-border">
               <Award className="w-6 h-6 text-primary mb-1" />
-              <span className="font-black text-xl text-foreground">Lvl 4</span>
-              <span className="text-xs text-muted-foreground font-bold">Rango Actual</span>
+              <span className="font-head font-extrabold text-xl text-foreground">Lvl 4</span>
+              <span className="text-xs text-muted-foreground font-medium">Rango Actual</span>
             </div>
             <div className="flex flex-col items-center px-4 py-3 bg-muted/30 rounded-2xl border border-border">
               <Star className="w-6 h-6 text-[#00a896] mb-1" />
-              <span className="font-black text-xl text-foreground">7 Días</span>
-              <span className="text-xs text-muted-foreground font-bold">Racha Fuego</span>
+              <span className="font-head font-extrabold text-xl text-foreground">7 Días</span>
+              <span className="text-xs text-muted-foreground font-medium">Racha Fuego</span>
             </div>
           </div>
 

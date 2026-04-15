@@ -40,10 +40,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex justify-center mb-8">
         <div className="animate-fade-in text-center flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 text-foreground tracking-tighter max-w-2xl">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-head font-extrabold mb-3 text-foreground tracking-tight max-w-2xl">
             ¡Hola, {userName}!
           </h1>
-          <p className="text-muted-foreground text-sm sm:text-base font-bold tracking-tight opacity-90 max-w-lg mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base font-medium tracking-tight opacity-90 max-w-lg mx-auto">
             Listo para continuar tu viaje por el universo STEM.
           </p>
         </div>
@@ -63,13 +63,13 @@ export default function DashboardPage() {
 
       {/* Repasos Pendientes */}
       <section className="space-y-6 w-full max-w-5xl mx-auto mb-12">
-        <div className="flex flex-col items-center justify-center text-center gap-3">
-          <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">
+        <div className="flex flex-col items-center justify-center text-center gap-2">
+          <h3 className="text-2xl md:text-3xl font-head font-extrabold text-foreground tracking-tight">
             Repasos Pendientes
           </h3>
           <Link 
             href="/repasos" 
-            className="flex items-center gap-1 text-primary text-sm font-bold hover:underline w-fit mx-auto"
+            className="flex items-center gap-1 text-primary text-sm font-bold hover:underline w-fit mx-auto uppercase tracking-wider"
           >
             Ver todos
             <ChevronRight className="w-4 h-4" />
@@ -105,15 +105,15 @@ export default function DashboardPage() {
       </section>
 
       {/* Mapa STEM Preview */}
-      <section className="space-y-6 w-full max-w-5xl mx-auto">
+      <section className="space-y-6 w-full max-w-5xl mx-auto pb-20">
         <div className="text-center">
-          <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">
+          <h3 className="text-2xl md:text-3xl font-head font-extrabold text-foreground tracking-tight">
             Tu Mapa STEM
           </h3>
         </div>
         <div className="bg-card rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[300px] border border-border group transition-all shadow-md mx-auto hover:border-primary/30">
           <div className="flex-1 p-8 md:p-12 flex flex-col justify-center items-center text-center gap-4">
-            <h4 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">Tu universo se expande</h4>
+            <h4 className="text-2xl md:text-3xl font-head font-extrabold text-foreground tracking-tight">Tu universo se expande</h4>
             <p className="text-muted-foreground text-base max-w-lg leading-relaxed font-medium">
               Has iluminado 4 constelaciones. Sigue explorando para expandir tu universo de conocimiento y dominar nuevas habilidades STEM.
             </p>
