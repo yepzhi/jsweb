@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground font-sans">
 
       {/* ── Navbar ─────────────────────────────────────────────────── */}
       <nav
@@ -16,7 +35,7 @@ export default function Home() {
         }}
       >
         <a href="/jsweb" className="flex items-center gap-2 no-underline">
-          <span className="font-['Outfit',sans-serif] font-extrabold text-[1.4rem] text-[#0a0a0a]">
+          <span className="font-sans font-black text-[1.4rem] text-[#0a0a0a] tracking-tighter">
             JóvenesSTEM<span className="text-primary">®</span>
           </span>
         </a>
@@ -78,29 +97,13 @@ export default function Home() {
             <svg width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="none">
               <path d="M100,200 Q400,100 800,350" stroke="rgba(39,126,255,0.08)" strokeWidth="2" fill="none"/>
               <path d="M900,100 Q600,400 200,500" stroke="rgba(0,168,150,0.06)" strokeWidth="2" fill="none"/>
-              <circle cx="100" cy="200" r="4" fill="#277eff" opacity="0.2"/>
-              <circle cx="800" cy="350" r="5" fill="#277eff" opacity="0.15"/>
-              <circle cx="200" cy="500" r="3" fill="#00a896" opacity="0.15"/>
-            </svg>
-          </div>
-
-          {/* Hero content */}
-          <div className="relative z-10 text-center max-w-4xl mx-auto animate-slide-up">
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              {['NGSS ✓', 'RENAC SEP ✓', 'BlueBook v1 ✓'].map((badge) => (
+              <circle cx="100" cy="200" r="4" fill="#277eff" opa          {/* Hero content */}
+          <div className="relative z-10 text-center max-w-5xl mx-auto animate-slide-up">
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              {['NGSS Certified', 'RENAC SEP Validated', 'BlueBook v1'].map((badge) => (
                 <span
                   key={badge}
-                  style={{
-                    background: '#dbe7fb',
-                    border: '1px solid rgba(39,126,255,0.2)',
-                    color: '#277eff',
-                    padding: '4px 12px',
-                    borderRadius: '999px',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                  }}
+                  className="bg-primary/5 text-primary border border-primary/20 px-4 py-1.5 rounded-full text-[0.65rem] font-black uppercase tracking-widest"
                 >
                   {badge}
                 </span>
@@ -108,63 +111,27 @@ export default function Home() {
             </div>
 
             <h1
+              className="font-sans font-black text-foreground mb-8 leading-[1.05] tracking-[-0.04em]"
               style={{
-                fontFamily: '"Outfit", sans-serif',
-                fontWeight: 800,
-                fontSize: 'clamp(2.8rem, 8vw, 5rem)',
-                lineHeight: 1.1,
-                letterSpacing: '-2px',
-                color: '#0a0a0a',
-                marginBottom: '24px',
+                fontSize: 'clamp(3.5rem, 10vw, 6.5rem)',
               }}
             >
-              Conectando{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #277eff, #00a896)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                Ciencia
-              </span>{' '}
-              y Futuro.
+              Conectando <span className="text-gradient">Ciencia</span> <br className="hidden md:block" /> y Futuro Estudiantil.
             </h1>
 
-            <p
-              style={{
-                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-                color: '#949494',
-                maxWidth: '680px',
-                margin: '0 auto 40px',
-                lineHeight: 1.7,
-              }}
-            >
+            <p className="text-muted-foreground font-medium mb-12 max-w-2xl mx-auto leading-relaxed" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)' }}>
               Descubre tu potencial con diagnóstico STEM y aprendizaje adaptativo
-              impulsado por Inteligencia Artificial. En español, a tu ritmo.
+              impulsado por Inteligencia Artificial. En español, diseñado para México.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://yepzhi.com/entrytest" className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+            <div className="flex flex-col sm:flex-row gap-5 justify-center mt-4">
+              <a href="https://yepzhi.com/entrytest" className="btn-primary" style={{ padding: '20px 48px', fontSize: '1.1rem' }}>
                 Iniciar Diagnóstico STEM ✦
               </a>
               <Link
                 href="#proceso"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '16px 32px',
-                  fontSize: '1.05rem',
-                  fontWeight: 600,
-                  color: '#277eff',
-                  border: '1px solid #277eff',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  transition: 'background 200ms',
-                  background: 'transparent',
-                }}
+                className="btn-secondary"
+                style={{ padding: '20px 48px', fontSize: '1.1rem' }}
               >
                 ¿Cómo funciona?
               </Link>
@@ -173,95 +140,137 @@ export default function Home() {
         </section>
 
         {/* ── El Ecosistema JóvenesSTEM ────────────────────────────── */}
-        <section id="proceso" style={{ padding: '100px 20px', background: '#fff' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-              <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '2.5rem', fontWeight: 800, marginBottom: '16px' }}>
+        <section id="proceso" className="py-24 md:py-32 px-6 bg-white border-b border-border reveal">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 md:mb-24">
+              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-6 tracking-tight">
                 El Ecosistema JóvenesSTEM<span className="text-primary">®</span>
               </h2>
-              <p style={{ color: '#949494', fontSize: '1.1rem' }}>
-                Una ruta de aprendizaje diseñada para los desafíos del mañana.
+              <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                Una ruta de aprendizaje diseñada para los desafíos del mañana. SIIP NextGen Methodology.
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
               {[
                 {
                   icon: '🧪',
-                  title: 'Diagnóstico PISA 2025',
-                  desc: 'Evaluación integral de habilidades científicas basada en estándares internacionales.',
+                  title: 'SIIP NextGen',
+                  desc: 'Metodología divulgativa basada en competencias. Alineada a NGSS de USA y RENAC de México.',
                 },
                 {
                   icon: '🤖',
                   title: 'IA Adaptativa',
-                  desc: 'Contenido personalizado que evoluciona según tu progreso y áreas de interés.',
+                  desc: 'Aprendizaje personalizado que conecta física, biología y código en tiempo real.',
                 },
                 {
-                  icon: '🗺️',
-                  title: 'Mapas de Conocimiento',
-                  desc: 'Visualiza tu universo STEM y descubre las conexiones entre física, código y biología.',
+                  icon: '📜',
+                  title: 'Certificación Oficial',
+                  desc: 'Validación SEP CONOCER EC009. Reconocimiento tangible de habilidades científicas.',
                 },
-              ].map(({ icon, title, desc }) => (
+              ].map(({ icon, title, desc }, idx) => (
                 <div
                   key={title}
-                  className="hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(39,126,255,0.1)]"
-                  style={{
-                    background: '#fbfaf9',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '16px',
-                    padding: '32px',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    cursor: 'default',
-                  }}
+                  className={`p-10 bg-card border border-border rounded-3xl transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.05)] hover:-translate-y-2 group reveal delay-${idx + 1}`}
                 >
-                  <div style={{ fontSize: '2.5rem', color: '#277eff', marginBottom: '20px' }}>{icon}</div>
-                  <h3 style={{ fontWeight: 700, fontSize: '1.2rem', marginBottom: '12px' }}>{title}</h3>
-                  <p style={{ color: '#949494', lineHeight: 1.7 }}>{desc}</p>
+                  <div className="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">{icon}</div>
+                  <h3 className="font-black text-xl mb-4 tracking-tight">{title}</h3>
+                  <p className="text-muted-foreground font-medium leading-relaxed">{desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Portal del Estudiante ─────────────────────────────────── */}
-        <section
-          style={{
-            background: '#ffffff',
-            borderTop: '1px solid #e8e8e8',
-            borderBottom: '1px solid #e8e8e8',
-            padding: '100px 20px',
-          }}
-        >
-          <div
-            style={{
-              maxWidth: '1100px',
-              margin: '0 auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '40px',
-            }}
-          >
-            <div style={{ flex: 1, minWidth: '300px' }}>
-              <h2 style={{ fontFamily: '"Outfit", sans-serif', fontSize: '2.2rem', fontWeight: 800, marginBottom: '20px' }}>
-                Tu Portal del{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(135deg, #277eff, #00a896)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  Estudiante
-                </span>
+        {/* ── Pricing Section ────────────────────────────────────────── */}
+        <section id="pricing" className="py-24 md:py-32 px-6 bg-background reveal">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 md:mb-24">
+              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-6 tracking-tight">
+                Inversión <span className="text-gradient">Accesible</span>
               </h2>
-              <p style={{ color: '#949494', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '32px' }}>
+              <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                Diseñado para democratizar la educación STEM en México y LATAM.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Card 1: Public */}
+              <div className="p-10 bg-white border border-border rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative overflow-hidden group reveal delay-1">
+                <div className="absolute top-0 right-0 p-4">
+                  <span className="bg-[#00a896]/10 text-[#00a896] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Públicas</span>
+                </div>
+                <div className="text-5xl mb-6">🏫</div>
+                <h3 className="font-black text-2xl mb-2">Escuelas Públicas</h3>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-5xl font-black text-foreground">$0</span>
+                  <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
+                </div>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Licencia de uso completa</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> BlueBook v1 digital</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Manual del Docente</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Certificación Oficial</li>
+                </ul>
+                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold">Solicitar Plan</a>
+              </div>
+
+              {/* Card 2: Fast Track */}
+              <div className="p-10 bg-white border-[3px] border-primary rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl shadow-primary/10 relative scale-105 z-10 reveal delay-2">
+                <div className="absolute top-0 right-0 p-4">
+                  <span className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Popular</span>
+                </div>
+                <div className="text-5xl mb-6">⚡</div>
+                <h3 className="font-black text-2xl mb-2">Fast Track</h3>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-5xl font-black text-foreground">$19</span>
+                  <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
+                </div>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> 20 Horas Intensivas</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> BlueBook v1 Físico</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> Asesoría Directa</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> Certificación RENAC</li>
+                </ul>
+                <a href="#contacto" className="btn-primary w-full py-4 text-base font-bold">Agenda Demo</a>
+              </div>
+
+              {/* Card 3: Curricular */}
+              <div className="p-10 bg-white border border-border rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative group overflow-hidden reveal delay-3">
+                <div className="absolute top-0 right-0 p-4">
+                  <span className="bg-muted text-muted-foreground text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">90 Horas</span>
+                </div>
+                <div className="text-5xl mb-6">🎓</div>
+                <h3 className="font-black text-2xl mb-2">Curricular</h3>
+                <div className="flex items-baseline gap-2 mb-8">
+                  <span className="text-5xl font-black text-foreground">$39</span>
+                  <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
+                </div>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Plan Educativo Anual</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> BlueBook v1 Completo</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Formación Docente</li>
+                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Certificación Int.</li>
+                </ul>
+                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold">Explorar Más</a>
+              </div>
+            </div>
+            <p className="text-center mt-12 text-muted-foreground font-bold text-sm opacity-60">* No incluye costo de material impreso (~$70 MXN)</p>
+          </div>
+        </section>
+
+        {/* ── Portal del Estudiante ─────────────────────────────────── */}
+        <section className="py-24 md:py-32 px-6 bg-card">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="font-sans font-black text-4xl md:text-6xl text-foreground mb-8 tracking-tight">
+                Tu Portal del <span className="text-gradient">Estudiante</span>
+              </h2>
+              <p className="text-muted-foreground text-lg font-medium mb-12 leading-relaxed">
                 Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo.
               </p>
-              <Link href="/auth/login" className="btn-primary" style={{ padding: '14px 28px' }}>
-                Ir al Portal →
+              <Link href="/auth/login" className="btn-primary" style={{ padding: '18px 40px' }}>
+                Ir al Portal Personalizado →
               </Link>
             </div>
 
@@ -307,9 +316,9 @@ export default function Home() {
       </main>
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
-      <footer style={{ padding: '60px 20px', borderTop: '1px solid #e8e8e8', textAlign: 'center' }}>
-        <div className="flex justify-center mb-4">
-          <a href="/jsweb" className="font-['Outfit',sans-serif] font-extrabold text-[1.2rem] text-[#0a0a0a] no-underline">
+      <footer className="py-20 px-6 bg-white border-t border-border text-center">
+        <div className="flex justify-center mb-8">
+          <a href="/jsweb" className="font-sans font-black text-2xl text-[#0a0a0a] no-underline tracking-tighter">
             JóvenesSTEM<span className="text-primary">®</span>
           </a>
         </div>
