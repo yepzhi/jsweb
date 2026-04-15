@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <Sidebar />
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 pb-28 md:pb-8 w-full bg-background">
+      <main className="flex-1 md:ml-64 pb-28 md:pb-8 bg-background min-w-0">
         {/* Mobile Header */}
         <header className="flex md:hidden items-center justify-between px-4 py-3 sticky top-0 z-40 bg-background border-b border-border">
           <div className="flex items-center gap-2 font-bold text-base text-foreground">
