@@ -38,35 +38,41 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       {/* Header */}
-      <div className="animate-fade-in py-2">
-        <h1 className="text-2xl sm:text-3xl md:text-5xl font-black mb-2 text-foreground tracking-tighter">
-          ¡Hola, {userName}! 👋
-        </h1>
-        <p className="text-muted-foreground text-xs sm:text-sm md:text-base font-bold tracking-tight opacity-70">
-          Listo para continuar tu viaje por el universo STEM.
-        </p>
+      <div className="flex justify-center mb-8">
+        <div className="animate-fade-in text-center flex flex-col items-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 text-foreground tracking-tighter max-w-2xl">
+            ¡Hola, {userName}! 👋
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base font-bold tracking-tight opacity-90 max-w-lg mx-auto">
+            Listo para continuar tu viaje por el universo STEM.
+          </p>
+        </div>
       </div>
 
       {/* Continuar Módulo Card (Hero) */}
-      <ModuleHero 
-        id={activeModule.id}
-        title={activeModule.title}
-        chapter={activeModule.chapterTitle}
-        progress={modulesProgress[activeModule.id] || 0}
-      />
+      <div className="flex justify-center w-full mb-12">
+        <div className="w-full max-w-4xl mx-auto">
+          <ModuleHero 
+            id={activeModule.id}
+            title={activeModule.title}
+            chapter={activeModule.chapterTitle}
+            progress={modulesProgress[activeModule.id] || 0}
+          />
+        </div>
+      </div>
 
       {/* Repasos Pendientes */}
-      <section className="space-y-4 md:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-black text-foreground tracking-tighter">
+      <section className="space-y-6 w-full max-w-5xl mx-auto mb-12">
+        <div className="flex flex-col items-center justify-center text-center gap-3">
+          <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">
             Repasos Pendientes
           </h3>
           <Link 
             href="/repasos" 
-            className="flex items-center gap-1 text-primary text-xs sm:text-sm font-bold hover:underline w-fit"
+            className="flex items-center gap-1 text-primary text-sm font-bold hover:underline w-fit mx-auto"
           >
             Ver todos
-            <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+            <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -99,29 +105,31 @@ export default function DashboardPage() {
       </section>
 
       {/* Mapa STEM Preview */}
-      <section className="space-y-4 md:space-y-6">
-        <h3 className="text-lg sm:text-xl md:text-2xl font-black text-foreground tracking-tighter">
-          Tu Mapa STEM
-        </h3>
-        <div className="bg-card rounded-lg md:rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[280px] md:min-h-[220px] border border-border group transition-all hover:border-primary/30 shadow-sm">
-          <div className="flex-1 p-5 md:p-8 flex flex-col justify-center gap-3">
-            <h4 className="text-lg sm:text-xl md:text-2xl font-black text-foreground tracking-tight">Tu universo se expande</h4>
-            <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-lg leading-relaxed font-medium">
+      <section className="space-y-6 w-full max-w-5xl mx-auto">
+        <div className="text-center">
+          <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">
+            Tu Mapa STEM
+          </h3>
+        </div>
+        <div className="bg-card rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-[300px] border border-border group transition-all shadow-md mx-auto hover:border-primary/30">
+          <div className="flex-1 p-8 md:p-12 flex flex-col justify-center items-center text-center gap-4">
+            <h4 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">Tu universo se expande</h4>
+            <p className="text-muted-foreground text-base max-w-lg leading-relaxed font-medium">
               Has iluminado 4 constelaciones. Sigue explorando para expandir tu universo de conocimiento y dominar nuevas habilidades STEM.
             </p>
             <Link 
               href="/mapa" 
-              className="flex items-center gap-2 text-primary text-xs sm:text-sm font-black mt-2 hover:gap-3 transition-all uppercase tracking-widest w-fit"
+              className="flex items-center justify-center gap-2 text-primary font-black mt-4 hover:gap-3 transition-all uppercase tracking-widest w-fit"
             >
               Ver mapa completo
-              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+              <ExternalLink className="w-4 h-4" />
             </Link>
           </div>
-          <div className="w-full md:w-[40%] h-40 md:h-auto relative bg-secondary/20 transition-all duration-500 overflow-hidden border-t md:border-t-0 md:border-l border-border/50">
+          <div className="w-full md:w-[40%] min-h-[250px] relative bg-secondary/20 transition-all duration-500 overflow-hidden border-t md:border-t-0 md:border-l border-border">
             <img 
-              src="https://storage.googleapis.com/banani-generated-images/generated-images/0279fc75-0d1f-4460-ac54-c1f804ddfc12.jpg"
+              src="/jsweb/images/logo.png"
               alt="Mapa STEM"
-              className="w-full h-full object-cover opacity-80 mix-blend-multiply scale-110 group-hover:scale-100 transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-contain p-8 opacity-90 scale-100 transition-transform duration-700"
             />
           </div>
         </div>
