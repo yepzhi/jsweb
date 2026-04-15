@@ -41,7 +41,7 @@ export default function DashboardPage() {
       <div className="flex justify-center mb-8">
         <div className="animate-fade-in text-center flex flex-col items-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-3 text-foreground tracking-tighter max-w-2xl">
-            ¡Hola, {userName}! 👋
+            ¡Hola, {userName}!
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base font-bold tracking-tight opacity-90 max-w-lg mx-auto">
             Listo para continuar tu viaje por el universo STEM.

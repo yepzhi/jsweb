@@ -3,7 +3,7 @@
 import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Map } from 'lucide-react';
 
 export default function MapaPage() {
   return (
@@ -18,8 +18,8 @@ export default function MapaPage() {
         </Link>
 
         <div className="flex flex-col items-center text-center animate-fade-in mb-10 space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-secondary/30 flex items-center justify-center mb-2">
-            <span className="text-3xl">🗺️</span>
+          <div className="w-16 h-16 rounded-2xl bg-secondary/30 flex items-center justify-center mb-2 text-primary">
+            <Map className="w-8 h-8" />
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
             Tu Mapa STEM

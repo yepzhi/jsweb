@@ -3,14 +3,14 @@
 import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ModuleCard from '@/components/ModuleCard';
-import { Microscope, Zap, Code2 } from 'lucide-react';
+import { Microscope, Zap, Code2, ClipboardList } from 'lucide-react';
 
 export default function RepasosPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col items-center text-center animate-fade-in py-8 mb-8 space-y-4">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2">
-          <span className="text-3xl">📝</span>
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2 text-primary">
+          <ClipboardList className="w-8 h-8" />
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
           Mis Repasos

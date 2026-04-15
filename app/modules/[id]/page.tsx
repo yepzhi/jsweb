@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import modules from '@/public/data/modules.json';
-import { ArrowLeft, Clock, BarChart2, MessageCircle, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Clock, BarChart2, MessageCircle, ChevronRight, Pin, BookOpen, Lightbulb } from 'lucide-react';
 
 export default function ModuleContent() {
   const params = useParams();
@@ -68,8 +68,8 @@ export default function ModuleContent() {
 
         {/* Key concepts chips */}
         <div className="p-8 rounded-3xl space-y-5 bg-card border border-border mt-8 shadow-sm">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#00A896]">
-            📌 Conceptos clave
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[#00A896] flex items-center gap-2">
+            <Pin className="w-4 h-4" /> Conceptos clave
           </h2>
           <div className="flex flex-wrap gap-2.5">
             {module.keyPoints.map((point, i) => (
@@ -86,7 +86,7 @@ export default function ModuleContent() {
         {/* Main content — light surface for readability */}
         <div className="p-8 md:p-10 rounded-3xl space-y-6 bg-white border border-border shadow-[0_8px_30px_rgba(39,126,255,0.06)]">
           <h2 className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-            📚 Contenido Formativo
+            <BookOpen className="w-4 h-4" /> Contenido Formativo
           </h2>
           <div className="space-y-6">
             {module.content.split('\n\n').map((paragraph, i) => (
@@ -99,8 +99,8 @@ export default function ModuleContent() {
 
         {/* All concepts */}
         <div className="space-y-4">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            💡 Glosario del Módulo
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" /> Glosario del Módulo
           </h2>
           <div className="flex flex-wrap gap-2">
             {module.concepts.map((concept, i) => (
