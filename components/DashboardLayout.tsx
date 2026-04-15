@@ -10,12 +10,16 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Desktop Sidebar — fixed left */}
-      <Sidebar />
+    <div className="flex min-h-screen bg-background">
+      {/* Desktop Sidebar — sticky left */}
+      <div className="hidden md:block w-64 flex-shrink-0 border-r border-border bg-background">
+        <div className="sticky top-0 h-screen overflow-y-auto">
+          <Sidebar />
+        </div>
+      </div>
 
       {/* Main Content Area */}
-      <main className="md:pl-64 pb-28 md:pb-8 min-w-0">
+      <main className="flex-1 min-w-0 pb-28 md:pb-8 flex flex-col">
         {/* Mobile Header */}
         <header className="flex md:hidden items-center justify-between px-4 py-3 sticky top-0 z-40 bg-background border-b border-border">
           <a href="/jsweb" className="flex items-center gap-2 font-bold text-base text-foreground no-underline">
