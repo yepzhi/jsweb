@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 // Routes that require authentication
 const protectedRoutes = ['/dashboard', '/modules', '/repasos', '/profile', '/mapa'];
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if path requires authentication

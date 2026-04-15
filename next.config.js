@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   basePath: '/jsweb',
+  turbopack: {
+    root: '/Users/yepz/JSweb',
+  },
   images: {
     unoptimized: false,
     remotePatterns: [

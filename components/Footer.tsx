@@ -8,7 +8,13 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Branding */}
         <a href="/jsweb" className="flex items-center gap-2 no-underline">
-          <img src="/jsweb/images/logo.png" alt="JóvenesSTEM Logo" className="h-6 w-auto object-contain" />
+          <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="1" />
+              <path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z" />
+              <path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z" />
+            </svg>
+          </div>
           <span className="font-['Outfit',sans-serif] font-bold text-[0.95rem] text-foreground">
             JóvenesSTEM<span className="text-primary">®</span>
           </span>

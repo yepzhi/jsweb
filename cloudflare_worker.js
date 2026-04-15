@@ -32,8 +32,11 @@ export default {
 
     // ── 0. Reverse Proxy for Next.js App (/jsweb) ──────────────────────────
     // Critical fix: rewrite Host header so Vercel can identify the deployment.
-    if (path === '/jsweb' || path.startsWith('/jsweb/')) {
-      const targetUrl = new URL(path + url.search, CONFIG.vercelBase);
+    // Made case-insensitive to support /JSWeb or /jsweb alike
+    const pathLower = path.toLowerCase();
+    
+    if (pathLower === '/jsweb' || pathLower.startsWith('/jsweb/')) {
+      const targetUrl = new URL(pathLower + url.search, CONFIG.vercelBase);
 
       // Build new headers — keep originals but correct the Host
       const newHeaders = new Headers(request.headers);
