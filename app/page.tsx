@@ -2,7 +2,16 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { 
+  ArrowRight, 
+  CheckCircle2, 
+  Microscope, 
+  Bot, 
+  ScrollText, 
+  School, 
+  Zap, 
+  GraduationCap 
+} from 'lucide-react';
 
 export default function Home() {
   useEffect(() => {
@@ -133,8 +142,9 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 justify-center mt-4">
-              <a href="https://yepzhi.com/entrytest" className="btn-primary" style={{ padding: '20px 48px', fontSize: '1.1rem' }}>
-                Iniciar Diagnóstico STEM ✦
+              <a href="https://yepzhi.com/entrytest" className="btn-primary flex items-center justify-center gap-2" style={{ padding: '20px 48px', fontSize: '1.1rem' }}>
+                Iniciar Diagnóstico STEM
+                <ArrowRight className="w-5 h-5" />
               </a>
               <Link
                 href="#proceso"
@@ -159,38 +169,39 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 items-stretch">
               {[
                 {
-                  icon: '🧪',
+                  icon: Microscope,
                   title: 'SIIP NextGen',
                   desc: 'Metodología divulgativa basada en competencias. Alineada a NGSS de USA y RENAC de México.',
                 },
                 {
-                  icon: '🤖',
+                  icon: Bot,
                   title: 'IA Adaptativa',
                   desc: 'Aprendizaje personalizado que conecta física, biología y código en tiempo real.',
                 },
                 {
-                  icon: '📜',
+                  icon: ScrollText,
                   title: 'Certificación Oficial',
                   desc: 'Validación SEP CONOCER EC009. Reconocimiento tangible de habilidades científicas.',
                 },
-              ].map(({ icon, title, desc }, idx) => (
+              ].map(({ icon: Icon, title, desc }, idx) => (
                 <div
                   key={title}
-                  className={`p-10 bg-card border border-border rounded-3xl transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.05)] hover:-translate-y-2 group reveal delay-${idx + 1}`}
+                  className={`p-8 md:p-10 bg-white/50 backdrop-blur-sm border border-blue-100 rounded-[2.5rem] flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_20px_50px_rgba(39,126,255,0.1)] hover:-translate-y-1 group reveal delay-${idx + 1}`}
                 >
-                  <div className="text-5xl mb-6 grayscale group-hover:grayscale-0 transition-all">{icon}</div>
-                  <h3 className="font-black text-xl mb-4 tracking-tight">{title}</h3>
-                  <p className="text-muted-foreground font-medium leading-relaxed">{desc}</p>
+                  <div className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-8 text-primary transition-all duration-500 group-hover:scale-110">
+                    <Icon className="w-8 h-8" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="font-head font-extrabold text-xl md:text-2xl mb-4 tracking-tight text-foreground">{title}</h3>
+                  <p className="text-muted-foreground font-medium leading-relaxed text-sm md:text-base">{desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Pricing Section ────────────────────────────────────────── */}
         <section id="pricing" className="py-20 md:py-28 px-6 bg-background reveal">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 md:mb-20">
@@ -202,65 +213,71 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-stretch">
               {/* Card 1: Public */}
-              <div className="p-10 bg-white border border-border rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative overflow-hidden group reveal delay-1">
-                <div className="absolute top-0 right-0 p-4">
-                  <span className="bg-[#00a896]/10 text-[#00a896] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Públicas</span>
+              <div className="p-8 md:p-10 bg-white/40 backdrop-blur-md border border-blue-100 rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative overflow-hidden group reveal delay-1">
+                <div className="absolute top-0 right-0 p-5">
+                  <span className="bg-blue-100/50 text-primary text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-blue-200/30">Públicas</span>
                 </div>
-                <div className="text-5xl mb-6">🏫</div>
-                <h3 className="font-black text-2xl mb-2">Escuelas Públicas</h3>
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-black text-foreground">$0</span>
+                <div className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-8 text-primary">
+                  <School className="w-8 h-8" strokeWidth={1.5} />
+                </div>
+                <h3 className="font-head font-extrabold text-2xl mb-2 text-foreground">Escuelas Públicas</h3>
+                <div className="flex items-baseline gap-1 mb-10">
+                  <span className="text-5xl font-head font-extrabold text-foreground tracking-tighter">$0</span>
                   <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
                 </div>
-                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Licencia de uso completa</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> BlueBook v1 digital</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Manual del Docente</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896]" /> Certificación Oficial</li>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-12 flex-1 w-full">
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896] flex-shrink-0" /> Licencia completa</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896] flex-shrink-0" /> BlueBook v1 digital</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896] flex-shrink-0" /> Manual Docente</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-[#00a896] flex-shrink-0" /> Certificación Oficial</li>
                 </ul>
-                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold">Solicitar Plan</a>
+                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold rounded-2xl">Solicitar Plan</a>
               </div>
 
               {/* Card 2: Fast Track */}
-              <div className="p-10 bg-white border-[3px] border-primary rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl shadow-primary/10 relative scale-105 z-10 reveal delay-2">
-                <div className="absolute top-0 right-0 p-4">
-                  <span className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Popular</span>
+              <div className="p-8 md:p-10 bg-blue-50/30 backdrop-blur-xl border-[3px] border-primary/50 rounded-[3rem] flex flex-col items-center text-center shadow-2xl shadow-primary/5 relative lg:-translate-y-4 z-10 reveal delay-2">
+                <div className="absolute top-0 right-0 p-5">
+                  <span className="bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Popular</span>
                 </div>
-                <div className="text-5xl mb-6">⚡</div>
-                <h3 className="font-black text-2xl mb-2">Fast Track</h3>
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-black text-foreground">$19</span>
+                <div className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-8 text-primary">
+                  <Zap className="w-8 h-8" strokeWidth={1.5} />
+                </div>
+                <h3 className="font-head font-extrabold text-2xl mb-2 text-foreground">Fast Track</h3>
+                <div className="flex items-baseline gap-1 mb-10">
+                  <span className="text-5xl font-head font-extrabold text-foreground tracking-tighter">$19</span>
                   <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
                 </div>
-                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> 20 Horas Intensivas</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> BlueBook v1 Físico</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> Asesoría Directa</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-primary" /> Certificación RENAC</li>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-12 flex-1 w-full">
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" /> 20 Horas Intensivas</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" /> BlueBook v1 Físico</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" /> Asesoría Directa</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" /> Certificación RENAC</li>
                 </ul>
-                <a href="#contacto" className="btn-primary w-full py-4 text-base font-bold">Agenda Demo</a>
+                <a href="#contacto" className="btn-primary w-full py-5 text-lg font-bold shadow-xl shadow-primary/20 rounded-2xl hover:scale-[1.02]">Agenda Demo</a>
               </div>
 
               {/* Card 3: Curricular */}
-              <div className="p-10 bg-white border border-border rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative group overflow-hidden reveal delay-3">
-                <div className="absolute top-0 right-0 p-4">
-                  <span className="bg-muted text-muted-foreground text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">90 Horas</span>
+              <div className="p-8 md:p-10 bg-white/40 backdrop-blur-md border border-blue-100 rounded-[2.5rem] flex flex-col items-center text-center shadow-sm relative group overflow-hidden reveal delay-3">
+                <div className="absolute top-0 right-0 p-5">
+                  <span className="bg-blue-100/50 text-primary text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">90 Horas</span>
                 </div>
-                <div className="text-5xl mb-6">🎓</div>
-                <h3 className="font-black text-2xl mb-2">Curricular</h3>
-                <div className="flex items-baseline gap-2 mb-8">
-                  <span className="text-5xl font-black text-foreground">$39</span>
+                <div className="w-16 h-16 rounded-full bg-blue-100/50 flex items-center justify-center mb-8 text-primary">
+                  <GraduationCap className="w-8 h-8" strokeWidth={1.5} />
+                </div>
+                <h3 className="font-head font-extrabold text-2xl mb-2 text-foreground">Curricular</h3>
+                <div className="flex items-baseline gap-2 mb-10">
+                  <span className="text-5xl font-head font-extrabold text-foreground tracking-tighter">$39</span>
                   <span className="text-muted-foreground font-bold text-sm">MXN / alum</span>
                 </div>
-                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-10 flex-1">
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Plan Educativo Anual</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> BlueBook v1 Completo</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Formación Docente</li>
-                  <li className="flex items-center gap-2 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground" /> Certificación Int.</li>
+                <ul className="space-y-4 text-sm font-semibold text-muted-foreground mb-12 flex-1 w-full">
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground flex-shrink-0" /> Plan Educativo Anual</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground flex-shrink-0" /> BlueBook v1 Completo</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground flex-shrink-0" /> Formación Docente</li>
+                  <li className="flex items-center gap-3 justify-center"><CheckCircle2 className="w-4 h-4 text-muted-foreground flex-shrink-0" /> Certificación Int.</li>
                 </ul>
-                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold">Explorar Más</a>
+                <a href="#contacto" className="btn-secondary w-full py-4 text-base font-bold rounded-2xl">Explorar Más</a>
               </div>
             </div>
             <p className="text-center mt-12 text-muted-foreground font-bold text-sm opacity-60">* No incluye costo de material impreso (~$70 MXN)</p>
@@ -277,8 +294,9 @@ export default function Home() {
               <p className="text-muted-foreground text-lg font-medium mb-10 leading-relaxed">
                 Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo.
               </p>
-              <Link href="/auth/login" className="btn-primary" style={{ padding: '18px 40px' }}>
-                Ir al Portal Personalizado →
+              <Link href="/auth/login" className="btn-primary flex items-center justify-center gap-2" style={{ padding: '18px 40px' }}>
+                Ir al Portal Personalizado
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
 
@@ -288,16 +306,18 @@ export default function Home() {
                 style={{
                   background: '#fff',
                   border: '1px solid #e8e8e8',
-                  borderRadius: '20px',
-                  padding: '32px',
+                  borderRadius: '3rem',
+                  padding: '40px',
                   textAlign: 'center',
                   boxShadow: '0 8px 40px rgba(0,0,0,0.06)',
                 }}
               >
-                <p style={{ fontSize: '3rem', marginBottom: '16px' }}>🚀</p>
-                <h3 style={{ fontWeight: 700, marginBottom: '8px' }}>Pruébalo ahora</h3>
-                <p style={{ color: '#949494', fontSize: '0.9rem', marginBottom: '20px' }}>
-                  Entra sin registrarte — explora el dashboard completo.
+                <div className="w-16 h-16 rounded-2xl bg-secondary mx-auto flex items-center justify-center mb-6 text-primary">
+                  <Zap className="w-8 h-8 fill-primary" />
+                </div>
+                <h3 className="font-head font-extrabold text-2xl mb-2 text-foreground">Pruébalo ahora</h3>
+                <p className="text-muted-foreground text-sm font-medium mb-8">
+                  Entra sin registrarte — explora el dashboard completo y el universo STEM.
                 </p>
                 <Link
                   href="/dashboard"
