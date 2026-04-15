@@ -52,27 +52,27 @@ export default function Home() {
         <section
           className="relative min-h-screen flex items-center justify-center pt-24 pb-16 px-5 overflow-hidden"
           style={{
-            background: 'linear-gradient(160deg, #0D0F1A 0%, #1a2744 50%, #0D0F1A 100%)',
+            background: '#ffffff',
           }}
         >
-          {/* Network dot background — exact match to index.html */}
+          {/* Network dot background — subtle on white */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(39,126,255,0.2) 1px, transparent 0)',
+              backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(39,126,255,0.08) 1px, transparent 0)',
               backgroundSize: '40px 40px',
-              opacity: 0.7,
+              opacity: 0.5,
             }}
           />
 
           {/* SVG path decoration */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <svg width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="none">
-              <path d="M100,200 Q400,100 800,350" stroke="rgba(39,126,255,0.12)" strokeWidth="2" fill="none"/>
-              <path d="M900,100 Q600,400 200,500" stroke="rgba(0,168,150,0.1)" strokeWidth="2" fill="none"/>
-              <circle cx="100" cy="200" r="4" fill="#277eff" opacity="0.5"/>
-              <circle cx="800" cy="350" r="5" fill="#277eff" opacity="0.4"/>
-              <circle cx="200" cy="500" r="3" fill="#00a896" opacity="0.5"/>
+              <path d="M100,200 Q400,100 800,350" stroke="rgba(39,126,255,0.08)" strokeWidth="2" fill="none"/>
+              <path d="M900,100 Q600,400 200,500" stroke="rgba(0,168,150,0.06)" strokeWidth="2" fill="none"/>
+              <circle cx="100" cy="200" r="4" fill="#277eff" opacity="0.2"/>
+              <circle cx="800" cy="350" r="5" fill="#277eff" opacity="0.15"/>
+              <circle cx="200" cy="500" r="3" fill="#00a896" opacity="0.15"/>
             </svg>
           </div>
 
@@ -83,8 +83,8 @@ export default function Home() {
                 <span
                   key={badge}
                   style={{
-                    background: 'rgba(39,126,255,0.15)',
-                    border: '1px solid rgba(39,126,255,0.3)',
+                    background: '#dbe7fb',
+                    border: '1px solid rgba(39,126,255,0.2)',
                     color: '#277eff',
                     padding: '4px 12px',
                     borderRadius: '999px',
@@ -106,7 +106,7 @@ export default function Home() {
                 fontSize: 'clamp(2.8rem, 8vw, 5rem)',
                 lineHeight: 1.1,
                 letterSpacing: '-2px',
-                color: '#fff',
+                color: '#0a0a0a',
                 marginBottom: '24px',
               }}
             >
@@ -127,7 +127,7 @@ export default function Home() {
             <p
               style={{
                 fontSize: 'clamp(1rem, 2vw, 1.3rem)',
-                color: 'rgba(255,255,255,0.65)',
+                color: '#949494',
                 maxWidth: '680px',
                 margin: '0 auto 40px',
                 lineHeight: 1.7,
@@ -150,12 +150,12 @@ export default function Home() {
                   padding: '16px 32px',
                   fontSize: '1.05rem',
                   fontWeight: 600,
-                  color: '#fff',
-                  border: '1px solid rgba(255,255,255,0.25)',
+                  color: '#277eff',
+                  border: '1px solid #277eff',
                   borderRadius: '8px',
                   textDecoration: 'none',
                   transition: 'background 200ms',
-                  background: 'rgba(255,255,255,0.05)',
+                  background: 'transparent',
                 }}
               >
                 ¿Cómo funciona?

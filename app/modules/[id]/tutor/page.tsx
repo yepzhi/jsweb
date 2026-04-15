@@ -196,107 +196,118 @@ export default function TutorPage() {
       </header>
 
       {/* Main chat area */}
-      <main className="flex-1 flex flex-col max-w-4xl w-full mx-auto px-4 md:px-8 py-6 md:py-10 gap-6">
+      <main className="flex-1 flex flex-col w-full px-4 md:px-8 py-6 md:py-10 gap-6 md:gap-8 overflow-hidden">
+        
+        {/* Container for better centering on desktop */}
+        <div className="flex flex-col gap-6 md:gap-8 mx-auto w-full max-w-2xl">
 
-        {/* Avatar */}
-        <div className="flex justify-center">
-          <StemBotAvatar state={avatarState} size="medium" />
-        </div>
-
-        {/* Concept badges */}
-        {detectedConcepts.length > 0 && (
-          <div
-            className="p-4 rounded-xl"
-            style={{ background: 'rgba(0,168,150,0.05)', border: '1px solid rgba(0,168,150,0.2)' }}
-          >
-            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-widest font-bold">
-              ✨ Conceptos que mencionaste:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {module.concepts.map((concept) => (
-                <ConceptBadge
-                  key={concept}
-                  concept={concept}
-                  detected={detectedConcepts.includes(concept)}
-                />
-              ))}
-            </div>
+          {/* Avatar */}
+          <div className="flex justify-center">
+            <StemBotAvatar state={avatarState} size="medium" />
           </div>
-        )}
 
-        {/* Chat Messages — scrollable */}
-        <div className="flex-1 space-y-4 overflow-y-auto min-h-0" style={{ maxHeight: '40vh' }}>
-          {messages.map((msg, i) => (
+          {/* Concept badges */}
+          {detectedConcepts.length > 0 && (
             <div
-              key={i}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className="p-4 md:p-6 rounded-xl md:rounded-2xl"
+              style={{ background: 'rgba(0,168,150,0.05)', border: '1px solid rgba(0,168,150,0.2)' }}
             >
-              <div
-                className="max-w-[85%] sm:max-w-sm md:max-w-md px-4 py-3 text-sm leading-relaxed"
-                style={{
-                  borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                  ...(msg.role === 'user'
-                    ? { background: '#277eff', color: '#fff' }
-                    : { background: '#f8f8f7', border: '1px solid #e8e8e8', color: '#0a0a0a' }),
-                }}
-              >
-                <p>{msg.content}</p>
-                <p className="text-[10px] opacity-50 mt-1">
-                  {msg.timestamp.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
-            </div>
-          ))}
-          {isProcessing && (
-            <div className="flex justify-start">
-              <div
-                className="px-4 py-3 flex items-center gap-1"
-                style={{ background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.15)', borderRadius: '18px 18px 18px 4px' }}
-              >
-                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <p className="text-xs md:text-sm text-muted-foreground mb-4 uppercase tracking-widest font-bold">
+                ✨ Conceptos que mencionaste:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {module.concepts.map((concept) => (
+                  <ConceptBadge
+                    key={concept}
+                    concept={concept}
+                    detected={detectedConcepts.includes(concept)}
+                  />
+                ))}
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
+
+          {/* Chat Messages — scrollable */}
+          <div className="flex-1 space-y-4 overflow-y-auto min-h-[200px] md:min-h-[300px] px-2 md:px-4">
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className="max-w-xs md:max-w-sm px-4 md:px-5 py-3 md:py-4 text-sm md:text-base leading-relaxed"
+                  style={{
+                    borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                    ...(msg.role === 'user'
+                      ? { background: '#277eff', color: '#ffffff', fontWeight: 500 }
+                      : { background: '#fbfaf9', border: '1px solid #e8e8e8', color: '#0a0a0a' }),
+                  }}
+                >
+                  <p>{msg.content}</p>
+                  <p className="text-[11px] md:text-xs opacity-50 mt-2">
+                    {msg.timestamp.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {isProcessing && (
+              <div className="flex justify-start">
+                <div
+                  className="px-4 md:px-5 py-3 md:py-4 flex items-center gap-2"
+                  style={{ background: '#fbfaf9', border: '1px solid #e8e8e8', borderRadius: '18px 18px 18px 4px' }}
+                >
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Mic Button */}
+          <div className="flex justify-center">
+            <MicrophoneButton
+              isListening={isListening}
+              isProcessing={isProcessing}
+              onStart={handleMicStart}
+              onStop={handleMicStop}
+              disabled={isProcessing}
+            />
+          </div>
+
+          {/* Text fallback */}
+          <form onSubmit={handleTextSubmit} className="flex gap-2 md:gap-3">
+            <input
+              type="text"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="O escribe tu respuesta aquí..."
+              disabled={isProcessing}
+              className="flex-1 px-4 md:px-5 py-2 md:py-3 text-sm md:text-base"
+              style={{
+                borderRadius: '12px',
+                border: '1px solid #e8e8e8',
+                background: '#ffffff',
+                color: '#0a0a0a',
+              }}
+            />
+            <button
+              type="submit"
+              disabled={isProcessing || !userInput.trim()}
+              className="btn-primary px-4 md:px-5 py-2 md:py-3 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+              style={{ borderRadius: '12px', minWidth: '48px', background: '#277eff', color: '#ffffff' }}
+            >
+              <Send className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
+          </form>
+
+          <p className="text-center text-xs md:text-sm text-muted-foreground pb-2">
+            💡 Responde con tus propias palabras. StemBot te guiará con preguntas.
+          </p>
+
         </div>
 
-        {/* Mic Button */}
-        <div className="flex justify-center">
-          <MicrophoneButton
-            isListening={isListening}
-            isProcessing={isProcessing}
-            onStart={handleMicStart}
-            onStop={handleMicStop}
-            disabled={isProcessing}
-          />
-        </div>
-
-        {/* Text fallback */}
-        <form onSubmit={handleTextSubmit} className="flex gap-2">
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="O escribe tu respuesta aquí..."
-            disabled={isProcessing}
-            className="flex-1"
-            style={{ borderRadius: '12px', padding: '0.75rem 1rem' }}
-          />
-          <button
-            type="submit"
-            disabled={isProcessing || !userInput.trim()}
-            className="btn-primary px-4 py-2 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ borderRadius: '12px', minWidth: '48px' }}
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-muted-foreground pb-2">
-          💡 Responde con tus propias palabras. StemBot te guiará con preguntas.
-        </p>
       </main>
     </div>
   );
