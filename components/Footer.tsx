@@ -22,7 +22,7 @@ export default function Footer() {
 
         {/* Version */}
         <div className="text-[0.85rem] text-muted-foreground font-medium">
-          v1.3
+          v1.4
         </div>
 
         {/* Copyright / Links */}

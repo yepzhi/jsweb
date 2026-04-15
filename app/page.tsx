@@ -314,7 +314,7 @@ export default function Home() {
           </a>
         </div>
         <p style={{ color: '#949494', fontSize: '0.875rem' }}>
-          © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM. v1.1
+          © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM. v1.4
         </p>
       </footer>
     </div>
