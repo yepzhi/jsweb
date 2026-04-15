@@ -97,7 +97,13 @@ export default function Home() {
             <svg width="100%" height="100%" viewBox="0 0 1000 600" preserveAspectRatio="none">
               <path d="M100,200 Q400,100 800,350" stroke="rgba(39,126,255,0.08)" strokeWidth="2" fill="none"/>
               <path d="M900,100 Q600,400 200,500" stroke="rgba(0,168,150,0.06)" strokeWidth="2" fill="none"/>
-              <circle cx="100" cy="200" r="4" fill="#277eff" opa          {/* Hero content */}
+              <circle cx="100" cy="200" r="4" fill="#277eff" opacity="0.2"/>
+              <circle cx="800" cy="350" r="5" fill="#277eff" opacity="0.15"/>
+              <circle cx="200" cy="500" r="3" fill="#00a896" opacity="0.15"/>
+            </svg>
+          </div>
+
+          {/* Hero content */}
           <div className="relative z-10 text-center max-w-5xl mx-auto animate-slide-up">
             <div className="flex flex-wrap justify-center gap-3 mb-10">
               {['NGSS Certified', 'RENAC SEP Validated', 'BlueBook v1'].map((badge) => (
