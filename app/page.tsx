@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
