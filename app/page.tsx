@@ -15,24 +15,40 @@ export default function Home() {
           borderBottom: '1px solid #e8e8e8',
         }}
       >
-        <a href="/jsweb" className="flex items-center gap-3 no-underline">
-          <img src="/jsweb/images/logo.png" alt="JóvenesSTEM Logo" className="h-8 w-auto object-contain" />
-          <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '1.4rem', color: '#000' }}>
+        <a href="/jsweb" className="flex items-center gap-2 no-underline">
+          <span className="font-['Outfit',sans-serif] font-extrabold text-[1.4rem] text-[#0a0a0a]">
             JóvenesSTEM<span className="text-primary">®</span>
           </span>
         </a>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link href="#proceso" style={{ color: '#949494', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none' }}>
-            ¿Cómo funciona?
-          </Link>
-          <Link href="/auth/login" style={{ color: '#949494', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none' }}>
-            Iniciar Sesión
-          </Link>
-          <Link href="/auth/login" className="btn-primary" style={{ padding: '10px 20px', fontSize: '0.9rem' }}>
-            Mi Dashboard
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-[#949494] hover:text-[#0a0a0a] font-medium text-[0.95rem] transition-colors cursor-pointer border-0 bg-transparent">
+              Platform
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:rotate-180">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className="absolute top-full left-0 mt-4 w-64 bg-white border border-[#e8e8e8] rounded-xl shadow-[0_12px_40px_rgba(39,126,255,0.08)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col p-2">
+              <a href="https://yepzhi.com/jovenesstem" className="block px-4 py-2 hover:bg-[#f8f8f7] rounded-lg text-[0.9rem] text-[#0a0a0a] no-underline">JóvenesSTEM Analytics Data</a>
+              <a href="#proceso" className="block px-4 py-2 hover:bg-[#f8f8f7] rounded-lg text-[0.9rem] text-[#0a0a0a] no-underline">Methodology</a>
+              <a href="#info" className="block px-4 py-2 hover:bg-[#f8f8f7] rounded-lg text-[0.9rem] text-[#0a0a0a] no-underline">More info+</a>
+              <a href="#author" className="block px-4 py-2 hover:bg-[#f8f8f7] rounded-lg text-[0.9rem] text-[#0a0a0a] no-underline">Author</a>
+              <a href="https://yepzhi.com/jovenesstem" className="block px-4 py-2 hover:bg-[#f8f8f7] rounded-lg text-[0.9rem] text-[#277eff] font-medium no-underline">Explore JóvenesSTEM Site →</a>
+            </div>
+          </div>
+          <a href="https://yepzhi.com/entrytest" className="text-[#949494] hover:text-[#0a0a0a] font-medium text-[0.95rem] no-underline transition-colors">
+            Get Tested
+          </a>
+          <a href="#pricing" className="text-[#949494] hover:text-[#0a0a0a] font-medium text-[0.95rem] no-underline transition-colors">
+            Pricing
+          </a>
+          <Link href="/auth/login" className="btn-primary px-5 py-2.5 text-[0.9rem]">
+            Book a Demo
           </Link>
         </div>
+
+
 
         <Link href="/auth/login" className="md:hidden btn-primary" style={{ padding: '10px 18px', fontSize: '0.875rem' }}>
           Entrar
@@ -130,9 +146,9 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/login" className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
+              <a href="https://yepzhi.com/entrytest" className="btn-primary" style={{ padding: '16px 32px', fontSize: '1.05rem' }}>
                 Iniciar Diagnóstico STEM ✦
-              </Link>
+              </a>
               <Link
                 href="#proceso"
                 style={{
@@ -293,7 +309,9 @@ export default function Home() {
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <footer style={{ padding: '60px 20px', borderTop: '1px solid #e8e8e8', textAlign: 'center' }}>
         <div className="flex justify-center mb-4">
-          <img src="/jsweb/images/logo.png" alt="JóvenesSTEM Logo" className="h-8 w-auto object-contain" />
+          <a href="/jsweb" className="font-['Outfit',sans-serif] font-extrabold text-[1.2rem] text-[#0a0a0a] no-underline">
+            JóvenesSTEM<span className="text-primary">®</span>
+          </a>
         </div>
         <p style={{ color: '#949494', fontSize: '0.875rem' }}>
           © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM. v1.1
