@@ -196,7 +196,7 @@ export default function TutorPage() {
       </header>
 
       {/* Main chat area */}
-      <main className="flex-1 flex flex-col max-w-2xl w-full mx-auto px-4 py-6 gap-6">
+      <main className="flex-1 flex flex-col max-w-4xl w-full mx-auto px-4 md:px-8 py-6 md:py-10 gap-6">
 
         {/* Avatar */}
         <div className="flex justify-center">
@@ -236,8 +236,8 @@ export default function TutorPage() {
                 style={{
                   borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   ...(msg.role === 'user'
-                    ? { background: '#00A896', color: '#fff' }
-                    : { background: '#1C1F2E', border: '1px solid rgba(138,143,173,0.15)', color: '#fff' }),
+                    ? { background: '#277eff', color: '#fff' }
+                    : { background: '#f8f8f7', border: '1px solid #e8e8e8', color: '#0a0a0a' }),
                 }}
               >
                 <p>{msg.content}</p>
