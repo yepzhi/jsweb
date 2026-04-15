@@ -15,20 +15,12 @@ export default function Home() {
           borderBottom: '1px solid #e8e8e8',
         }}
       >
-        <Link href="/" className="flex items-center gap-3 no-underline" style={{ textDecoration: 'none' }}>
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: '#277eff' }}
-          >
-            {/* Atom icon — inline SVG to avoid iconify dependency */}
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/>
-            </svg>
-          </div>
+        <a href="/jsweb" className="flex items-center gap-3 no-underline">
+          <img src="/jsweb/images/logo.png" alt="JóvenesSTEM Logo" className="h-8 w-auto object-contain" />
           <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '1.4rem', color: '#000' }}>
-            JóvenesSTEM<span style={{ color: '#277eff' }}>®</span>
+            JóvenesSTEM<span className="text-primary">®</span>
           </span>
-        </Link>
+        </a>
 
         <div className="hidden md:flex items-center gap-6">
           <Link href="#proceso" style={{ color: '#949494', fontWeight: 500, fontSize: '0.95rem', textDecoration: 'none' }}>
@@ -300,15 +292,8 @@ export default function Home() {
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <footer style={{ padding: '60px 20px', borderTop: '1px solid #e8e8e8', textAlign: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '16px' }}>
-          <div style={{ width: '28px', height: '28px', background: '#277eff', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/>
-            </svg>
-          </div>
-          <span style={{ fontFamily: '"Outfit", sans-serif', fontWeight: 800, fontSize: '1.2rem' }}>
-            JóvenesSTEM<span style={{ color: '#277eff' }}>®</span>
-          </span>
+        <div className="flex justify-center mb-4">
+          <img src="/jsweb/images/logo.png" alt="JóvenesSTEM Logo" className="h-8 w-auto object-contain" />
         </div>
         <p style={{ color: '#949494', fontSize: '0.875rem' }}>
           © 2026 SIIP Technology. Conectando la próxima generación de líderes STEM. v1.1
