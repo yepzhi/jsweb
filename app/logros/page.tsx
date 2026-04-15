@@ -43,8 +43,8 @@ export default function LogrosPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col items-center text-center animate-fade-in py-8 mb-8 space-y-4">
-        <div className="w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center mb-2">
-          <span className="text-3xl">🏆</span>
+        <div className="w-16 h-16 rounded-2xl bg-accent/20 flex items-center justify-center mb-2 text-[#00a896]">
+          <Trophy className="w-8 h-8" />
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tighter">
           Tus Logros
