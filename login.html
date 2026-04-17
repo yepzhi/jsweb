@@ -82,7 +82,7 @@
   <div class="left-dots"></div>
   <div class="left-orb"></div>
   <div class="left-c">
-    <a href="/jsweb/" class="left-logo">
+    <a href="home.html" class="left-logo">
       <span class="left-logo-text">JóvenesSTEM<em>®</em></span>
     </a>
     <blockquote class="left-quote">"La ciencia no es un destino,<br><strong>es el camino."</strong></blockquote>
@@ -97,7 +97,7 @@
 <!-- Right form -->
 <div class="right">
   <div class="form-wrap">
-    <a href="/jsweb/" class="mob-logo">
+    <a href="home.html" class="mob-logo">
       <span class="mob-logo-text">JóvenesSTEM<em>®</em></span>
     </a>
 
@@ -105,7 +105,7 @@
     <h1 class="f-title">Bienvenido de vuelta</h1>
     <p class="f-sub">Accede a tu universo de aprendizaje STEM.</p>
 
-    <a href="/jsweb/dashboard" class="demo-btn">
+    <a href="dashboard.html" class="demo-btn">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Entrar sin cuenta — Modo Demo
     </a>
@@ -139,7 +139,7 @@
       </button>
     </form>
 
-    <p class="signup">¿No tienes cuenta? <a href="/jsweb/register">Regístrate gratis</a></p>
+    <p class="signup">¿No tienes cuenta? <a href="register.html">Regístrate gratis</a></p>
   </div>
 </div>
 
@@ -148,7 +148,7 @@
   // ── CONFIG — Replace with your real Supabase values ──
   const SUPABASE_URL     = 'YOUR_SUPABASE_URL';
   const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-  const REDIRECT_AFTER_LOGIN = '/jsweb/dashboard';
+  const REDIRECT_AFTER_LOGIN = 'dashboard.html';
 
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const form = document.getElementById('form');
