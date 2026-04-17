@@ -1,8 +1,14 @@
 /**
  * Cloudflare Master Worker — yepzhi.com
  * Routes:
- *   /jsweb*  → Reverse proxy to Vercel (Next.js)
- *   /*       → Pass-through to GitHub Pages with clean URL support
+ *   /jsweb*          → Reverse proxy to Vercel (Next.js dashboard)
+ *   /jovenesstem*    → GitHub Pages (static HTML marketing layer)
+ *   /*               → Pass-through to GitHub Pages with clean URL support
+ *
+ * Architecture (2026-04-17):
+ *   - Marketing pages (homepage, login, register) → static HTML on GitHub Pages
+ *   - Student dashboard (/jsweb) → Next.js on Vercel
+ *   - Cloudflare Worker handles routing, clean URLs, and caching at the edge
  *
  * FIX (2026-04-13): Corrected Host header in proxy to avoid Vercel 404s.
  */
@@ -10,6 +16,7 @@
 const CONFIG = {
   // Projects that support clean URL (extensionless .html)
   cleanUrlProjects: [
+    'jovenesstem', // ← NEW: static HTML marketing layer (login, register, etc.)
     'propass',
     'entrytest',
     'nearly',
@@ -21,7 +28,7 @@ const CONFIG = {
   ],
   // Base origin (GitHub Pages)
   origin: 'https://yepzhi.github.io',
-  // Vercel Proxy — Next.js app
+  // Vercel Proxy — Next.js dashboard app
   vercelBase: 'https://jovenesstem-web.vercel.app',
 };
 
