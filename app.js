@@ -18,11 +18,11 @@ function renderNavbar() {
   const nav = document.createElement('nav');
   nav.className = 'dash-header';
   nav.innerHTML = `
-    <a href="dashboard.html" style="font-weight:900;font-size:1.1rem;color:var(--text-color);">
+    <a href="dashboard" style="font-weight:900;font-size:1.1rem;color:var(--text-color);">
       JóvenesSTEM<span style="color:var(--primary)">®</span>
     </a>
     <div class="flex gap-4 items-center">
-      <a href="modules.html" class="text-sm font-bold text-muted hover-primary">Módulos</a>
+      <a href="modules" class="text-sm font-bold text-muted hover-primary">Módulos</a>
       <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;">A</div>
     </div>
   `;
@@ -46,7 +46,7 @@ async function renderModulesList(containerId) {
 
     ch.modules.forEach(m => {
       const isLocked = m.in_development;
-      const targetUrl = isLocked ? '#' : `tutor.html?id=${m.id}`;
+      const targetUrl = isLocked ? '#' : `tutor?id=${m.id}`;
       const badgeCls = isLocked ? 'badge-dev' : 'badge-active';
       const badgeTxt = isLocked ? 'EN DESARROLLO' : 'DISPONIBLE';
       
