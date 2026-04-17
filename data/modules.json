@@ -13,6 +13,7 @@
           "description": "Del Big Bang a la vida en la Tierra",
           "duration": 18,
           "difficulty": "beginner",
+          "in_development": true,
           "concepts": ["universo", "big bang", "galaxia", "estrella"],
           "content": "El universo nació hace aproximadamente 13.8 mil millones de años en un evento conocido como el Big Bang. En ese momento, toda la materia, energía y el espacio mismo estaban concentrados en un punto infinitesimalmente pequeño y caliente. \n\nInstantes después del Big Bang, el universo comenzó a expandirse a velocidades inimaginables. Los primeros elementos se formaron: hidrógeno y helio principalmente. Estos gases se agruparon bajo la gravedad, formando las primeras galaxias y estrellas.\n\nNuestro sistema solar se formó hace 4.6 mil millones de años. La Tierra se enfriaba lentamente, y hace aproximadamente 3.8 mil millones de años, la vida apareció en los océanos en forma de microbios simples.",
           "keyPoints": [
