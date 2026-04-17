@@ -1,57 +1,59 @@
 /**
  * Cloudflare Master Worker — yepzhi.com
- * Simplified Routing for GitHub Pages (No-Loop Extensionless)
+ * Clean URLs (Extensionless) without redirect loops.
  */
 
-const CONFIG = {
-  origin: 'https://yepzhi.github.io',
-  projects: ['jsweb', 'jovenesstem', 'propass', 'entrytest', 'nearly', 'proassistant', 'visitors', 'sensorapp', 'lot', 'neosys'],
-};
+const cleanUrlProjects = [
+  'jsweb', 'jovenesstem', 'propass', 'entrytest', 'nearly', 
+  'proassistant', 'visitors', 'sensorapp', 'lot', 'neosys'
+];
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // 1. Static Asset Pass-through (extension detection)
-    const lastSegment = path.split('/').pop() || '';
-    if (lastSegment.includes('.') && !path.endsWith('.html')) {
-      return fetch(new Request(new URL(path, CONFIG.origin).toString(), request));
+    // 1. Force Clean URLs in the browser (if someone types .html)
+    // We only redirect if it's the original request to avoid breaking our own internal fetches
+    if (path.endsWith('.html') && request.headers.get('cf-worker') !== 'internal') {
+      const cleanPath = path.replace(/\.html$/, '').replace(/\/index$/, '/');
+      return Response.redirect(`${url.origin}${cleanPath}${url.search}`, 301);
     }
 
     // 2. Handle Directory Roots (Add trailing slash redirect)
-    for (const p of CONFIG.projects) {
+    // E.g., /jsweb -> /jsweb/
+    for (const p of cleanUrlProjects) {
       if (path === `/${p}`) {
         return Response.redirect(`${url.origin}/${p}/`, 301);
       }
     }
 
-    // 3. Main Routing Logic
-    // Try fetching the path as-is, then try .html if needed.
-    let targetPath = path;
-    
-    // index.html mapping
-    if (path.endsWith('/')) {
-      targetPath += 'index.html';
+    // 3. Static Asset Pass-through
+    // Don't modify paths that already look like files (except .html which we handle below)
+    const lastSegment = path.split('/').pop() || '';
+    if (lastSegment.includes('.') && !path.endsWith('.html')) {
+      return fetch(request);
     }
 
-    let response = await fetch(new Request(new URL(targetPath, CONFIG.origin).toString(), request));
+    // 4. Default Pass-through (Try original path first)
+    // If it's a directory like /jsweb/, Cloudflare+GitHub natively serves index.html
+    const response = await fetch(request);
 
-    // 4. Extensionless fallback
-    // If we get a 404 and there's no extension, try suffixing .html
-    if (response.status === 404 && !targetPath.includes('.')) {
-      const htmlUrl = new URL(targetPath + '.html', CONFIG.origin);
-      const htmlResponse = await fetch(new Request(htmlUrl.toString(), request));
+    // 5. Clean URL Logic (Internal Fallback)
+    // If 404 and we haven't already added .html, try fetching with .html internally
+    if (response.status === 404 && !path.endsWith('/') && !lastSegment.includes('.')) {
+      const htmlUrl = new URL(path + '.html', url.origin);
+      
+      // We add a custom header so we don't accidentally trigger the .html redirect in Step 1
+      const internalRequest = new Request(htmlUrl.toString(), request);
+      internalRequest.headers.set('cf-worker', 'internal');
+
+      const htmlResponse = await fetch(internalRequest);
+      
+      // If we find the HTML file, return it but keep the clean URL visible
       if (htmlResponse.ok) {
-        return htmlResponse;
+        return new Response(htmlResponse.body, htmlResponse);
       }
-    }
-
-    // 5. Force Clean URL Redirect (Optional but recommended)
-    // If the user manually types .html, redirect to clean URL to hide it.
-    if (path.endsWith('.html')) {
-      const cleanPath = path.replace(/\.html$/, '').replace(/\/index$/, '/');
-      return Response.redirect(`${url.origin}${cleanPath}${url.search}`, 301);
     }
 
     return response;
