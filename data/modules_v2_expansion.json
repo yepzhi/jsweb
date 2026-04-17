@@ -1,0 +1,108 @@
+{
+  "ch2_addons": [
+    {
+      "id": "2.77",
+      "sectionTitle": "X. Física Experimental V2",
+      "title": "Deuterio: El Fuego Estelar",
+      "duration": 5,
+      "content": "Un isótopo pesado del hidrógeno que abunda en los océanos. Es el combustible prometido para la fusión nuclear controlada: recrear el sol en la tierra.",
+      "keyPoints": ["Deuterio", "Fusión Nuclear", "Isótopo"],
+      "alignmentFooter": "NGSS: HS-PS1-8 | RENAC: ET003 Energía",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "2.78",
+      "title": "Circuitos LC: Ondas Vivas",
+      "duration": 5,
+      "content": "Un circuito resonante que combina un inductor (L) y un capacitor (C). Oscilan energía entre el magnetismo y la electricidad, sintonizando todas las señales de radio.",
+      "keyPoints": ["Circuito LC", "Resonancia", "Electromagnetismo"],
+      "alignmentFooter": "NGSS: HS-PS4-5 | RENAC: ET003 Hardware",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "2.79",
+      "title": "MetaLenses: Óptica Plana",
+      "duration": 5,
+      "content": "Lentes microscópicas y ultra-delgadas hechas de nanopilares de dióxido de titanio. Prometen eliminar los bultos gruesos de las cámaras de los celulares.",
+      "keyPoints": ["MetaLens", "Óptica Plana", "Nanotecnología"],
+      "alignmentFooter": "NGSS: HS-PS4-1 | RENAC: ET003 Óptica Avanzada",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "2.80",
+      "title": "Magnetic Cooling",
+      "duration": 5,
+      "content": "Usa campos magnéticos en vez de gases tóxicos. Al magnetizar ciertos metales, se calientan; al desmagnetizarlos, congelan su entorno mágicamente.",
+      "keyPoints": ["Termodinámica", "Magnetismo", "Sostenibilidad"],
+      "alignmentFooter": "NGSS: HS-PS3-3 | RENAC: ET003 Termodinámica",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "2.81",
+      "sectionTitle": "XI. Supremacía de Datos y Computación",
+      "title": "QBits: El Reinado de la Incertidumbre",
+      "duration": 5,
+      "content": "A diferencia del bit (0 o 1), el QBit puede ser ambos simultáneamente gracias a la superposición cuántica. Computadoras de 100 Qbits ya existen.",
+      "keyPoints": ["QBits", "Computación Cuántica", "Superposición"],
+      "alignmentFooter": "NGSS: HS-PS4-5 | RENAC: ET003 Cuántica",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "2.82",
+      "title": "SHA-256 vs Hardware Cuántico",
+      "duration": 5,
+      "content": "El cifrado inquebrantable de Bitcoin. Toma millones de años para una PC normal descifrarlo, pero una computadora cuántica gigante podría romperlo en minutos.",
+      "keyPoints": ["SHA-256", "Criptografía", "Amenaza Cuántica"],
+      "alignmentFooter": "NGSS: HS-PS4-5 | RENAC: ET003 Ciberseguridad",
+      "bookReference": "Bluebook v2.md"
+    }
+  ],
+  "ch3_addons": [
+    {
+      "id": "3.97",
+      "sectionTitle": "XVII. Los Pioneros de la Computación",
+      "title": "Babbage y la Máquina",
+      "duration": 5,
+      "content": "Charles Babbage diseñó la 'Máquina Analítica' en los 1800s. Un leviatán mecánico de engranes impulsado por vapor, considerado el primer diseño de una computadora.",
+      "keyPoints": ["Babbage", "Hardware Mecánico", "Vapor"],
+      "alignmentFooter": "NGSS: HS-ETS1-3 | RENAC: ET003 Historia",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "3.98",
+      "title": "Ada Lovelace: La Primera Coder",
+      "duration": 5,
+      "content": "Mientras Babbage veía engranes matemáticos, Lovelace vio notas musicales y arte. Creó el primer algoritmo de la historia en tarjetas perforadas.",
+      "keyPoints": ["Ada Lovelace", "Algoritmos", "Tarjetas Perforadas"],
+      "alignmentFooter": "NGSS: HS-ETS1-3 | RENAC: ET003 Pioneras",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "3.99",
+      "title": "Alan Turing y Enigma",
+      "duration": 5,
+      "content": "Padre de la computación moderna y táctico de la Segunda Guerra Mundial. Creó la máquina que descifraba los códigos nazis y las bases teóricas de la Inteligencia Artificial.",
+      "keyPoints": ["Alan Turing", "Inteligencia Artificial", "Criptoanálisis"],
+      "alignmentFooter": "NGSS: HS-ETS1-1 | RENAC: ET003 Computación",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "3.100",
+      "title": "Grace Hopper y el Primer 'Bug'",
+      "duration": 5,
+      "content": "Contraalmirante naval y matemática. Encontró una polilla literal atorada en un relevador, inventando el término 'Bug'. Pionera del lenguaje COBOL y los compiladores.",
+      "keyPoints": ["Grace Hopper", "Bug", "COBOL", "Compiladores"],
+      "alignmentFooter": "NGSS: HS-ETS1-3 | RENAC: ET003 Ingeniería de Código",
+      "bookReference": "Bluebook v2.md"
+    },
+    {
+      "id": "3.101",
+      "title": "Margaret Hamilton y Apollo 11",
+      "duration": 5,
+      "content": "Directora de código del MIT. Su software fue tan robusto que corrigió un error humano crítico minutos antes del alunizaje, salvando físicamente a Neil Armstrong y Buzz Aldrin.",
+      "keyPoints": ["Apollo 11", "Margaret Hamilton", "Robustez de Código"],
+      "alignmentFooter": "NGSS: HS-ETS1-4 | RENAC: ET003 Sistemas Críticos",
+      "bookReference": "Bluebook v2.md"
+    }
+  ]
+}

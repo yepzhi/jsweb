@@ -15,21 +15,25 @@
     
     <!-- Hero / Welcome -->
     <div class="text-center mb-8 fade-in">
-      <h1 class="text-4xl font-head font-black tracking-tight mb-2">¡Hola, Estudiante!</h1>
+      <h1 class="text-4xl font-head font-black tracking-tight mb-2">¡Hola, <span id="dash-user-name">Estudiante</span>!</h1>
       <p class="text-muted">Listo para continuar tu viaje por el universo STEM.</p>
     </div>
 
     <!-- Active Module Hero -->
-    <div class="card fade-in" style="animation-delay: 0.1s; background: rgba(39, 126, 255, 0.05); border-color: rgba(39, 126, 255, 0.2); text-align: center; max-width: 800px; margin: 0 auto 30px;">
-      <span class="badge" style="background:#fff; color:var(--primary); border:1px solid rgba(39,126,255,0.2); margin-bottom:15px;">CAPÍTULO 1</span>
-      <h2 class="text-3xl font-head font-black mb-4">La Luz y el Espectro EM</h2>
-      <a href="tutor.html?id=module-1-2" class="btn-primary mt-4" style="font-size:1.1rem; padding: 14px 32px; box-shadow: 0 10px 30px rgba(39,126,255,0.2);">Continuar Módulo →</a>
+    <div id="active-module-hero" class="card fade-in" style="animation-delay: 0.1s; background: rgba(39, 126, 255, 0.05); border-color: rgba(39, 126, 255, 0.2); text-align: center; max-width: 800px; margin: 0 auto 30px; display:none;">
+      <span class="badge" style="background:#fff; color:var(--primary); border:1px solid rgba(39,126,255,0.2); margin-bottom:15px;">CONTINUAR APRENDIZAJE</span>
+      <h2 id="hero-module-title" class="text-3xl font-head font-black mb-4">...</h2>
+      <a id="hero-module-link" href="#" class="btn-primary mt-4" style="font-size:1.1rem; padding: 14px 32px; box-shadow: 0 10px 30px rgba(39,126,255,0.2);">Continuar Módulo →</a>
     </div>
 
     <!-- Playlist Link -->
     <a href="modules.html" class="card display-block fade-in flex justify-between items-center" style="animation-delay: 0.2s; max-width: 800px; margin: 0 auto; text-decoration: none; color: inherit;">
       <div class="flex items-center gap-4">
-        <div style="font-size: 32px;">📚</div>
+        <div style="color:var(--primary);">
+          <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+          </svg>
+        </div>
         <div>
           <h3 class="font-head font-bold text-xl">Explorar todos los Capítulos</h3>
           <p class="text-sm text-muted">Mira el progreso de tus módulos y descubre nuevos temas.</p>

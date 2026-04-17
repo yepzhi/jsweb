@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil — JóvenesSTEM®</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f8fafc; }
+    .profile-card {
+      animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <div class="profile-wrap profile-card">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-head font-black">Mi Perfil Estudiantil</h1>
+        <p class="text-muted text-sm">Personaliza tu identidad en el universo STEM</p>
+      </div>
+
+      <div class="profile-avatar-sec">
+        <img id="avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" class="profile-avatar-preview">
+        <label for="avatar-upload" class="edit-p-btn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </label>
+        <input type="file" id="avatar-upload" hidden accept="image/*">
+      </div>
+
+      <form id="profile-form" class="flex flex-col gap-6">
+        <div class="fg">
+          <label class="text-xs font-bold text-muted mb-2 block uppercase tracking-wider">Nombre Completo</label>
+          <input type="text" id="user-name" class="input-text" placeholder="Tu nombre" value="Estudiante STEM">
+        </div>
+
+        <div class="fg">
+          <label class="text-xs font-bold text-muted mb-2 block uppercase tracking-wider">Biografía / Intereses</label>
+          <textarea id="user-bio" class="input-text" rows="3" placeholder="Cuéntanos qué te apasiona..."></textarea>
+        </div>
+
+        <div class="flex gap-4 mt-4">
+          <button type="submit" class="btn-primary" style="flex:1">Guardar Cambios</button>
+          <a href="dashboard.html" class="btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    // Local Profile Logic
+    const avatarImg = document.getElementById('avatar-img');
+    const avatarInput = document.getElementById('avatar-upload');
+    const nameInput = document.getElementById('user-name');
+    const bioInput = document.getElementById('user-bio');
+    const form = document.getElementById('profile-form');
+
+    // Load initial data
+    const savedProfile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+    if (savedProfile.name) nameInput.value = savedProfile.name;
+    if (savedProfile.bio) bioInput.value = savedProfile.bio;
+    if (savedProfile.avatar) avatarImg.src = savedProfile.avatar;
+
+    avatarInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (re) => {
+          avatarImg.src = re.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = {
+        name: nameInput.value,
+        bio: bioInput.value,
+        avatar: avatarImg.src
+      };
+      localStorage.setItem('jstem_profile', JSON.stringify(data));
+      alert('¡Perfil actualizado con éxito!');
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

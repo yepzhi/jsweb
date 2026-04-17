@@ -933,7 +933,7 @@
 
   <!-- ── NAV ── -->
   <nav>
-    <a href="/jsweb/" class="logo">
+    <a href="home.html" class="logo">
       <span class="logo-text">JóvenesSTEM<em>®</em></span>
     </a>
 
@@ -949,7 +949,7 @@
         <div class="dd-panel">
           <div class="dd-section">
             <div class="dd-label">Recursos</div>
-            <a href="https://yepzhi.com/jovenesstem" target="_blank" class="dd-item">
+            <a href="https://yepzhi.com/jovenesstemData" target="_blank" class="dd-item">
               <div class="dd-icon">📊</div>
               <div>
                 <div class="dd-item-title">Analytics Data</div>
@@ -987,8 +987,8 @@
       <a href="#pricing">Precios</a>
     </div>
 
-    <a href="/jsweb/login" class="btn btn-primary btn-sm nav-cta-mobile">Entrar</a>
-    <a href="/jsweb/login" class="btn btn-primary btn-sm nav-cta-desk">Ingresar</a>
+    <a href="login.html" class="btn btn-primary btn-sm nav-cta-mobile">Entrar</a>
+    <a href="login.html" class="btn btn-primary btn-sm nav-cta-desk">Ingresar</a>
   </nav>
 
 
@@ -1024,7 +1024,7 @@
 
       <div class="hero-actions">
         <a href="https://yepzhi.com/entrytest" class="btn btn-primary btn-lg">
-          Iniciar Diagnóstico STEM
+          ¡CONVIÉRTETE EN UN JOVENSTEM!
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -1141,24 +1141,43 @@
           </div>
         </div>
 
-        <div class="stats-2">
+        <div class="stats-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <div class="stat-card">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
               style="color:var(--primary)" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              <polyline points="17 6 23 6 23 12" />
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
             </svg>
-            <div class="stat-num">2M</div>
-            <div class="stat-label">Vacantes STEM proyectadas</div>
+            <div class="stat-num">557</div>
+            <div class="stat-label">Estándares STEM Integrados</div>
           </div>
           <div class="stat-card">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
               style="color:var(--teal)" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
             </svg>
-            <div class="stat-num">$101K</div>
-            <div class="stat-label">Salario promedio STEM</div>
+            <div class="stat-num">50 HRS</div>
+            <div class="stat-label">De Aprendizaje Profundo</div>
+          </div>
+          <div class="stat-card">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              style="color:var(--primary)" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+            <div class="stat-num">213</div>
+            <div class="stat-label">Módulos JóvenesSTEM</div>
+          </div>
+          <div class="stat-card">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              style="color:var(--warning)" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            <div class="stat-num">2M+</div>
+            <div class="stat-label">Vacantes Proyectadas</div>
           </div>
         </div>
       </div>
@@ -1181,78 +1200,72 @@
       <div class="sec-head reveal">
         <span class="eyebrow">Planes e Inversión</span>
         <h2 class="sec-title">Inversión <span class="g">Accesible</span></h2>
-        <p class="sec-sub">La educación científica no debería ser un privilegio. Planes alineados a estándares <strong
-            style="color:var(--primary)">NGSS</strong> y <strong style="color:var(--primary)">RENAC</strong>.</p>
+        <p class="sec-sub">La educación científica no debería ser un privilegio. Planes alineados a estándares <strong style="color:var(--primary)">NGSS</strong> y <strong style="color:var(--primary)">RENAC</strong>.</p>
       </div>
 
-      <div class="price-grid reveal d1">
-        <!-- Públicas -->
-        <div class="price-card">
-          <span class="price-badge pb-normal">Públicas</span>
-          <div class="price-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
+      <div class="price-grid reveal d1" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); max-width: 1040px; margin: 0 auto;">
+
+        <!-- Demo Access -->
+        <div class="price-card" style="border: 2px dashed var(--border); background: linear-gradient(135deg, #f8faff 0%, #fff 100%);">
+          <span class="price-badge pb-normal" style="background:#f0f4ff; color:var(--primary);">Demo Gratuito</span>
+          <div class="price-icon" style="color: var(--primary);">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
           </div>
-          <h3 class="price-title">Escuelas Públicas</h3>
-          <div class="price-amount">$0 <span class="price-unit">MXN / alum</span></div>
+          <h3 class="price-title">Demo Access</h3>
+          <div class="price-amount" style="font-size:1.6rem;">Gratis</div>
+          <p style="font-size:0.82rem; color:var(--fg-muted,#888); margin-bottom:1rem; line-height:1.5;">Conoce el programa sin registrarte. Explora módulos, el Tutor AI y la experiencia completa.</p>
           <ul class="price-feats">
-            <li><span class="chk">✓</span> Licencia completa</li>
-            <li><span class="chk">✓</span> BlueBook v1 digital</li>
-            <li><span class="chk">✓</span> Manual Docente</li>
-            <li><span class="chk">✓</span> Certificación Oficial</li>
+            <li><span class="chk">✓</span> Acceso inmediato sin cuenta</li>
+            <li><span class="chk">✓</span> Módulos de muestra</li>
+            <li><span class="chk">✓</span> STEMBot demo</li>
+            <li><span class="chk" style="opacity:0.35;">✗</span> <span style="opacity:0.45;">Sin certificación</span></li>
           </ul>
-          <a href="#contacto" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px;">Solicitar
-            Plan</a>
+          <a href="modules.html" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px; border-color: var(--primary); color: var(--primary);">⚡ Accede Ahora</a>
         </div>
 
-        <!-- Fast Track -->
+        <!-- Por Módulo -->
+        <div class="price-card">
+          <span class="price-badge pb-normal">Por Módulo</span>
+          <div class="price-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <h3 class="price-title">Módulo Individual</h3>
+          <div class="price-amount">MX$19 <span class="price-unit">/ módulo</span></div>
+          <ul class="price-feats">
+            <li><span class="chk">✓</span> Acceso a 1 módulo completo</li>
+            <li><span class="chk">✓</span> Lectura + Tutor AI</li>
+            <li><span class="chk">✓</span> Evaluación STEMBot</li>
+            <li><span class="chk">✓</span> Sin suscripción</li>
+          </ul>
+          <a href="modules.html" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px;">Explorar Módulos</a>
+        </div>
+
+        <!-- Acceso Total -->
         <div class="price-card hot">
-          <span class="price-badge pb-hot">Popular</span>
+          <span class="price-badge pb-hot">Recomendado</span>
           <div class="price-icon">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
           </div>
-          <h3 class="price-title">Fast Track</h3>
-          <div class="price-amount">$19 <span class="price-unit">MXN / alum</span></div>
+          <h3 class="price-title">Acceso Total + Certificado</h3>
+          <div class="price-amount">MX$49 <span class="price-unit">/ alumno</span></div>
           <ul class="price-feats">
-            <li><span class="chk">✓</span> 20 Horas Intensivas</li>
-            <li><span class="chk">✓</span> BlueBook v1 Físico</li>
-            <li><span class="chk">✓</span> Asesoría Directa</li>
-            <li><span class="chk">✓</span> Certificación RENAC</li>
+            <li><span class="chk">✓</span> Todos los módulos desbloqueados</li>
+            <li><span class="chk">✓</span> BlueBook v1 digital completo</li>
+            <li><span class="chk">✓</span> Tutor AI ilimitado</li>
+            <li><span class="chk">✓</span> Certificación JóvenesSTEM</li>
           </ul>
-          <a href="#contacto" class="btn btn-primary" style="width:100%;border-radius:14px;padding:14px;">Agenda
-            Demo</a>
+          <a href="#contacto" class="btn btn-primary" style="width:100%;border-radius:14px;padding:14px;">Obtener Acceso Total</a>
         </div>
 
-        <!-- Curricular -->
-        <div class="price-card">
-          <span class="price-badge pb-normal">90 Horas</span>
-          <div class="price-icon pi-teal">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-              <path d="M6 12v5c3 3 9 3 12 0v-5" />
-            </svg>
-          </div>
-          <h3 class="price-title">Curricular</h3>
-          <div class="price-amount">$39 <span class="price-unit">MXN / alum</span></div>
-          <ul class="price-feats">
-            <li><span class="chk">✓</span> Plan Educativo Anual</li>
-            <li><span class="chk">✓</span> BlueBook v1 Completo</li>
-            <li><span class="chk">✓</span> Formación Docente</li>
-            <li><span class="chk">✓</span> Certificación Int.</li>
-          </ul>
-          <a href="#contacto" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px;">Explorar
-            Más</a>
-        </div>
       </div>
-      <p style="text-align:center;margin-top:28px;color:var(--fg-muted);font-size:.75rem;opacity:.6;">* No incluye costo
-        de material impreso (~$70 MXN)</p>
+      <p style="text-align:center;margin-top:28px;color:var(--fg-muted);font-size:.75rem;opacity:.6;">* Certificación alineada a estándares NGSS y RENAC / SEP-CONOCER EC009</p>
     </div>
   </section>
 
@@ -1267,7 +1280,7 @@
         </h2>
         <p class="portal-sub">Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo
           con una interfaz inteligente.</p>
-        <a href="/jsweb/login" class="btn btn-primary btn-md">
+        <a href="login.html" class="btn btn-primary btn-md">
           Ir al Portal Personalizado
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -1286,7 +1299,7 @@
         </div>
         <h3 class="pc-title">Pruébalo ahora</h3>
         <p class="pc-sub">Entra sin registrarte — explora el dashboard y el universo STEM.</p>
-        <a href="/jsweb/dashboard" class="demo-link">Modo Demo</a>
+        <a href="dashboard.html" class="demo-link">Modo Demo</a>
       </div>
     </div>
   </section>
