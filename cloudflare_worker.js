@@ -1,81 +1,59 @@
 /**
  * Cloudflare Master Worker — yepzhi.com
- * Routes everything to GitHub Pages with FORCED Clean URL support.
+ * Simplified Routing for GitHub Pages (No-Loop Extensionless)
  */
 
 const CONFIG = {
-  cleanUrlProjects: [
-    'jsweb',
-    'jovenesstem',
-    'propass',
-    'entrytest',
-    'nearly',
-    'proassistant',
-    'visitors',
-    'sensorapp',
-    'lot',
-    'neosys',
-  ],
   origin: 'https://yepzhi.github.io',
+  projects: ['jsweb', 'jovenesstem', 'propass', 'entrytest', 'nearly', 'proassistant', 'visitors', 'sensorapp', 'lot', 'neosys'],
 };
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    let path = url.pathname;
+    const path = url.pathname;
 
-    // ── 1. Force Clean URL Redirect ──────────────────────────────────────────
-    if (path.endsWith('.html')) {
-      let cleanPath = path.replace(/\.html$/, '');
-      
-      // Special case: /jsweb/index.html -> /jsweb/
-      if (cleanPath.endsWith('/index')) {
-        cleanPath = cleanPath.replace(/\/index$/, '/');
+    // 1. Static Asset Pass-through (extension detection)
+    const lastSegment = path.split('/').pop() || '';
+    if (lastSegment.includes('.') && !path.endsWith('.html')) {
+      return fetch(new Request(new URL(path, CONFIG.origin).toString(), request));
+    }
+
+    // 2. Handle Directory Roots (Add trailing slash redirect)
+    for (const p of CONFIG.projects) {
+      if (path === `/${p}`) {
+        return Response.redirect(`${url.origin}/${p}/`, 301);
       }
-      
+    }
+
+    // 3. Main Routing Logic
+    // Try fetching the path as-is, then try .html if needed.
+    let targetPath = path;
+    
+    // index.html mapping
+    if (path.endsWith('/')) {
+      targetPath += 'index.html';
+    }
+
+    let response = await fetch(new Request(new URL(targetPath, CONFIG.origin).toString(), request));
+
+    // 4. Extensionless fallback
+    // If we get a 404 and there's no extension, try suffixing .html
+    if (response.status === 404 && !targetPath.includes('.')) {
+      const htmlUrl = new URL(targetPath + '.html', CONFIG.origin);
+      const htmlResponse = await fetch(new Request(htmlUrl.toString(), request));
+      if (htmlResponse.ok) {
+        return htmlResponse;
+      }
+    }
+
+    // 5. Force Clean URL Redirect (Optional but recommended)
+    // If the user manually types .html, redirect to clean URL to hide it.
+    if (path.endsWith('.html')) {
+      const cleanPath = path.replace(/\.html$/, '').replace(/\/index$/, '/');
       return Response.redirect(`${url.origin}${cleanPath}${url.search}`, 301);
     }
 
-    // ── 2. Strip /index from any accidental direct linking ──────────────────
-    if (path.endsWith('/index')) {
-      return Response.redirect(`${url.origin}${path.replace(/\/index$/, '/')}${url.search}`, 301);
-    }
-
-    // ── 3. Pass static assets through immediately (.js, .css, .json, .png, etc.)
-    const lastSegment = path.split('/').pop() || '';
-    if (lastSegment.includes('.')) {
-      return fetch(request);
-    }
-
-    // ── 4. Map /jsweb/ to /jsweb/index.html internally
-    if (path === '/jsweb' || path === '/jsweb/') {
-      const targetUrl = new URL('/jsweb/index.html', CONFIG.origin);
-      return fetch(new Request(targetUrl.toString(), request));
-    }
-
-    // ── 5. Handle project roots — add trailing slash for consistency
-    for (const project of CONFIG.cleanUrlProjects) {
-      if (path === `/${project}`) {
-        return Response.redirect(`${url.origin}/${project}/`, 301);
-      }
-    }
-
-    // ── 6. Clean URL Logic (Internal Mapping) ───────────────────────────────
-    if (path !== '/' && !path.endsWith('/')) {
-      const gitHubUrl = new URL(path + '.html', CONFIG.origin);
-      const response = await fetch(gitHubUrl.toString(), {
-        method: request.method,
-        headers: request.headers,
-        redirect: 'manual',
-      });
-
-      if (response.status === 200) {
-        return new Response(response.body, response);
-      }
-    }
-
-    // ── 7. Default pass-through to GitHub Pages
-    const finalUrl = new URL(path, CONFIG.origin);
-    return fetch(new Request(finalUrl.toString(), request));
+    return response;
   },
 };
