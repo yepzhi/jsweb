@@ -1,31 +1,44 @@
-# JóvenesSTEM - Spec Development  (v1.2)
+# Technical Specifications: JóvenesSTEM Platform
+**Version:** v4.2.0 (Vanilla / Edge Architecture)  
+**Author:** Alberto Yépiz  
+**Date:** April 2026  
 
-##  Visión General
-Esta plataforma está diseñada para ofrecer un ecosistema STEM dinámico, seguro y escalable, utilizando un stack moderno enfocado en Server-Side Rendering (SSR), UI reactiva y componentes nativos construidos con utilidades Tailwind.
+## 1. Executive Summary
+JóvenesSTEM is an educational platform designed to provide a diagnostic and Socratic tutoring experience for Mexican youth (6-18 years old), aligned with NGSS and RENAC EC009 standards. Following the v4.2.0 pivot, the platform discards heavy compilation frameworks in favor of a pure, stateless Vanilla architecture for maximum performance and explicit developer control.
 
-##  Stack Tecnológico Completo
+## 2. Technology Stack & Rationale
+The platform operates entirely at the edge without a Node.js runtime.
+- **Frontend Core:** Vanilla HTML5, CSS3, ES6 JavaScript.
+- **Styling:** In-house "Vanilla Design System" built directly into `styles.css`. Electric Blue (`#277eff`) acts as the primary accent. Component styles (like glassmorphism) are hardcoded for zero-build-time latency.
+- **Authentication & Database (Future MVP):** Firebase (Auth + Firestore). This offers immediate real-time synching without the overhead of Postgres setup.
+- **Edge Routing & Proxy:** Cloudflare Pages & Cloudflare Worker (`cloudflare_worker.js`). Handles extensionless URLs (dropping `.html`) and routing rules.
+- **AI Integration. (StemBot):** Google Gemini (3 Flash / Pro) accessed via REST `fetch()` calls from the client-side (`tutor.js`), or eventually proxied through a Cloudflare Worker for edge-level security.
 
-| Tecnología / Herramienta | Propósito en el Proyecto |
-| :--- | :--- |
-| **Next.js 14/15 (App Router)** | Framework React principal. Provee ruteo, renderizado híbrido y protege la API de Gemini usando endpoints del lado del servidor. |
-| **React 19** | Motor de renderizado UI y gestión del estado (hooks como `useState`, `useEffect`, `useRef`). |
-| **Tailwind CSS v4** | Motor central de diseño estético. Sustituye al CSS "vainilla" (CSS puro), promoviendo la consistencia global mediante clases utilitarias (`className="..."`). |
-| **Google Gemini AI** | Tutor conversacional (Large Language Model) que procesa lenguaje natural para guiar a los estudiantes en temas STEM. |
-| **Supabase** | Base de datos PostgreSQL y Auth (listo para reemplazar Firebase para una arquitectura más relacional). |
-| **TypeScript** | Añade tipado estático al código previniendo errores de compilación y asegurando contratos estrictos entre los módulos STEM. |
-| **Lucide React** | Conjunto de iconos vectoriales ultraligeros. Evitan el "layout shift" de herramientas como Iconify. |
-| **Vercel** | Infraestructura de alojamiento en la Nube (CI/CD nativo, Edge Networks, Functions serverless). |
-| **Cloudflare Worker** | Maneja el proxy reverso del enrutamiento de la URL limpia en el dominio principal de la estructura histórica. |
+## 3. Directory Structure
+```
+/
+├── .github/          # GitHub Actions (if any)
+├── cloudflare_worker.js # Edge Routing Rules
+├── firebase-config.js   # Firebase environment setup
+├── app.js               # Global UI logic and Data loading
+├── styles.css           # Global Design System
+├── tutor.js             # StemBot Engine (Gemini API & Web Speech)
+├── data/
+│   └── modules.json     # Content source of truth for the 3 Chapters
+├── images/              # Assets
+└── *.html               # Main Views (dashboard, modules, tutor, home)
+```
 
-##  Decisiones Arquitectónicas Recientes
-1. **Root Configuration:** La aplicación Node/Next.js se ha migrado a la raíz absoluta del repositorio (`/Users/yepz/JSweb`) para encajar nativamente con los despliegues automáticos de Vercel (eliminando subcarpetas innecesarias).
-2. **Estilo "Tailwind-Native" (v1.2):** Se han purgado los estilos `style={{...}}` embebidos en el código React. Se utiliza un 100% las utilidades nativas de Tailwind CSS asegurando diseño responsivo predictivo y un código inmensamente más limpio.
-3. **Eje Rector:** Implementación global del *Light Theme* (Blanco `#ffffff` y Azul Eléctrico `#277eff`).
+## 4. Key Modules & Features (MVP)
+### 4.1. Modules Playlist (`modules.html`)
+- Parses `data/modules.json` to organize 7 available modules across 3 chapters.
+- Uses `"in_development": true` configuration to gate access and visually lock future content.
 
-##  Flujo de Despliegue (Deploy)
-1. Escribir código -> Reemplazar CSS legacy con Tailwind.
-2. `npm run build` localizado en root.
-3. Commit Git (`git add . && git commit ...`) -> Push a Vercel CI.
+### 4.2. StemBot Socratic Tutor (`tutor.html` & `tutor.js`)
+- **Speech UI:** Integrates `window.SpeechRecognition` and `window.speechSynthesis` natively.
+- **Socratic Engine:** Instructs the Gemini model to *never* give direct answers but use leading questions.
+- **Inferential Grading:** Includes strict logic where the bot evaluates student understanding. Once it calculates >80% mastery, the LLM emits a hidden `[APTO_PARA_AVANZAR]` tag which the client intercepts to unlock the next module.
 
----
-*Documento generado mecánicamente para el control de ingeniería. Versión 1.2.*
+## 5. Deployment Strategy
+- Local Development: Direct file access, VS Code Live Server, or `python -m http.server 8000`.
+- Production: Push to `main` -> GitHub Pages -> Cloudflare Edge Proxy handles cache and custom domains (`yepzhi.com`).

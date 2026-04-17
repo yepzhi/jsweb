@@ -21,9 +21,9 @@
     .left-dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(39,126,255,.15) 1px,transparent 0);background-size:32px 32px;}
     .left-orb{position:absolute;top:33%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(39,126,255,.22) 0%,transparent 70%);pointer-events:none;}
     .left-c{position:relative;z-index:1;}
-    .left-logo{display:flex;align-items:center;gap:12px;margin-bottom:64px;text-decoration:none;color:#fff;}
-    .left-logo-icon{width:36px;height:36px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
-    .left-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;}
+    .left-logo{display:flex;align-items:center;text-decoration:none;color:#fff;margin-bottom:64px;transition:opacity var(--t);}
+    .left-logo:hover{opacity:0.8;}
+    .left-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.03em;}
     .left-logo-text em{font-style:normal;color:var(--primary);}
     .left-quote{font-family:'Outfit',sans-serif;font-weight:300;font-size:2rem;color:rgba(255,255,255,.9);line-height:1.35;letter-spacing:-.02em;margin-bottom:40px;}
     .left-quote strong{font-weight:800;color:#fff;}
@@ -36,9 +36,9 @@
     .form-wrap{width:100%;max-width:360px;animation:fi .6s cubic-bezier(.25,.46,.45,.94) both;}
     @keyframes fi{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
-    .mob-logo{display:flex;align-items:center;gap:8px;margin-bottom:40px;text-decoration:none;color:var(--fg);}
-    .mob-logo-icon{width:28px;height:28px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
-    .mob-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.02em;}
+    .mob-logo{display:flex;align-items:center;margin-bottom:40px;text-decoration:none;color:var(--fg);transition:opacity var(--t);}
+    .mob-logo:hover{opacity:0.8;}
+    .mob-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.03em;}
     .mob-logo-text em{font-style:normal;color:var(--primary);}
     @media(min-width:1024px){.mob-logo{display:none;}}
 
@@ -83,9 +83,6 @@
   <div class="left-orb"></div>
   <div class="left-c">
     <a href="/jsweb/" class="left-logo">
-      <div class="left-logo-icon">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></svg>
-      </div>
       <span class="left-logo-text">JóvenesSTEM<em>®</em></span>
     </a>
     <blockquote class="left-quote">"La ciencia no es un destino,<br><strong>es el camino."</strong></blockquote>
@@ -101,9 +98,6 @@
 <div class="right">
   <div class="form-wrap">
     <a href="/jsweb/" class="mob-logo">
-      <div class="mob-logo-icon">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></svg>
-      </div>
       <span class="mob-logo-text">JóvenesSTEM<em>®</em></span>
     </a>
 
