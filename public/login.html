@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión — JóvenesSTEM®</title>
+  <meta name="description" content="Accede a tu Portal del Estudiante JóvenesSTEM.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--primary:#277eff;--p10:rgba(39,126,255,.10);--p20:rgba(39,126,255,.20);--fg:#0a0a0a;--muted:#949494;--border:rgba(0,0,0,.10);--r:16px;--t:.22s cubic-bezier(.25,.46,.45,.94);}
+    html{height:100%;}
+    body{font-family:'Inter',sans-serif;min-height:100vh;display:flex;background:#fff;color:var(--fg);-webkit-font-smoothing:antialiased;}
+
+    /* Left panel */
+    .left{display:none;width:50%;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:64px;background:linear-gradient(145deg,#050510 0%,#0d1240 100%);position:relative;overflow:hidden;}
+    @media(min-width:1024px){.left{display:flex;}}
+    .left-dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 1px 1px,rgba(39,126,255,.15) 1px,transparent 0);background-size:32px 32px;}
+    .left-orb{position:absolute;top:33%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(39,126,255,.22) 0%,transparent 70%);pointer-events:none;}
+    .left-c{position:relative;z-index:1;}
+    .left-logo{display:flex;align-items:center;gap:12px;margin-bottom:64px;text-decoration:none;color:#fff;}
+    .left-logo-icon{width:36px;height:36px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+    .left-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;}
+    .left-logo-text em{font-style:normal;color:var(--primary);}
+    .left-quote{font-family:'Outfit',sans-serif;font-weight:300;font-size:2rem;color:rgba(255,255,255,.9);line-height:1.35;letter-spacing:-.02em;margin-bottom:40px;}
+    .left-quote strong{font-weight:800;color:#fff;}
+    .left-badges{display:flex;gap:32px;}
+    .lb-label{font-family:'Outfit',sans-serif;font-weight:800;font-size:.8rem;color:var(--primary);letter-spacing:.05em;}
+    .lb-sub{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:2px;}
+
+    /* Right form */
+    .right{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 24px;}
+    .form-wrap{width:100%;max-width:360px;animation:fi .6s cubic-bezier(.25,.46,.45,.94) both;}
+    @keyframes fi{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+    .mob-logo{display:flex;align-items:center;gap:8px;margin-bottom:40px;text-decoration:none;color:var(--fg);}
+    .mob-logo-icon{width:28px;height:28px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+    .mob-logo-text{font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.02em;}
+    .mob-logo-text em{font-style:normal;color:var(--primary);}
+    @media(min-width:1024px){.mob-logo{display:none;}}
+
+    .f-ey{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--primary);margin-bottom:8px;}
+    .f-title{font-family:'Outfit',sans-serif;font-weight:800;font-size:2rem;letter-spacing:-.03em;line-height:1.1;margin-bottom:8px;}
+    .f-sub{font-size:.9rem;color:var(--muted);margin-bottom:28px;}
+
+    .demo-btn{width:100%;padding:14px;background:var(--p10);border:1.5px dashed rgba(39,126,255,.35);border-radius:var(--r);color:var(--primary);font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;transition:all var(--t);text-decoration:none;}
+    .demo-btn:hover{background:var(--p20);}
+
+    .divider{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+    .div-line{flex:1;height:1px;background:var(--border);}
+    .div-text{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+
+    .err{background:rgba(220,0,0,.05);border:1px solid rgba(220,0,0,.15);border-radius:12px;padding:14px 16px;display:none;align-items:center;gap:10px;color:#c00;font-size:.875rem;font-weight:500;margin-bottom:20px;}
+    .err-dot{width:8px;height:8px;border-radius:50%;background:#f00;flex-shrink:0;}
+
+    form{display:flex;flex-direction:column;gap:18px;}
+    .fg{display:flex;flex-direction:column;gap:6px;}
+    label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#4a4a4a;}
+    .fl{display:flex;align-items:center;justify-content:space-between;}
+    .fl a{font-size:.72rem;color:var(--primary);font-weight:600;text-decoration:none;}
+    .fl a:hover{text-decoration:underline;}
+    input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-family:'Inter',sans-serif;font-size:.95rem;color:var(--fg);background:#fff;outline:none;transition:border-color var(--t),box-shadow var(--t);}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(39,126,255,.12);}
+    input:disabled{opacity:.5;cursor:not-allowed;}
+
+    .btn-submit{width:100%;padding:14px;background:var(--primary);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:.975rem;border:none;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;transition:all var(--t);}
+    .btn-submit:hover:not(:disabled){background:#1a6fee;transform:translateY(-1px);box-shadow:0 4px 20px rgba(39,126,255,.35);}
+    .btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+    .signup{text-align:center;font-size:.875rem;color:var(--muted);margin-top:20px;}
+    .signup a{color:var(--primary);font-weight:700;text-decoration:none;}
+    .signup a:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+
+<!-- Left panel -->
+<div class="left">
+  <div class="left-dots"></div>
+  <div class="left-orb"></div>
+  <div class="left-c">
+    <a href="/jsweb/" class="left-logo">
+      <div class="left-logo-icon">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></svg>
+      </div>
+      <span class="left-logo-text">JóvenesSTEM<em>®</em></span>
+    </a>
+    <blockquote class="left-quote">"La ciencia no es un destino,<br><strong>es el camino."</strong></blockquote>
+    <div class="left-badges">
+      <div><div class="lb-label">NGSS</div><div class="lb-sub">Estándar USA</div></div>
+      <div><div class="lb-label">RENAC</div><div class="lb-sub">SEP México</div></div>
+      <div><div class="lb-label">BlueBook</div><div class="lb-sub">v1 Capítulo 1</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Right form -->
+<div class="right">
+  <div class="form-wrap">
+    <a href="/jsweb/" class="mob-logo">
+      <div class="mob-logo-icon">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.54 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></svg>
+      </div>
+      <span class="mob-logo-text">JóvenesSTEM<em>®</em></span>
+    </a>
+
+    <p class="f-ey">Portal del Estudiante</p>
+    <h1 class="f-title">Bienvenido de vuelta</h1>
+    <p class="f-sub">Accede a tu universo de aprendizaje STEM.</p>
+
+    <a href="/jsweb/dashboard" class="demo-btn">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Entrar sin cuenta — Modo Demo
+    </a>
+
+    <div class="divider">
+      <div class="div-line"></div>
+      <span class="div-text">o inicia sesión</span>
+      <div class="div-line"></div>
+    </div>
+
+    <div class="err" id="err">
+      <div class="err-dot"></div>
+      <span id="err-msg">Error al iniciar sesión</span>
+    </div>
+
+    <form id="form">
+      <div class="fg">
+        <label for="email">Correo</label>
+        <input type="email" id="email" placeholder="tu@email.com" required autocomplete="email">
+      </div>
+      <div class="fg">
+        <div class="fl">
+          <label for="pw">Contraseña</label>
+          <a href="#">¿Olvidaste?</a>
+        </div>
+        <input type="password" id="pw" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-submit" id="sbtn">
+        Iniciar Sesión
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </form>
+
+    <p class="signup">¿No tienes cuenta? <a href="/jsweb/register">Regístrate gratis</a></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  // ── CONFIG — Replace with your real Supabase values ──
+  const SUPABASE_URL     = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+  const REDIRECT_AFTER_LOGIN = '/jsweb/dashboard';
+
+  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const form = document.getElementById('form');
+  const errEl = document.getElementById('err');
+  const errMsg = document.getElementById('err-msg');
+  const sbtn = document.getElementById('sbtn');
+
+  function showErr(msg) { errMsg.textContent = msg; errEl.style.display = 'flex'; }
+  function setLoading(on) {
+    sbtn.disabled = on;
+    sbtn.innerHTML = on ? 'Verificando...' : 'Iniciar Sesión <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    errEl.style.display = 'none';
+    setLoading(true);
+    const { error } = await client.auth.signInWithPassword({
+      email: document.getElementById('email').value,
+      password: document.getElementById('pw').value,
+    });
+    if (error) { showErr(error.message || 'Error al iniciar sesión'); setLoading(false); }
+    else window.location.href = REDIRECT_AFTER_LOGIN;
+  });
+</script>
+</body>
+</html>
