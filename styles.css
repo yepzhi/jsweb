@@ -480,11 +480,38 @@ a { text-decoration: none; color: inherit; }
 /* ── Next module button ── */
 #next-module-btn { display: none; width: 100%; padding: 15px; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(39,126,255,0.25); }
 
-/* ── Teal color utility ── */
-.text-teal { color: var(--teal); }
-.bg-surface { background: var(--surface); }
-.rounded-xl { border-radius: 0.75rem; }
-.tracking-widest { letter-spacing: 0.1em; }
-.uppercase { text-transform: uppercase; }
-.font-extrabold { font-weight: 800; }
-.text-left { text-align: left; }
+/* ── Global Header (Shared) ── */
+.global-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+.nav-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-logo { text-decoration: none; display: flex; align-items: center; }
+.logo-text { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.03em; color: var(--text-color); }
+.logo-text em { font-style: normal; color: var(--primary); }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-link { color: var(--text-muted); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: var(--primary); }
+.nav-btn-primary { background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+.nav-btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(39, 126, 255, 0.25); }
+.nav-user-orb { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
+.nav-user-orb:hover { transform: scale(1.1); }
+@media (max-width: 640px) { .hide-mobile { display: none; } }
+
+/* Section Header for Dashboard */
+.page-header-gap { padding-top: 84px; }
