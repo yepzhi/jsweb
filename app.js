@@ -1,8 +1,9 @@
 /**
- * app.js - JóvenesSTEM MVP (Vanilla JS)
+ * app.js - JóvenesSTEM Platform Core
+ * Handles unified navigation and dynamic module rendering.
  */
 
-async function loadModules() {
+async function fetchModules() {
   try {
     const res = await fetch('./data/modules.json');
     if (!res.ok) throw new Error('Data no encontrada');
@@ -13,35 +14,63 @@ async function loadModules() {
   }
 }
 
-// Render Header/Menu
-function renderNavbar() {
-  const nav = document.createElement('nav');
-  nav.className = 'dash-header';
-  nav.innerHTML = `
-    <a href="dashboard" style="font-weight:900;font-size:1.1rem;color:var(--text-color);">
-      JóvenesSTEM<span style="color:var(--primary)">®</span>
-    </a>
-    <div class="flex gap-4 items-center">
-      <a href="modules" class="text-sm font-bold text-muted hover-primary">Módulos</a>
-      <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;">A</div>
-    </div>
+/**
+ * GLOBAL NAVIGATION INJECTION
+ * Ensures every page has the same polished header.
+ */
+function injectGlobalNav() {
+  const header = document.getElementById('global-nav');
+  if (!header) return;
+
+  const path = window.location.pathname;
+  const isAppPage = path.includes('modules') || path.includes('tutor') || path.includes('dashboard') || path.includes('profile');
+  
+  const savedProfile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+  const userName = savedProfile.name || 'Estudiante';
+  const firstLetter = userName.charAt(0).toUpperCase();
+
+  header.innerHTML = `
+    <nav class="global-header">
+      <div class="nav-container">
+        <a href="/jsweb/" class="nav-logo">
+          <span class="logo-text">JóvenesSTEM<em>®</em></span>
+        </a>
+        
+        <div class="nav-links">
+          ${isAppPage ? `
+            <a href="modules" class="nav-link">Explorar</a>
+            <a href="dashboard" class="nav-link">Dashboard</a>
+            <div class="nav-user-orb" onclick="window.location.href='profile'">
+              <span>${firstLetter}</span>
+            </div>
+          ` : `
+            <a href="/jsweb/#proceso" class="nav-link hide-mobile">Metodología</a>
+            <a href="/jsweb/#pricing" class="nav-link hide-mobile">Precios</a>
+            <a href="login" class="nav-btn-primary">Ingresar</a>
+          `}
+        </div>
+      </div>
+    </nav>
   `;
-  document.body.insertBefore(nav, document.body.firstChild);
 }
 
-// Modules Grid (used in modules.html and dashboard)
-async function renderModulesList(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const data = await loadModules();
+/**
+ * HIGH-DENSITY MODULE GRID
+ * Renders modules in a consistent 4-column layout with section headers.
+ */
+async function renderModulesList() {
+  const container = document.getElementById('modules-grid');
+  if(!container) return;
+  
+  const modules = await fetchModules();
   let html = '';
 
-  data.chapters.forEach(ch => {
+  modules.chapters.forEach(ch => {
     html += `
-      <div style="margin-bottom: 2rem;">
-        <h2 class="text-2xl font-head font-bold mb-4">${ch.title} ${ch.emoji}</h2>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;">
+      <div class="section-divider">
+        <h3 class="font-head font-black tracking-tight text-primary uppercase text-xs">Capítulo ${ch.chapter}: ${ch.title}</h3>
+      </div>
+      <div class="grid-centered">
     `;
 
     ch.modules.forEach(m => {
@@ -51,25 +80,35 @@ async function renderModulesList(containerId) {
       const badgeTxt = isLocked ? 'EN DESARROLLO' : 'DISPONIBLE';
       
       html += `
-        <a href="${targetUrl}" class="card flex-col" style="text-decoration:none; color:inherit; ${isLocked ? 'opacity:0.6;cursor:not-allowed;' : ''}">
-          <div class="flex justify-between items-center mb-4">
+        <a href="${targetUrl}" class="card ${isLocked ? 'locked' : ''}" style="text-decoration:none; color:inherit;">
+          <div class="flex flex-col gap-2">
             <span class="badge ${badgeCls}">${badgeTxt}</span>
-            <span style="font-size:24px;">🤖</span>
+            <h4 class="font-head font-bold text-sm leading-tight">${m.title}</h4>
+            <p class="text-xs text-muted" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${m.excerpt || ''}</p>
           </div>
-          <h3 class="font-bold text-lg mb-1">${m.title}</h3>
-          <p class="text-xs text-muted mb-4">~${m.duration} min</p>
         </a>
       `;
     });
 
-    html += `</div></div>`;
+    html += `</div>`;
   });
 
   container.innerHTML = html;
 }
 
-// Init
+// System Init
 document.addEventListener('DOMContentLoaded', () => {
-  renderNavbar();
-  renderModulesList('modules-grid');
+  injectGlobalNav();
+
+  // Dashboard specifics
+  const nameEl = document.getElementById('dash-user-name');
+  if (nameEl) {
+    const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+    nameEl.textContent = profile.name || 'Estudiante';
+  }
+
+  // Modules Grid
+  if (document.getElementById('modules-grid')) {
+    renderModulesList();
+  }
 });

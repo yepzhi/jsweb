@@ -1,22 +1,13 @@
 /**
  * Cloudflare Master Worker — yepzhi.com
- * Routes:
- *   /jsweb*          → Reverse proxy to Vercel (Next.js dashboard)
- *   /jovenesstem*    → GitHub Pages (static HTML marketing layer)
- *   /*               → Pass-through to GitHub Pages with clean URL support
- *
- * Architecture (2026-04-17):
- *   - Marketing pages (homepage, login, register) → static HTML on GitHub Pages
- *   - Student dashboard (/jsweb) → Next.js on Vercel
- *   - Cloudflare Worker handles routing, clean URLs, and caching at the edge
- *
- * FIX (2026-04-13): Corrected Host header in proxy to avoid Vercel 404s.
+ * Routes everything to GitHub Pages with Clean URL support.
  */
 
 const CONFIG = {
   // Projects that support clean URL (extensionless .html)
   cleanUrlProjects: [
-    'jovenesstem', // ← NEW: static HTML marketing layer (login, register, etc.)
+    'jsweb',        // ← ADDED: The new static platform
+    'jovenesstem',
     'propass',
     'entrytest',
     'nearly',
@@ -26,10 +17,7 @@ const CONFIG = {
     'lot',
     'neosys',
   ],
-  // Base origin (GitHub Pages)
   origin: 'https://yepzhi.github.io',
-  // Vercel Proxy — Next.js dashboard app
-  vercelBase: 'https://jovenesstem-web.vercel.app',
 };
 
 export default {
@@ -37,65 +25,44 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // ── 0. Reverse Proxy for Next.js App (/jsweb) ──────────────────────────
-    // Critical fix: rewrite Host header so Vercel can identify the deployment.
-    // Made case-insensitive to support /JSWeb or /jsweb alike
-    const pathLower = path.toLowerCase();
-
-    if (pathLower === '/jsweb' || pathLower.startsWith('/jsweb/')) {
-
-      // ── 0a. Static HTML pages (served from GitHub Pages) ──────────────
-      const staticMap = {
-        '/jsweb':          '/jsweb/index.html',
-        '/jsweb/':         '/jsweb/index.html',
-        '/jsweb/home':     '/jsweb/index.html',
-        '/jsweb/login':    '/jsweb/login.html',
-        '/jsweb/register': '/jsweb/register.html',
-      };
-
-      const staticPath = staticMap[pathLower];
-      const targetPath = staticPath || pathLower;
-      
-      const targetUrl = new URL(targetPath + url.search, CONFIG.origin);
-
-      return fetch(new Request(targetUrl.toString(), {
-        method: request.method,
-        headers: request.headers,
-        redirect: 'follow',
-      }));
-    }
-
-    // ── 1. Pass static assets through immediately (.js, .css, .png, etc.) ──
+    // 1. Pass static assets through immediately (.js, .css, .json, .png, etc.)
     const lastSegment = path.split('/').pop() || '';
     if (lastSegment.includes('.')) {
       return fetch(request);
     }
 
-    // ── 2. Handle project root — add trailing slash for SEO ────────────────
+    // 2. Map /jsweb/ to /jsweb/index.html internally
+    if (path === '/jsweb' || path === '/jsweb/') {
+      const targetUrl = new URL('/jsweb/index.html', CONFIG.origin);
+      return fetch(new Request(targetUrl.toString(), request));
+    }
+
+    // 3. Handle project roots — add trailing slash for consistency
     for (const project of CONFIG.cleanUrlProjects) {
       if (path === `/${project}`) {
         return Response.redirect(`${url.origin}/${project}/`, 301);
       }
     }
 
-    // ── 3. Clean URL Logic (extensionless .html) ────────────────────────────
+    // 4. Clean URL Logic (extensionless .html)
+    // If path is /jsweb/dashboard, it tries /jsweb/dashboard.html
     if (path !== '/' && !path.endsWith('/')) {
-      const newUrl = new URL(request.url);
-      newUrl.pathname = path + '.html';
+      const gitHubUrl = new URL(path + '.html', CONFIG.origin);
 
-      const response = await fetch(newUrl.toString(), {
+      const response = await fetch(gitHubUrl.toString(), {
         method: request.method,
         headers: request.headers,
         redirect: 'manual',
       });
 
-      // If .html exists, serve content but keep clean URL in address bar
+      // If .html exists on GitHub, serve its content
       if (response.status === 200) {
         return new Response(response.body, response);
       }
     }
 
-    // ── 4. Default pass-through ────────────────────────────────────────────
-    return fetch(request);
+    // 5. Default pass-through to GitHub Pages
+    const finalUrl = new URL(path, CONFIG.origin);
+    return fetch(new Request(finalUrl.toString(), request));
   },
 };
