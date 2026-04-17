@@ -44,51 +44,25 @@ export default {
 
     if (pathLower === '/jsweb' || pathLower.startsWith('/jsweb/')) {
 
-      // ── 0a. Static HTML pages (served from Vercel public/) ──────────────
-      // These routes serve plain HTML files with no React overhead.
-      // The .html files live in JSweb/public/ and Vercel serves them as
-      // static assets under the basePath (/jsweb/).
+      // ── 0a. Static HTML pages (served from GitHub Pages) ──────────────
       const staticMap = {
-        '/jsweb':          '/jsweb/home.html',
-        '/jsweb/':         '/jsweb/home.html',
+        '/jsweb':          '/jsweb/index.html',
+        '/jsweb/':         '/jsweb/index.html',
+        '/jsweb/home':     '/jsweb/index.html',
         '/jsweb/login':    '/jsweb/login.html',
         '/jsweb/register': '/jsweb/register.html',
-        // Legacy auth routes → same static pages
-        '/jsweb/auth/login':    '/jsweb/login.html',
-        '/jsweb/auth/register': '/jsweb/register.html',
       };
 
       const staticPath = staticMap[pathLower];
-      if (staticPath) {
-        const staticUrl = new URL(staticPath + url.search, CONFIG.vercelBase);
-        const newHeaders = new Headers(request.headers);
-        newHeaders.set('host', new URL(CONFIG.vercelBase).hostname);
-        newHeaders.set('x-forwarded-host', url.hostname);
-        return fetch(new Request(staticUrl.toString(), {
-          method: request.method,
-          headers: newHeaders,
-          body: ['GET', 'HEAD'].includes(request.method) ? null : request.body,
-          redirect: 'follow',
-        }));
-      }
+      const targetPath = staticPath || pathLower;
+      
+      const targetUrl = new URL(targetPath + url.search, CONFIG.origin);
 
-      // ── 0b. All other /jsweb/* routes → Next.js on Vercel ──────────────
-      const targetUrl = new URL(pathLower + url.search, CONFIG.vercelBase);
-
-      // Build new headers — keep originals but correct the Host
-      const newHeaders = new Headers(request.headers);
-      newHeaders.set('host', new URL(CONFIG.vercelBase).hostname);
-      // Forward original IP for logging / rate limiting
-      newHeaders.set('x-forwarded-host', url.hostname);
-
-      const newRequest = new Request(targetUrl.toString(), {
+      return fetch(new Request(targetUrl.toString(), {
         method: request.method,
-        headers: newHeaders,
-        body: ['GET', 'HEAD'].includes(request.method) ? null : request.body,
+        headers: request.headers,
         redirect: 'follow',
-      });
-
-      return fetch(newRequest);
+      }));
     }
 
     // ── 1. Pass static assets through immediately (.js, .css, .png, etc.) ──

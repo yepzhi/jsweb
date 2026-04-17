@@ -63,7 +63,7 @@
 
 <div class="wrap">
   <div class="logo-sec">
-    <a href="home.html" class="logo-link">
+    <a href="/jsweb/" class="logo-link">
       <span class="logo-text">JóvenesSTEM<em>®</em></span>
     </a>
     <h1>Crea tu cuenta</h1>
@@ -129,7 +129,7 @@
     </form>
 
     <div class="login-link">
-      <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+      <p>¿Ya tienes cuenta? <a href="/jsweb/login">Inicia sesión</a></p>
     </div>
   </div>
 
@@ -140,7 +140,7 @@
 <script>
   const SUPABASE_URL     = 'YOUR_SUPABASE_URL';
   const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-  const REDIRECT = 'dashboard.html?signup=success';
+  const REDIRECT = '/jsweb/dashboard?signup=success';
 
   const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const form = document.getElementById('form');
