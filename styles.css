@@ -485,9 +485,11 @@ a { text-decoration: none; color: inherit; }
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 64px;
-  background: rgba(255, 255, 255, 0.92);
+  /* Premium Silver Metallic Gradient */
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #ffffff 100%);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid #cbd5e1; /* Steel tone */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   display: flex;
   align-items: center;
