@@ -45,8 +45,8 @@
         <span class="stat-label">Módulos Listos</span>
       </div>
       <div class="stat-card">
-        <span id="stat-pending" class="stat-value">216</span>
-        <span class="stat-label">Temas Pendientes</span>
+        <span id="stat-pending" class="stat-value">196</span>
+        <span class="stat-label">Módulos Pendientes (no temas)</span>
       </div>
       <div class="stat-card">
         <span id="stat-xp" class="stat-value">0</span>
@@ -54,43 +54,40 @@
       </div>
     </div>
 
-    <!-- Roadmap to Certification -->
-    <div class="roadmap-container fade-in" style="animation-delay: 0.2s;">
-      <div class="roadmap-header">
-        <h2 class="text-xl font-head font-black tracking-tight uppercase">Camino a la Certificación</h2>
-        <span class="text-xs text-muted font-bold">216 Módulos Totales</span>
-      </div>
-      
-      <div class="roadmap-track" id="roadmap-track">
-        <!-- Milestones injected via JS -->
-        <div class="milestone unlocked" id="ms-10">
-          <div class="milestone-icon">🏅</div>
-          <span class="milestone-num">Meta 1 (10)</span>
-          <h3 class="milestone-title">Hito Inicial</h3>
-          <p class="milestone-status">¡Logrado!</p>
-        </div>
-        <div class="milestone" id="ms-50">
-          <div class="milestone-icon">🔭</div>
-          <span class="milestone-num">Meta 2 (50)</span>
-          <h3 class="milestone-title">Explorador STEM</h3>
-          <p class="milestone-status">Pendiente</p>
-        </div>
-        <div class="milestone" id="ms-100">
-          <div class="milestone-icon">⚡</div>
-          <span class="milestone-num">Meta 3 (100)</span>
-          <h3 class="milestone-title">Maestro JS</h3>
-          <p class="milestone-status">Bloqueado</p>
-        </div>
-        <div class="milestone" id="ms-final">
-          <div class="milestone-icon">🎓</div>
-          <span class="milestone-num">Final (216)</span>
-          <h3 class="milestone-title">Certificación Oficial</h3>
-          <p class="milestone-status">Meta Final</p>
+    <!-- Badges Gallery (New v4.2.2 Feature) -->
+    <section class="badges-section fade-in" style="animation-delay: 0.15s;">
+      <div class="div-header-row mb-6 mt-12 flex justify-between items-end">
+        <div>
+          <h2 class="text-xl font-head font-black tracking-tight uppercase">Medallero de Poder</h2>
+          <span class="text-xs text-muted font-bold">Cada 10 Módulos un Nuevo Nivel Logrado</span>
         </div>
       </div>
-    </div>
+      <div class="badge-grid" id="badge-gallery">
+        <!-- Injected by app.js -->
+      </div>
+    </section>
 
-  <script type="module" src="app.js?v=6"></script>
+    <!-- Neosys Aeon Community CTA -->
+    <section class="community-banner fade-in" style="animation-delay: 0.25s;">
+      <div class="community-card glass">
+        <div class="community-content">
+          <h2 class="font-head font-black text-2xl mb-1 mt-1">Únete a Neosys Aeon</h2>
+          <p class="text-sm opacity-70 mb-4">Manco abierto, mentes libres. Sé parte de la independencia tecnológica.</p>
+        </div>
+        <a href="https://yepzhi.com/neosys/" target="_blank" class="btn-neosys">
+          <span>Explorar Ecosistema</span>
+          <span class="btn-sparkle" aria-hidden="true">✨</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Social Achievement Modal -->
+    <div id="badge-modal" class="modal-overlay" style="display:none;"></div>
+
+    <!-- Hidden Canvas for Image Generation -->
+    <canvas id="share-canvas" width="1200" height="630" style="display:none;"></canvas>
+
+  <script type="module" src="app.js?v=7"></script>
   <footer id="global-footer"></footer>
 </body>
 </html>
