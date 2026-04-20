@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+  
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js?v=6" defer></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--primary:#277eff;--p10:rgba(39,126,255,.10);--p20:rgba(39,126,255,.20);--fg:#0a0a0a;--muted:#949494;--border:rgba(0,0,0,.10);--r:16px;--t:.22s cubic-bezier(.25,.46,.45,.94);}
@@ -100,9 +103,9 @@
     <h1 class="f-title">Bienvenido de vuelta</h1>
     <p class="f-sub">Accede a tu universo de aprendizaje STEM.</p>
 
-    <a href="/jsweb/dashboard" class="demo-btn">
+    <a href="dashboard.html" class="demo-btn">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Entrar sin cuenta — Modo Demo
+      Demo Access — Gratis
     </a>
 
     <div class="divider">
@@ -134,18 +137,28 @@
       </button>
     </form>
 
-    <p class="signup">¿No tienes cuenta? <a href="/jsweb/register">Regístrate gratis</a></p>
+    <p class="signup">¿No tienes cuenta? <a href="register.html">Regístrate gratis</a></p>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-  // ── CONFIG — Replace with your real Supabase values ──
-  const SUPABASE_URL     = 'YOUR_SUPABASE_URL';
-  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-  const REDIRECT_AFTER_LOGIN = '/jsweb/dashboard';
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js?v=6";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // ── FIREBASE CONFIG — Reemplaza con tus valores de Firebase Console ──
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const REDIRECT_AFTER_LOGIN = 'dashboard.html';
   const form = document.getElementById('form');
   const errEl = document.getElementById('err');
   const errMsg = document.getElementById('err-msg');
@@ -160,14 +173,31 @@
   form.addEventListener('submit', async e => {
     e.preventDefault();
     errEl.style.display = 'none';
+    const email = document.getElementById('email').value;
+    const pw = document.getElementById('pw').value;
+    
     setLoading(true);
-    const { error } = await client.auth.signInWithPassword({
-      email: document.getElementById('email').value,
-      password: document.getElementById('pw').value,
-    });
-    if (error) { showErr(error.message || 'Error al iniciar sesión'); setLoading(false); }
-    else window.location.href = REDIRECT_AFTER_LOGIN;
+    
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+      const user = userCredential.user;
+
+      // Sincronizar info básica para el dashboard si no existe
+      if (!localStorage.getItem('jstem_profile')) {
+        localStorage.setItem('jstem_profile', JSON.stringify({ 
+          name: user.displayName || 'Estudiante',
+          email: user.email 
+        }));
+      }
+
+      window.location.href = REDIRECT_AFTER_LOGIN;
+    } catch (error) {
+      console.error(error);
+      showErr(error.message || 'Error al iniciar sesión');
+      setLoading(false);
+    }
   });
 </script>
+  <footer id="global-footer"></footer>
 </body>
 </html>

@@ -13,6 +13,46 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // --- STEMBOT AI PROXY (Secure Gemini Integration) ---
+    if (path === '/api/tutor' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+
+        const geminiResponse = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const data = await geminiResponse.json();
+        return new Response(JSON.stringify(data), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // Handle Pre-flight requests for CORS
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      });
+    }
+
     // 1. Force Clean URLs in the browser (if someone types .html)
     // We only redirect if it's the original request to avoid breaking our own internal fetches
     if (path.endsWith('.html') && request.headers.get('cf-worker') !== 'internal') {

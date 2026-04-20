@@ -7,10 +7,73 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=3">
   <style>
     body { background-color: var(--surface); }
     
+    /* Premium Highlighting Styles */
+    .word-span {
+      display: inline;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 2px;
+    }
+    
+    .word-active {
+      color: var(--primary-glow) !important;
+      background: rgba(39, 126, 255, 0.15);
+      box-shadow: 0 0 15px rgba(39, 126, 255, 0.4);
+      transform: scale(1.05);
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(39, 126, 255, 0.6);
+    }
+    
+    .word-past {
+      color: var(--text-color);
+      background: rgba(39, 126, 255, 0.2); /* Slightly more solid background */
+      border-bottom: none; /* Removed the underline line */
+    }
+    
+    /* Premium Switch */
+    .premium-switch {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .premium-switch:hover { opacity: 1; }
+    .premium-switch input { display: none; }
+    .premium-switch .slider {
+      width: 28px;
+      height: 16px;
+      background: rgba(100,100,100,0.3);
+      border-radius: 20px;
+      position: relative;
+      transition: background 0.3s;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .premium-switch .slider::before {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #eee;
+      border-radius: 50%;
+      top: 2px;
+      left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .premium-switch input:checked + .slider { background: var(--primary); }
+    .premium-switch input:checked + .slider::before { transform: translateX(11px); }
+    .premium-switch .switch-label { color: var(--text-muted); font-size: 10px; }
+    .premium-switch input:checked ~ .switch-label { color: var(--primary-glow); }
+
     .tutor-layout {
       display: grid;
       grid-template-columns: 1fr;
@@ -18,12 +81,13 @@
       max-width: 1400px;
       margin: 0 auto;
       padding: 20px;
-      height: calc(100vh - 60px); /* Minus navbar */
+      height: auto; /* Changed for mobile */
     }
 
     @media (min-width: 900px) {
       .tutor-layout {
         grid-template-columns: 3fr 2fr;
+        height: calc(100vh - 60px); /* Back to fixed height for desktop */
       }
     }
 
@@ -33,8 +97,14 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 40px;
-      overflow-y: auto;
+      overflow-y: visible; /* Let it grow on mobile */
       box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    
+    @media (min-width: 900px) {
+      .reader-pane {
+        overflow-y: auto; /* Scroll inside on desktop */
+      }
     }
     .reader-pane::-webkit-scrollbar { width: 6px; }
     .reader-pane::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
@@ -161,8 +231,9 @@
   </style>
 </head>
 <body>
+  <header id="global-nav"></header>
   
-  <div class="tutor-layout fade-in">
+  <div class="tutor-layout fade-in" style="margin-top: 64px;">
     
     <!-- LEFT: Reader Pane -->
     <div class="reader-pane" id="reader-pane">
@@ -176,6 +247,33 @@
             MODO LECTURA
           </button>
         </div>
+        
+        <!-- TTS Toolbar -->
+        <div class="tts-toolbar" id="tts-toolbar">
+          <div class="tts-status">
+            <span class="tts-dot"></span>
+            <span id="tts-msg">LECTURA DISPONIBLE</span>
+            <span class="neural-badge" id="neural-badge">Neural</span>
+          </div>
+          <div class="tts-actions" style="display:flex; align-items:center; gap:12px;">
+            <label class="premium-switch" title="Resaltar avance de voz">
+              <input type="checkbox" id="tts-highlight-toggle">
+              <span class="slider"></span>
+              <span class="switch-label">Subrayar</span>
+            </label>
+            <span class="data-usage-notice" id="data-notice" style="display:none;">Voz HD ~25MB</span>
+            <button id="tts-play" class="tts-btn" title="Reproducir">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <button id="tts-pause" class="tts-btn" title="Pausar" style="display: none;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <button id="tts-stop" class="tts-btn tts-btn-danger" title="Detener">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+            </button>
+          </div>
+        </div>
+
         <h1 id="module-title-large" class="text-4xl font-head font-black tracking-tight mb-6">Título</h1>
         
         <div id="module-content" class="reader-content mb-8">
@@ -247,17 +345,31 @@
         </button>
       </div>
 
-      <a href="modules" id="next-module-btn" class="btn-primary fade-in mt-4 text-center">🎉 ¡Completado! Siguiente</a>
+      <a href="modules.html" id="next-module-btn" class="btn-primary fade-in mt-4 text-center">🎉 ¡Completado! Siguiente</a>
     </div>
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="app.js"></script>
-  <script src="tutor.js"></script>
+  <!-- Floating Control Bar -->
+  <div id="floating-tts-bar" class="floating-tts-bar hidden">
+    <div class="floating-status" id="float-status">LECTURA ACTIVA</div>
+    <button id="float-play" class="floating-btn" title="Reproducir" style="display:none;">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    </button>
+    <button id="float-pause" class="floating-btn" title="Pausar">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    </button>
+    <button id="float-stop" class="floating-btn" title="Detener" style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.2);">
+      <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>
+    </button>
+  </div>
+
+  <script type="module" src="app.js?v=6"></script>
+  <script type="module" src="tutor.js?v=3"></script>
   
   <audio id="success-sound" preload="auto">
     <source src="https://assets.mixkit.co/active_storage/sfx/2013/success-fanfare-trumpets-618.wav" type="audio/wav">
   </audio>
+  <footer id="global-footer"></footer>
 </body>
 </html>

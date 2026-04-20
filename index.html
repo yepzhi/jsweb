@@ -17,6 +17,9 @@
     rel="stylesheet">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+  
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script type="module" src="app.js?v=6"></script>
 
   <style>
     *,
@@ -54,7 +57,6 @@
     }
 
     /* ── NAV UNIFIED ── */
-    nav { display: none !important; } /* Hide old nav if any remains */
 
     @media(min-width:768px) {
       nav {
@@ -822,13 +824,51 @@
     }
 
     .portal-card {
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 28px;
-      padding: 36px;
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .15);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 40px;
       text-align: center;
       width: 100%;
-      max-width: 300px;
+      max-width: 360px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+
+    .portal-features {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: left;
+    }
+
+    .portal-feature-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .pf-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .pf-text h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .pf-text p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
     }
 
     .pc-icon {
@@ -934,8 +974,8 @@
 
     <div class="hero-content">
       <div class="badges">
-        <span class="badge">NGSS Certified</span>
-        <span class="badge">RENAC SEP Validated</span>
+        <span class="badge">NGSS Aligned</span>
+        <span class="badge">RENAC SEP Aligned</span>
         <span class="badge">BlueBook v1</span>
       </div>
 
@@ -945,13 +985,14 @@
       </h1>
 
       <p class="hero-sub">
-        Descubre tu potencial con diagnóstico STEM y aprendizaje adaptativo
-        impulsado por Inteligencia Artificial. Bilingüe diseñado para las Americas.
+        Realiza tu diagnóstico STEM gratuito, empieza hoy!
+        Aprendizaje adaptativo impulsado por Inteligencia Artificial.
+        Bilingüe diseñado para las Americas.
       </p>
 
       <div class="hero-actions">
-        <a href="https://yepzhi.com/entrytest" class="btn btn-primary btn-lg">
-          ¡CONVIÉRTETE EN UN JOVENSTEM!
+        <a href="dashboard.html" class="btn btn-primary btn-lg">
+          ¡Inicia tu demo gratis hoy!
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -971,9 +1012,7 @@
         <span class="eyebrow">Metodología Educativa</span>
         <h2 class="sec-title">El Ecosistema <span class="g">JóvenesSTEM<sup
               style="font-size:.45em;vertical-align:top;">®</sup></span></h2>
-        <p class="sec-sub">Una ruta de aprendizaje diseñada para los desafíos del mañana. <span
-            style="color:var(--primary);font-weight:600;">Capítulo 1: Cosmología y Ciencia</span> — Big Bang,
-          Relatividad, Gravedad y la estructura íntima de la materia.</p>
+        <p class="sec-sub">Una ruta de aprendizaje diseñada para los desafíos del mañana. 3 Capítulos: Ciencia -Relatividad, Gravedad, la estructura íntima de la materia, Estandares tecnológicos, fundamentos de programación. Temas selectos diseñados para despertar curiosidad y consolidar aptitudes y alineación a carreras STEM.</p>
       </div>
 
       <div class="grid-3 reveal d1">
@@ -997,7 +1036,7 @@
             </svg>
           </div>
           <h3 class="card-title">IA Adaptativa</h3>
-          <p class="card-desc">Aprendizaje personalizado que conecta física, biología y código en tiempo real.</p>
+          <p class="card-desc">Aprendizaje personalizado que conecta física, tecnologías y código en tiempo real.</p>
         </div>
         <div class="card">
           <div class="card-icon">
@@ -1008,7 +1047,7 @@
             </svg>
           </div>
           <h3 class="card-title">Certificación JóvenesSTEM</h3>
-          <p class="card-desc">Alineación SEP CONOCER EC009. Reconocimiento tangible de habilidades científicas.</p>
+          <p class="card-desc">Alineación con SEP CONOCER EC009 y NGSS. Reconocimiento tangible de habilidades científicas.</p>
         </div>
       </div>
 
@@ -1076,7 +1115,7 @@
               <line x1="9" y1="3" x2="9" y2="21" />
             </svg>
             <div class="stat-num">557</div>
-            <div class="stat-label">Estándares STEM Integrados</div>
+            <div class="stat-label">Estándares y conceptos selectos STEM Integrados</div>
           </div>
           <div class="stat-card">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
@@ -1085,7 +1124,7 @@
               <polyline points="12 6 12 12 16 14"/>
             </svg>
             <div class="stat-num">50 HRS</div>
-            <div class="stat-label">De Aprendizaje Profundo</div>
+            <div class="stat-label">De Aprendizaje Profundo y relevante</div>
           </div>
           <div class="stat-card">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
@@ -1109,13 +1148,22 @@
         </div>
       </div>
 
-      <div class="challenge reveal d2">
+      <div class="challenge reveal d2" style="background: rgba(39, 126, 255, 0.03); border: 1px solid rgba(39, 126, 255, 0.1); border-radius: 16px; padding: 40px 24px;">
         <h3>El Desafío que nos Mueve</h3>
-        <p style="color:var(--fg-muted);font-size:.95rem;max-width:620px;margin:0 auto;line-height:1.7;">
-          Hoy en México, el <span class="hl-blue">51% de los estudiantes</span> no alcanza el nivel mínimo en ciencias.
-          En Sonora, solo el <span class="hl-teal">35% de las escuelas</span> cuenta con laboratorios funcionales.
-          Vinimos a cambiar eso.
+        <p style="color:var(--fg); font-weight: 500; font-size:1.1rem; max-width:620px; margin:0 auto 16px; line-height:1.5;">
+          Hoy en México, el <span class="hl-blue">51% de los estudiantes</span> no alcanza el nivel mínimo en ciencias*
         </p>
+        <p style="color:var(--fg-muted); font-size:.95rem; max-width:620px; margin:0 auto 24px; line-height:1.7;">
+          Nuestras regiones demandan un impulso real a las vocaciones científicas. Mientras las carreras más populares suelen estar fuera del área técnica, nosotros estamos aquí para inspirar el cambio y liderar la transición hacia el futuro STEM.
+        </p>
+        <div style="font-size: 0.75rem; color: var(--fg-muted); margin-bottom: 24px;">*Fuente: Datos PISA 2022</div>
+        <a href="https://yepzhi.com/jovenesstemData" target="_blank" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 8px;">
+          Conoce los datos duros
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="12 5 19 12 12 19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </a>
       </div>
     </div>
   </section>
@@ -1149,7 +1197,7 @@
             <li><span class="chk">✓</span> STEMBot demo</li>
             <li><span class="chk" style="opacity:0.35;">✗</span> <span style="opacity:0.45;">Sin certificación</span></li>
           </ul>
-          <a href="modules" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px; border-color: var(--primary); color: var(--primary);">⚡ Accede Ahora</a>
+          <a href="modules.html" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px; border-color: var(--primary); color: var(--primary);">⚡ Accede Ahora</a>
         </div>
 
         <!-- Por Módulo -->
@@ -1169,7 +1217,7 @@
             <li><span class="chk">✓</span> Evaluación STEMBot</li>
             <li><span class="chk">✓</span> Sin suscripción</li>
           </ul>
-          <a href="modules" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px;">Explorar Módulos</a>
+          <a href="modules.html" class="btn btn-secondary" style="width:100%;border-radius:14px;padding:14px;">Explorar Módulos</a>
         </div>
 
         <!-- Acceso Total -->
@@ -1205,38 +1253,67 @@
         <h2 class="portal-title">Tu Portal del <span
             style="background:linear-gradient(135deg,var(--primary) 0%,var(--teal) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Estudiante</span>
         </h2>
-        <p class="portal-sub">Accede a tus repasos, logros y constelaciones de conocimiento desde cualquier dispositivo
-          con una interfaz inteligente.</p>
-        <a href="login" class="btn btn-primary btn-md">
-          Ir al Portal Personalizado
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg>
-        </a>
+        <p class="portal-sub" style="color:rgba(255,255,255,0.6); margin-bottom: 32px;">Explora una interfaz inteligente diseñada para potenciar tu curiosidad científica y consolidar tu futuro STEM.</p>
+        
+        <div class="portal-features">
+          <div class="portal-feature-item">
+            <div class="pf-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="pf-text">
+              <h4>Gana XP por Módulo</h4>
+              <p>Domina conceptos y acumula puntos de experiencia para subir de nivel en tu perfil STEM.</p>
+            </div>
+          </div>
+          <div class="portal-feature-item">
+            <div class="pf-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="pf-text">
+              <h4>Tutor StemBot AI</h4>
+              <p>Acompañamiento inteligente 24/7 para resolver dudas complejas en tiempo real.</p>
+            </div>
+          </div>
+          <div class="portal-feature-item">
+            <div class="pf-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+            <div class="pf-text">
+              <h4>Modo Lectura & Logros</h4>
+              <p>Interfaz de alta concentración y herramientas para compartir tus constelaciones de conocimiento.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+          <a href="dashboard.html" class="btn btn-primary btn-lg">
+            Ir al Portal Personalizado
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+        </div>
       </div>
 
       <div class="portal-card reveal d2">
-        <div class="pc-icon">
-          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5"
+        <div class="pc-icon" style="background: rgba(39, 126, 255, 0.15);">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            <polygon points="5 3 19 12 5 21 5 3"/>
           </svg>
         </div>
-        <h3 class="pc-title">Pruébalo ahora</h3>
-        <p class="pc-sub">Entra sin registrarte — explora el dashboard y el universo STEM.</p>
-        <a href="dashboard" class="demo-link">Modo Demo</a>
+        <h3 class="pc-title">Acceso Demo Gratuito</h3>
+        <p class="pc-sub">Explora el universo STEM ahora mismo. Sin registros, sin esperas — entra directo al dashboard completo.</p>
+        <a href="dashboard.html" class="demo-link" style="background: var(--primary); color: #fff; border: none; box-shadow: 0 4px 15px rgba(39, 126, 255, 0.3);">Iniciar Demo Gratis</a>
       </div>
     </div>
   </section>
 
 
   <!-- ── FOOTER ── -->
-  <footer id="contacto">
-    <p style="margin-bottom:6px;font-family:'Outfit',sans-serif;font-weight:700;">JóvenesSTEM® — STEM for Education</p>
-    <p style="opacity:.5;">© 2026 Alberto Yépiz · All Rights Reserved · v4.2.0</p>
-  </footer>
+  
 
 
   <script>
@@ -1248,6 +1325,7 @@
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
   </script>
 
+  <footer id="global-footer"></footer>
 </body>
 
 </html>

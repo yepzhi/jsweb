@@ -9,18 +9,21 @@
 Este documento es la guía de continuación para la generación del contenido `fullText` de los módulos de los Capítulos II y III del currículo JóvenesSTEM.
 
 ### ¿Qué es el fullText?
-Cada módulo en `data/modules.json` tiene un campo `fullText` con texto de **700-900 palabras** en estilo **divulgativo y storytelling**, siguiendo esta estructura:
+Cada módulo en `data/modules.json` tiene un campo `fullText` con texto de **900-1000 palabras** en estilo **divulgativo y storytelling**, siguiendo esta estructura:
 
 1. **Gancho narrativo** — Primera oración impactante para capturar la atención.
-2. **Desarrollo conceptual** — 5-6 párrafos con conceptos en `**negritas**`, analogías modernas, datos precisos.
-3. **Separador** `---`
-4. **Footer estándar** — Siempre con estos 4 marcadores (detectados por el parser del modal):
+2. **Estándar de Extensión**: **1000 palabras** promedio (mínimo 950). Esto asegura la meta de 50+ horas totales.
+3. **Divulgación de Alto Impacto**: El contenido NO debe ser básico. Debe incluir datos curiosos, términos avanzados y explicaciones que sorprendan al lector.
+4. **Formato Bilingüe y Conceptual**: 
+    - Los términos técnicos o estándares clave deben ir en **negritas** y con su traducción al inglés entre paréntesis. Ejemplo: `**Agujero Negro (Black Hole)**`.
+    - **Definiciones Inline**: Para conceptos complejos (ej. Singularidad, Entropía, Qubits), se debe añadir una breve descripción simplificada entre paréntesis inmediatamente después del término para evitar ambigüedades. Ejemplo: `**Singularidad (punto de densidad infinita donde las leyes de la física se rompen)**`.
+5. **Footer Estándar**: Siempre con estos 4 marcadores (detectados por el parser del modal):
 
 ```
 **🔖 Bluebook v1 · Capítulo X, Sección X.X — [Título]** (Págs. XX–XX)
-**📐 NGSS: HS-XXX-X** — [Descripción larga del estándar evaluado]
+**📐 NGSS: HS-XXX-X (Standard Description)** — [Descripción larga]
 **📋 RENAC: EC009 · [Área temática]**
-**💡 Standards World:** Concepto1 · Concepto2 · Concepto3 · ...
+**💡 Standards World:** Concepto1 (Term1) · Concepto2 (Term2) · ...
 ```
 
 > **IMPORTANTE sobre RENAC:** Si el módulo está alineado al sector tecnológico usar `ET002` (Telecomunicaciones) o `ET005` (Energía). Para ciencias usar `EC009`. Si el estándar RENAC específico no es claro, escribir: `📋 RENAC / SEP-CONOCER: Alineado en evaluación · [Área temática]`
@@ -50,9 +53,16 @@ with open(path, 'w') as f: json.dump(data, f, indent=2, ensure_ascii=False)
 
 ## Estado del Capítulo I (COMPLETADO ✅)
 
-**66/66 módulos completados** — Cap I: Unidad 1 · Ciencia (Universo y Materia)
+Cubren desde el Big Bang (1.1) hasta Agente de Cambio STEM (1.64), incluyendo los módulos intercalados 2.77 (Deuterio) y 2.80 (Magnetic Cooling).
 
-Cubre desde el Big Bang (1.1) hasta Agente de Cambio STEM (1.64), incluyendo los módulos intercalados 2.77 (Deuterio) y 2.80 (Magnetic Cooling).
+### 🚀 Extensiones Bluebook v2 (Nuevos)
+| ID | Título | Notas (v2) |
+|----|--------|------------|
+| 1.65 | Helio 3: Combustible Lunar | Minería en la Luna para fusión nuclear |
+| 1.66 | Tritio y Fusión | El poder de las estrellas en la Tierra |
+| 1.67 | Motores Espaciales de Fusión | Viajes interplanetarios rápidos |
+| 1.68 | JWST Successor (2040) | La próxima gran mirada al cosmos profundo |
+| 0.1 | 10 Mandamientos de la Ciencia | Los principios éticos y lógicos de la investigación |
 
 ---
 
@@ -312,11 +322,15 @@ Este capítulo abarca energía, biotecnología e ingeniería de software. Es el 
 | 3.86 | Strings y Booleanos | Manipulación de texto y lógica verdadero/falso |
 | 3.87 | Ciclos: For y While | El lazo como herramienta fundamental de programación |
 
-### Sección: Inteligencia Artificial (3.95 – 3.96)
-| ID | Título | Notas |
-|----|--------|-------|
 | 3.95 | Machine Learning (ML) | Tipos de aprendizaje, redes neuronales, entrenamiento |
 | 3.96 | IA en tu Cámara | Segmentación de escena, bokeh artificial, Super Res Zoom |
+
+### Sección: Innovación y Potencia (Bluebook v2)
+| ID | Título | Notas |
+|----|--------|-------|
+| 3.102 | The Patent World | Propiedad intelectual, registro de inventos, patentes famosas |
+| 3.103 | Electricidad de Potencia | Transformadores masivos, red eléctrica nacional, voltajes |
+| 3.104 | Maravillas de la Electricidad | Fenómenos eléctricos extremos y aplicaciones industriales |
 
 ---
 

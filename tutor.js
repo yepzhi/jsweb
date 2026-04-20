@@ -1,9 +1,11 @@
+import { TTSManager } from './tts.js?v=3';
 /**
  * tutor.js - StemBot AI Vanilla Integration
+ * Uses window globals from app.js to avoid caching issues.
  */
 
-// ⚠️ PON TU CLAVE DE GEMINI AQUÍ PARA PRUEBAS (En producción usa Cloudflare Worker)
-const GEMINI_API_KEY = 'TU_API_KEY_DE_GEMINI_AQUI'; 
+// ⚠️ SEGURIDAD: La API KEY ahora se maneja en el Cloudflare Worker (env.GEMINI_API_KEY)
+// El frontend solo llama al endpoint local /api/tutor
 
 const SYSTEM_PROMPT = `
 Eres StemBot, el tutor personal de JóvenesSTEM, creado por Alberto Yépiz.
@@ -36,7 +38,12 @@ Debes evaluar silenciosamente la comprensión del alumno basada en sus respuesta
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('chat-messages')) return;
-  renderNavbar(); // from app.js
+  
+  // Use window globals for maximum reliability in dev
+  const injectGlobalNav = window.injectGlobalNav;
+  const fetchModules = window.fetchModules;
+
+  if (typeof injectGlobalNav === 'function') injectGlobalNav();
 
   const urlParams = new URLSearchParams(window.location.search);
   const moduleId = urlParams.get('id');
@@ -57,14 +64,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nextBtn = document.getElementById('next-module-btn');
   const controls = document.getElementById('input-controls');
 
+  const tts = new TTSManager();
+  const ttsPlay = document.getElementById('tts-play');
+  const ttsPause = document.getElementById('tts-pause');
+  const ttsStop = document.getElementById('tts-stop');
+  const ttsMsg = document.getElementById('tts-msg');
+
   let history = [];
   let isRecording = false;
 
   // Load Module Data
-  const data = await loadModules();
+  if (typeof fetchModules !== 'function') {
+    console.error('Critical: fetchModules is not available.');
+    return;
+  }
+  const data = await fetchModules();
   let currentModule = null;
   data.chapters.forEach(ch => {
-    const found = ch.modules.find(m => m.id === moduleId);
+    const found = ch.modules.find(m => String(m.id) === String(moduleId));
     if(found) currentModule = found;
   });
 
@@ -145,6 +162,77 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (loadingReader) loadingReader.style.display = 'none';
     if (articleWrapper) articleWrapper.style.display = 'block';
 
+    const rawReadingText = currentModule.fullText || currentModule.content || '';
+    const readingText = rawReadingText.split('---')[0];
+
+    // --- HIGHLIGHTING HELPERS ---
+    const highlightToggle = document.getElementById('tts-highlight-toggle');
+    let wordsSpans = [];
+
+    function prepareHighlighting() {
+      if (!contentEl || wordsSpans.length > 0) return;
+      
+      contentEl.innerHTML = mainBody;
+      let wordIndex = 0;
+      
+      function traverse(node) {
+        if (node.nodeType === 3) {
+           const text = node.nodeValue;
+           // Split while keeping delimiters (spaces)
+           const parts = text.split(/(\s+)/);
+           if (parts.length === 1 && !parts[0].trim()) return; 
+           
+           const fragment = document.createDocumentFragment();
+           for (let i = 0; i < parts.length; i++) {
+              let part = parts[i];
+              if (part.trim().length > 0) {
+                 // It is a word. Check if next part is whitespace to include it.
+                 let nextPart = (i + 1 < parts.length && parts[i+1].trim().length === 0) ? parts[i+1] : '';
+                 const span = document.createElement('span');
+                 span.className = 'word-span';
+                 span.id = `word-${wordIndex++}`;
+                 span.textContent = part + nextPart;
+                 span.onclick = (e) => {
+                   e.stopPropagation();
+                   const idx = parseInt(span.id.replace('word-', ''));
+                   tts.seekToWord(idx, readingText);
+                 };
+                 fragment.appendChild(span);
+                 if (nextPart) i++; // Skip the whitespace we just consumed
+              } else {
+                 // It is leading whitespace (no word before it in this node)
+                 fragment.appendChild(document.createTextNode(part));
+              }
+           }
+           node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === 1) {
+           Array.from(node.childNodes).forEach(traverse);
+        }
+      }
+      
+      Array.from(contentEl.childNodes).forEach(traverse);
+      
+      // Re-append footer unhighlighted
+      const footerContainer = document.createElement('div');
+      footerContainer.innerHTML = footerHtml;
+      contentEl.appendChild(footerContainer);
+      
+      wordsSpans = contentEl.querySelectorAll('.word-span');
+    }
+
+    function clearHighlighting() {
+      if (!contentEl) return;
+      contentEl.innerHTML = mainBody + footerHtml;
+      wordsSpans = [];
+    }
+
+    if (highlightToggle) {
+      highlightToggle.addEventListener('change', () => {
+        if (highlightToggle.checked) prepareHighlighting();
+        else clearHighlighting();
+      });
+    }
+
     // Activate reader mode button if module has fullText
     const readerModeBtn = document.getElementById('reader-mode-btn');
     if (currentModule.fullText && readerModeBtn) {
@@ -154,6 +242,134 @@ document.addEventListener('DOMContentLoaded', async () => {
           openReader(currentModule, window.location.href);
         }
       });
+    }
+
+    // --- TTS Handlers ---
+    if (ttsPlay && currentModule) {
+      tts.onStateChange = (state) => {
+        const toolbar = document.getElementById('tts-toolbar');
+        if (state === 'playing' || state === 'playing-neural') {
+          ttsPlay.style.display = 'none';
+          ttsPause.style.display = 'flex';
+          ttsMsg.textContent = state === 'playing-neural' ? 'VOZ NEURONAL ACTIVA' : 'REPRODUCIENDO...';
+          ttsMsg.parentElement.style.color = 'var(--primary)';
+          if (state === 'playing-neural' && toolbar) toolbar.classList.add('neural-active');
+          
+          if (highlightToggle.checked) prepareHighlighting();
+        } else if (state === 'neural-ready') {
+          if (toolbar) toolbar.classList.add('neural-active');
+          const badge = document.getElementById('neural-badge');
+          if (badge) badge.style.display = 'inline-flex';
+          const notice = document.getElementById('data-notice');
+          if (notice) notice.style.display = 'none'; 
+          ttsMsg.textContent = 'MOTOR NEURONAL LISTO';
+        } else if (state === 'loading-neural') {
+          ttsMsg.textContent = 'PREPARANDO MOTOR (25MB)...';
+          ttsMsg.parentElement.style.color = 'var(--warning)';
+        } else if (state === 'neural-error') {
+          ttsMsg.textContent = 'ERROR RED/MEMORIA (VOZ LOCAL)';
+          ttsMsg.parentElement.style.color = '#ef4444';
+          const formatNotice = document.getElementById('data-notice');
+          if (formatNotice) { formatNotice.style.display = 'inline'; formatNotice.textContent = 'Fallo Motor HD'; formatNotice.style.color = '#ef4444'; }
+        } else if (state === 'paused') {
+          ttsPlay.style.display = 'flex';
+          ttsPause.style.display = 'none';
+          ttsMsg.textContent = 'PAUSADO';
+        } else {
+          ttsPlay.style.display = 'flex';
+          ttsPause.style.display = 'none';
+          ttsMsg.textContent = 'LECTURA DISPONIBLE';
+          ttsMsg.parentElement.style.color = '';
+          clearHighlighting();
+        }
+        
+        // --- Floating Bar Sync ---
+        const floatBar = document.getElementById('floating-tts-bar');
+        const floatPlay = document.getElementById('float-play');
+        const floatPause = document.getElementById('float-pause');
+        const floatStatus = document.getElementById('float-status');
+        
+        if (floatBar) {
+          if (state === 'playing' || state === 'playing-neural') {
+            floatBar.classList.remove('hidden');
+            floatPlay.style.display = 'none';
+            floatPause.style.display = 'flex';
+            floatStatus.textContent = state === 'playing-neural' ? 'VOZ NEURONAL' : 'REPRODUCIENDO';
+          } else if (state === 'paused') {
+            floatBar.classList.remove('hidden');
+            floatPlay.style.display = 'flex';
+            floatPause.style.display = 'none';
+            floatStatus.textContent = 'PAUSADO';
+          } else {
+            floatBar.classList.add('hidden');
+          }
+        }
+      };
+
+      tts.onWord = (idx) => {
+        if (!highlightToggle.checked || !wordsSpans.length) return;
+        
+        for (let i = 0; i < wordsSpans.length; i++) {
+          wordsSpans[i].classList.remove('word-active');
+          if (i < idx) {
+            wordsSpans[i].classList.add('word-past');
+          } else {
+            wordsSpans[i].classList.remove('word-past');
+          }
+        }
+        
+        if (wordsSpans[idx]) {
+          wordsSpans[idx].classList.remove('word-past');
+          wordsSpans[idx].classList.add('word-active');
+          wordsSpans[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+
+      ttsPlay.addEventListener('click', async () => {
+        // Smart Load on Play
+        if (!tts.isNeuralActive && !tts.piperLoading) {
+          const notice = document.getElementById('data-notice');
+          if (notice) notice.style.display = 'none'; // Clear notice on manual start
+          await tts.initPiper();
+        }
+
+        if (tts.isPaused) tts.resume();
+        else tts.speak(readingText);
+      });
+
+      // --- Network-Aware Auto-Load ---
+      function handleNetwork() {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const notice = document.getElementById('data-notice');
+        
+        if (conn) {
+          // WiFi/Ethernet/High-Speed -> Silent Auto-Load
+          if (conn.type === 'wifi' || conn.type === 'ethernet' || (conn.effectiveType === '4g' && !conn.saveData)) {
+            console.log("WiFi/High-Speed detected. Silent loading neural voice...");
+            tts.initPiper();
+          } else {
+            // Cellular/Data-Saving -> Show Notice
+            if (notice) notice.style.display = 'inline';
+          }
+        } else {
+          // Fallback for browsers without Connection API (Safari) -> Show notice to be safe
+          if (notice) notice.style.display = 'inline';
+        }
+      }
+      
+      handleNetwork();
+
+      ttsPause.addEventListener('click', () => tts.pause());
+      ttsStop.addEventListener('click', () => tts.stop());
+
+      // --- Floating Handlers ---
+      const floatPlay = document.getElementById('float-play');
+      const floatPause = document.getElementById('float-pause');
+      const floatStop = document.getElementById('float-stop');
+
+      if (floatPlay) floatPlay.addEventListener('click', () => tts.resume());
+      if (floatPause) floatPause.addEventListener('click', () => tts.pause());
+      if (floatStop) floatStop.addEventListener('click', () => tts.stop());
     }
 
   } else {
@@ -278,17 +494,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     setAvatarState('thinking');
 
     try {
-      if (GEMINI_API_KEY === 'TU_API_KEY_DE_GEMINI_AQUI') {
-        throw new Error('No hay API Key configurada. Ponla en tutor.js en la línea 6.');
-      }
-
+      // Chat payload
       const payload = {
         system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: history,
         generationConfig: { temperature: 0.85, maxOutputTokens: 300 }
       };
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      // Call the Secure Proxy (Cloudflare Worker)
+      const res = await fetch('/api/tutor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -383,6 +597,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     msg.innerHTML = `🏆 ¡MAESTRÍA ALCANZADA! +100 XP <br><span class="text-[10px] opacity-60">Has demostrado dominio total de los estándares.</span>`;
     chatEl.appendChild(msg);
     chatEl.scrollTop = chatEl.scrollHeight;
+
+    // 5. Track Completion
+    const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+    if (!completions.includes(moduleId)) {
+      completions.push(moduleId);
+      localStorage.setItem('js_completed_modules', JSON.stringify(completions));
+    }
   }
 
 });
+
+/**
+ * ── OPEN READER (Dark Mode Overlay) ──
+ */
+window.openReader = function(module) {
+  const overlay = document.createElement('div');
+  overlay.id = 'reader-overlay';
+  overlay.style = "position:fixed; inset:0; background:#0a0a0f; z-index:20000; overflow-y:auto; padding:60px 20px; color:#e0e0e0; animation: fadeIn 0.3s ease;";
+  
+  const content = module.fullText || module.content || 'Sin contenido.';
+  const formatted = content.split('\n\n').map(p => `<p style="margin-bottom:1.5rem; line-height:1.8; font-size:1.1rem; max-width:700px; margin-left:auto; margin-right:auto;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+  overlay.innerHTML = `
+    <div style="max-width:800px; margin:0 auto; position:relative;">
+      <button onclick="document.getElementById('reader-overlay').remove()" style="position:fixed; top:20px; right:20px; background:rgba(255,255,255,0.1); border:none; color:white; width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:24px;">×</button>
+      <div style="text-align:center; margin-bottom:48px;">
+        <span style="color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:0.1em; font-size:0.8rem;">Modo Lectura Enfocada</span>
+        <h1 style="font-family:'Outfit',sans-serif; font-size:2.5rem; margin-top:10px;">${module.title}</h1>
+      </div>
+      <div class="reader-body" style="font-family:'Inter',serif;">
+        ${formatted}
+      </div>
+      <div style="text-align:center; margin-top:60px; padding-top:40px; border-top:1px solid rgba(255,255,255,0.1);">
+         <button onclick="document.getElementById('reader-overlay').remove()" class="btn-primary" style="padding:16px 40px;">Regresar al Tutor</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+};
