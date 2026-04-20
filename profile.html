@@ -50,13 +50,13 @@
 
         <div class="flex gap-4 mt-4">
           <button type="submit" class="btn-primary" style="flex:1">Guardar Cambios</button>
-          <a href="dashboard" class="btn-secondary">Cancelar</a>
+          <a href="dashboard.html" class="btn-secondary">Cancelar</a>
         </div>
       </form>
     </div>
   </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js?v=6"></script>
   <script>
     // Local Profile Logic
     const avatarImg = document.getElementById('avatar-img');
@@ -91,8 +91,9 @@
       };
       localStorage.setItem('jstem_profile', JSON.stringify(data));
       alert('¡Perfil actualizado con éxito!');
-      window.location.href = 'dashboard';
+      window.location.href = 'dashboard.html';
     });
   </script>
+  <footer id="global-footer"></footer>
 </body>
 </html>
