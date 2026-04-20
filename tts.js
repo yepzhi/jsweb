@@ -32,6 +32,10 @@ export class TTSManager {
     this.piperLoading = true;
     try {
       if (this.onStateChange) this.onStateChange('loading-neural');
+      
+      // Upgrade: Using onnxruntime-web 1.19.0 to match the global config and jsDelivr paths
+      await import('https://esm.sh/onnxruntime-web@1.19.0');
+      
       const { TtsSession } = await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.4');
       this.piper = await TtsSession.create({ voiceId: this.voiceModel });
       this.isNeuralActive = true;
@@ -41,7 +45,7 @@ export class TTSManager {
       console.error("DEBUG: Piper Init Failure Details:", {
         message: err.message,
         stack: err.stack,
-        origin: window.location.origin
+        ortEnvironment: window.ort ? window.ort.env : 'Not Global'
       });
       if (this.onStateChange) this.onStateChange('neural-error');
       this.piperLoading = false;

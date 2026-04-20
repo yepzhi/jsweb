@@ -410,12 +410,21 @@ a { text-decoration: none; color: inherit; }
   .tutor-layout {
     grid-template-columns: 1fr;
     height: auto;
-    padding: 10px;
-    gap: 15px;
+    padding: 16px;
+    gap: 24px;
+    margin-top: 64px !important;
   }
-  .reader-pane { max-height: 50vh; padding: 24px; }
-  .chat-container { height: 600px; padding: 15px; }
-  .font-head { font-size: 1.75rem !important; }
+  .reader-pane { 
+    max-height: none !important; 
+    padding: 24px 20px 100px !important; /* Large bottom padding for TTS bar */
+    border-radius: 16px;
+  }
+  .chat-container { 
+    height: 500px !important; 
+    padding: 16px !important; 
+    border-radius: 16px;
+  }
+  .font-head { font-size: 1.5rem !important; }
   .dash-header { padding: 0 12px; }
   .btn-primary, .btn-secondary, .mic-btn { min-height: 44px; }
 }
@@ -513,7 +522,16 @@ a { text-decoration: none; color: inherit; }
 .nav-btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(39, 126, 255, 0.25); }
 .nav-user-orb { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
 .nav-user-orb:hover { transform: scale(1.1); }
-@media (max-width: 640px) { .hide-mobile { display: none; } }
+
+@media (max-width: 640px) { 
+  .hide-mobile { display: none !important; } 
+  .nav-container { padding: 0 12px; }
+  .logo-text { font-size: 0.95rem; }
+  .nav-links { gap: 10px; }
+  .nav-link { font-size: 0.75rem; font-weight: 700; }
+  .nav-btn-primary { padding: 6px 12px; font-size: 0.75rem; border-radius: 8px; }
+  .nav-user-orb { width: 28px; height: 28px; font-size: 10px; border-width: 1px; }
+}
 
 /* Section Header for Dashboard */
 .page-header-gap { padding-top: 84px; }
@@ -886,13 +904,15 @@ a { text-decoration: none; color: inherit; }
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 .global-footer {
-  margin-top: 80px;
-  background: rgba(10, 10, 15, 0.4);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 60px 0 40px;
-  color: #fff;
+  margin-top: 60px;
+  background: #ffffff;
+  border-top: 1px solid #ebebeb;
+  padding: 20px 0;
+  color: #1a1a1b;
+  font-size: 0.75rem;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.02);
 }
+
 .global-footer .footer-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -901,28 +921,32 @@ a { text-decoration: none; color: inherit; }
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 15px;
 }
 .global-footer .footer-brand .logo-text {
-  font-size: 1.5rem;
+  font-size: 0.9rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 900;
-  letter-spacing: -0.03em;
-  display: block;
-  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  margin-bottom: 0;
 }
 .global-footer .footer-tagline {
-  font-size: 0.85rem;
-  opacity: 0.6;
-  max-width: 300px;
+  font-size: 0.7rem;
+  opacity: 0.7;
+  display: inline-block;
+  margin-left: 10px;
+  color: #1a1a1b;
 }
 .global-footer .footer-meta {
   text-align: right;
 }
 .global-footer .copyright {
-  font-size: 0.85rem;
-  opacity: 0.4;
-  margin-bottom: 8px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin: 0;
+  display: inline-block;
+  margin-right: 15px;
+  color: #1a1a1b;
 }
 .global-footer .footer-version {
   display: inline-block;
@@ -944,5 +968,318 @@ a { text-decoration: none; color: inherit; }
   }
   .global-footer .footer-meta {
     text-align: center;
+  }
+}
+
+/* ── Badge Achievement System ── */
+/* ── Pokémon-Style Badge Card System (v4.2.3) ── */
+#badge-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.badge-card {
+  position: relative;
+  background: #12121e;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 2 / 2.8;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4);
+  transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+.badge-card:not(.locked):hover {
+  transform: translateY(-10px) scale(1.03) rotate(1deg);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+  border-color: var(--card-color);
+  z-index: 10;
+}
+
+.badge-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  z-index: 2;
+}
+
+.badge-card .card-lvl {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 0.6rem;
+  color: #fff;
+  background: var(--card-color);
+  padding: 2px 8px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px var(--card-color);
+}
+
+.badge-card .card-attr {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.55rem;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+
+.badge-card .card-body {
+  position: relative;
+  flex: 1;
+  background: radial-gradient(circle at center, rgba(30, 30, 50, 1), #050508);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 2px 0;
+}
+
+.badge-card .card-illustration svg {
+  width: 55px;
+  height: 55px;
+  fill: none;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 12px var(--card-color));
+  transition: transform 0.6s ease;
+  opacity: 0.9;
+}
+
+.badge-card:not(.locked):hover .card-illustration svg {
+  transform: scale(1.2) rotate(-5deg);
+  filter: drop-shadow(0 0 20px var(--card-color));
+  opacity: 1;
+}
+
+.badge-card .card-footer {
+  margin-top: 10px;
+  text-align: left;
+  z-index: 2;
+}
+
+.badge-card .card-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  letter-spacing: -0.01em;
+}
+
+.badge-card .card-type {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.5rem;
+  color: var(--card-color);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Holographic Shimmer Effect */
+.badge-card .card-holo {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(-10deg);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.badge-card:not(.locked):hover .card-holo {
+  animation: holo-shimmer 2s infinite linear;
+}
+
+@keyframes holo-shimmer {
+  0% { transform: translate(-20%, -20%) rotate(-10deg); }
+  100% { transform: translate(20%, 20%) rotate(-10deg); }
+}
+
+/* Locked / Ghost State */
+.badge-card.locked {
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.badge-card .card-lock-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.05em;
+  z-index: 20;
+  backdrop-filter: blur(2px);
+}
+
+/* ── Achievement Modal ── */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  max-width: 440px;
+  width: 100%;
+  padding: 30px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: rgba(255,255,255,0.05);
+  border: none; color: #fff;
+  width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+.share-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn-share {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s;
+}
+
+.btn-download { background: var(--primary); color: #fff; }
+.btn-copy { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+.btn-share:hover { transform: translateY(-2px); }
+
+/* ── Neosys Aeon Community Integration (v4.2.4) ── */
+.community-banner {
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+.community-card {
+  background: #050510;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(167, 139, 250, 0.05);
+}
+
+.community-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(167, 139, 250, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+.community-content h2 {
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.community-content p {
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 400px;
+}
+
+.btn-neosys {
+  background: linear-gradient(135deg, #a78bfa 0%, #7dd3fc 100%);
+  color: #050510 !important;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 15px rgba(167, 139, 250, 0.3);
+  border: none;
+  text-decoration: none;
+}
+
+.btn-neosys:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(167, 139, 250, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-sparkle {
+  font-size: 1.2rem;
+  animation: neosys-sparkle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes neosys-sparkle-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+@media (max-width: 768px) {
+  .community-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+  }
+  .community-content p {
+    margin: 0 auto 24px;
   }
 }
