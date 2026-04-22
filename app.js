@@ -81,7 +81,7 @@ export function injectGlobalFooter() {
         
         <div class="footer-meta">
           <p class="copyright">&copy; 2026 jóvenesSTEM. Todos los derechos reservados.</p>
-          <span class="footer-version">v4.2.3</span>
+          <span class="footer-version">v5.0.0 (HIFI COMPLETE)</span>
         </div>
       </div>
     </div>
@@ -183,7 +183,7 @@ async function renderModulesList() {
 }
 
 /**
- * ACHIEVEMENT BADGE SYSTEM v4.2.2
+ * ACHIEVEMENT BADGE SYSTEM v5.0.0
  */
 const BADGE_COLLECTION = [
   { name: "Starter Mind", type: "LÓGICA", attr: "BEGINNER", color: "#00d2ff", desc: "Inicio del viaje STEM", icon: `<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-4.12 2.5 2.5 0 0 1 0-4.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-4.12 2.5 2.5 0 0 0 0-4.12A2.5 2.5 0 0 0 14.5 2z" />` },
