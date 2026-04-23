@@ -147,7 +147,7 @@ async function renderModulesList() {
       const iconSvg = ch.icon || '';
 
       html += `
-        <a href="${targetUrl}" class="card ${isLocked ? 'card-locked' : ''}" style="text-decoration:none; color:inherit; border-top: 3px solid ${accentColor};">
+        <a id="module-${m.id}" href="${targetUrl}" class="card ${isLocked ? 'card-locked' : ''}" style="text-decoration:none; color:inherit; border-top: 3px solid ${accentColor};">
           <div class="module-header">
             <div class="flex justify-between items-center mb-2">
                <span class="badge ${badgeCls}">${badgeTxt}</span>
@@ -186,27 +186,36 @@ async function renderModulesList() {
  * ACHIEVEMENT BADGE SYSTEM v5.0.0
  */
 const BADGE_COLLECTION = [
-  { name: "Starter Mind", type: "LÓGICA", attr: "BEGINNER", color: "#00d2ff", desc: "Inicio del viaje STEM", icon: `<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-4.12 2.5 2.5 0 0 1 0-4.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-4.12 2.5 2.5 0 0 0 0-4.12A2.5 2.5 0 0 0 14.5 2z" />` },
-  { name: "Curious Explorer", type: "LÓGICA", attr: "EXPLORER", color: "#ffcc00", desc: "Preguntando al mundo", icon: `<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/>` },
-  { name: "Problem Solver", type: "LÓGICA", attr: "SOLVER", color: "#00f260", desc: "Conectando ideas", icon: `<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>` },
-  { name: "Tech Apprentice", type: "TECH", attr: "SKILL", color: "#ff0055", desc: "Habilidades técnicas pro", icon: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>` },
-  { name: "Idea Generator", type: "TECH", attr: "CREATOR", color: "#f40076", desc: "Soluciones creativas", icon: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/>` },
-  { name: "Lab Rookie", type: "FÍSICA", attr: "CHEMIST", color: "#bdc3c7", desc: "Primeras pruebas", icon: `<path d="M9 2v17.5A2.5 2.5 0 0 0 11.5 22h1A2.5 2.5 0 0 0 15 19.5V2M9 8h6M8 2h8"/>` },
-  { name: "Data Tracker", type: "FÍSICA", attr: "ANALYST", color: "#00e5ff", desc: "Maestro de patrones", icon: `<path d="M3 3v18h18M7 16l4-4 4 4 5-8"/>` },
-  { name: "System Builder", type: "TECH", attr: "ENGR", color: "#ffbf00", desc: "Construyendo el futuro", icon: `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.27 6.96 8.73 5.05 8.73-5.05M12 22.08V12"/>` },
-  { name: "Tech Fixer", type: "TECH", attr: "DEBUG", color: "#a8ff78", desc: "Depurando sistemas", icon: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>` },
-  { name: "Module Master", type: "FÍSICA", attr: "MÉXICO", color: "#ffdf00", desc: "Primer gran hito", icon: `<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1v-2.34c0-.55.45-1 1-1h1c.55 0 1 .45 1 1zM17 14.66V17c0 .55-.45 1-1 1h-1c-.55 0-1-.45-1-1v-2.34c0-.55.45-1 1-1h1c.55 0 1 .45 1 1zM15 9V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4h6z"/>` },
-  { name: "Science Analyst", type: "FÍSICA", attr: "CORE", color: "#00b4d8", desc: "Visión microscópica", icon: `<path d="M6 18h8M3 22h18M12 18a3 3 0 0 0 3-3V9M12 14h3M12 10h3M12 6h3M9 10a3 3 0 0 1 3-3"/>` },
-  { name: "Automation Thinker", type: "TECH", attr: "ROBOT", color: "#9d4edd", desc: "Mente robótica", icon: `<path d="M12 8V4M8 4h8M9 12v2M15 12v2M5 9v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M9 9h6M2 13h3M19 13h3"/>` },
-  { name: "Digital Architect", type: "COSMOS", attr: "NETS", color: "#4cc9f0", desc: "Diseño de redes", icon: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M10 6h4M10 18h4M7 10v4M17 10v4"/>` },
-  { name: "Signal Navigator", type: "FÍSICA", attr: "NAV", color: "#f72585", desc: "Ondas y frecuencias", icon: `<path d="M2 20a16 16 0 0 1 20 0M7 15a8 8 0 0 1 10 0M12 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>` },
-  { name: "Innovation Driver", type: "LÓGICA", attr: "LEAD", color: "#3a0ca3", desc: "Impulso creativo", icon: `<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10M12 12l5 5"/>` },
-  { name: "Deep Thinker", type: "LÓGICA", attr: "QUANT", color: "#4361ee", desc: "Análisis avanzado", icon: `<path d="M12 3a9 9 0 1 0 9 9 9.75 9.75 0 0 0-6.74-9.31M11 12h2M12 9v6"/>` },
-  { name: "Research Specialist", type: "COSMOS", attr: "UNIVERSE", color: "#b5179e", desc: "Investigación científica", icon: `<path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>` },
-  { name: "Tech Explorer", type: "TECH", attr: "ACE", color: "#ff9100", desc: "Tecnologías de punta", icon: `<path d="m4.5 16.5-1.5 3 3 1.5M19.5 7.5l1.5-3-3-1.5M12 12l.01.01M9 6.75l6 10.5M6.75 15l10.5-6"/>` },
-  { name: "Future Designer", type: "COSMOS", attr: "LEGEND", color: "#80ffdb", desc: "Diseñando el mañana", icon: `<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 8l4 4-4 4M8 12h8"/>` },
-  { name: "Knowledge Commander", type: "COSMOS", attr: "MITHIC", color: "#560bad", desc: "Liderazgo STEM", icon: `<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M6 2v18M12 8h4M12 12h4"/>` },
-  { name: "Master of Progress", type: "COSMOS", attr: "GOD", color: "#ffd700", desc: "Logro Final", icon: `<path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><circle cx="12" cy="12" r="4"/><path d="m12 8 4 4-4 4-4-4 4-4z"/>` }
+  // ── CORE START ──
+  { name: "Starter Mind",        type: "LÓGICA",  attr: "BEGINNER", color: "#00d2ff", desc: "Inicio del viaje STEM",     icon: `<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-4.12 2.5 2.5 0 0 1 0-4.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-4.12 2.5 2.5 0 0 0 0-4.12A2.5 2.5 0 0 0 14.5 2z" />` },
+  { name: "Curious Explorer",    type: "LÓGICA",  attr: "EXPLORER", color: "#ffcc00", desc: "Preguntando al mundo",      icon: `<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/>` },
+  { name: "Data Tracker",        type: "FÍSICA",  attr: "ANALYST",  color: "#00e5ff", desc: "Maestro de patrones",       icon: `<path d="M3 3v18h18M7 16l4-4 4 4 5-8"/>` },
+
+  // ── CIENCIAS ──
+  { name: "Lab Rookie",          type: "FÍSICA",  attr: "CHEMIST",  color: "#bdc3c7", desc: "Primeras pruebas",         icon: `<path d="M9 2v17.5A2.5 2.5 0 0 0 11.5 22h1A2.5 2.5 0 0 0 15 19.5V2M9 8h6M8 2h8"/>` },
+  { name: "Signal Navigator",    type: "FÍSICA",  attr: "NAV",      color: "#f72585", desc: "Ondas y frecuencias",       icon: `<path d="M2 20a16 16 0 0 1 20 0M7 15a8 8 0 0 1 10 0M12 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>` },
+  { name: "Science Analyst",     type: "FÍSICA",  attr: "CORE",     color: "#00b4d8", desc: "Visión microscópica",       icon: `<path d="M6 18h8M3 22h18M12 18a3 3 0 0 0 3-3V9M12 14h3M12 10h3M12 6h3M9 10a3 3 0 0 1 3-3"/>` },
+  { name: "Module Master",       type: "FÍSICA",  attr: "MÉXICO",   color: "#ffdf00", desc: "Primer gran hito",          icon: `<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1-.45-1-1v-2.34c0-.55.45-1 1-1h1c.55 0 1 .45 1 1zM17 14.66V17c0 .55-.45 1-1 1h-1c-.55 0-1-.45-1-1v-2.34c0-.55.45-1 1-1h1c.55 0 1 .45 1 1zM15 9V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4h6z"/>` },
+
+  // ── TECNOLOGÍA ──
+  { name: "Tech Apprentice",     type: "TECH",    attr: "SKILL",    color: "#ff0055", desc: "Habilidades técnicas pro",  icon: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>` },
+  { name: "Idea Generator",      type: "TECH",    attr: "CREATOR",  color: "#f40076", desc: "Soluciones creativas",      icon: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/>` },
+  { name: "System Builder",      type: "TECH",    attr: "ENGR",     color: "#ffbf00", desc: "Construyendo el futuro",    icon: `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.27 6.96 8.73 5.05 8.73-5.05M12 22.08V12"/>` },
+  { name: "Tech Fixer",          type: "TECH",    attr: "DEBUG",    color: "#a8ff78", desc: "Depurando sistemas",        icon: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>` },
+  { name: "Automation Thinker",  type: "TECH",    attr: "ROBOT",    color: "#9d4edd", desc: "Mente robótica",            icon: `<path d="M12 8V4M8 4h8M9 12v2M15 12v2M5 9v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M9 9h6M2 13h3M19 13h3"/>` },
+  { name: "Tech Explorer",       type: "TECH",    attr: "ACE",      color: "#ff9100", desc: "Tecnologías de punta",      icon: `<path d="m4.5 16.5-1.5 3 3 1.5M19.5 7.5l1.5-3-3-1.5M12 12l.01.01M9 6.75l6 10.5M6.75 15l10.5-6"/>` },
+
+  // ── LÓGICA / CÓDIGO ──
+  { name: "Problem Solver",      type: "LÓGICA",  attr: "SOLVER",   color: "#00f260", desc: "Conectando ideas",          icon: `<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>` },
+  { name: "Innovation Driver",   type: "LÓGICA",  attr: "LEAD",     color: "#3a0ca3", desc: "Impulso creativo",          icon: `<circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10M12 12l5 5"/>` },
+  { name: "Deep Thinker",        type: "LÓGICA",  attr: "QUANT",    color: "#4361ee", desc: "Análisis avanzado",         icon: `<path d="M12 3a9 9 0 1 0 9 9 9.75 9.75 0 0 0-6.74-9.31M11 12h2M12 9v6"/>` },
+
+  // ── COSMOS / FUTURO ──
+  { name: "Digital Architect",   type: "COSMOS",  attr: "NETS",     color: "#4cc9f0", desc: "Diseño de redes",           icon: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M10 6h4M10 18h4M7 10v4M17 10v4"/>` },
+  { name: "Research Specialist", type: "COSMOS",  attr: "UNIVERSE", color: "#b5179e", desc: "Investigación científica",  icon: `<path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>` },
+  { name: "Future Designer",     type: "COSMOS",  attr: "LEGEND",   color: "#80ffdb", desc: "Diseñando el mañana",       icon: `<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 8l4 4-4 4M8 12h8"/>` },
+  { name: "Knowledge Commander", type: "COSMOS",  attr: "MITHIC",   color: "#560bad", desc: "Liderazgo STEM",            icon: `<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M6 2v18M12 8h4M12 12h4"/>` },
+  { name: "Master of Progress",  type: "COSMOS",  attr: "GOD",      color: "#ffd700", desc: "Logro Final",               icon: `<path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><circle cx="12" cy="12" r="4"/><path d="m12 8 4 4-4 4-4-4 4-4z"/>` },
 ];
 
 async function renderBadges() {
@@ -219,33 +228,32 @@ async function renderBadges() {
   let html = '';
   BADGE_COLLECTION.forEach((badge, idx) => {
     const levelNum = idx + 1;
-    const isLocked = doneCount < (levelNum * 10);
+    // Badge 1 always unlocked for preview; rest require 10 modules each
+    const isLocked = levelNum === 1 ? false : doneCount < (levelNum * 10);
     
     html += `
-      <div class="badge-card-container">
-        <div class="badge-card ${isLocked ? 'locked' : ''}" 
-             style="--card-color: ${badge.color}"
-             onclick="${isLocked ? '' : 'window.openShareModal(' + idx + ')'}">
-          
-          <div class="card-header">
-            <span class="card-lvl">lvl. ${levelNum}</span>
-            <span class="card-attr">${badge.attr}</span>
-          </div>
-
-          <div class="card-body">
-            <div class="card-illustration">
-              <svg viewBox="0 0 24 24" style="stroke: ${badge.color}">${badge.icon}</svg>
-            </div>
-            <div class="card-holo"></div>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-name">${badge.name}</div>
-            <div class="card-type">${badge.type}</div>
-          </div>
-          
-          ${isLocked ? '<div class="card-lock-overlay">🔒 BLOQUEADO</div>' : ''}
+      <div class="badge-card ${isLocked ? 'locked' : ''}" 
+           style="--card-color: ${badge.color}"
+           onclick="${isLocked ? '' : 'window.openShareModal(' + idx + ')'}">
+        
+        <div class="card-header">
+          <span class="card-lvl">lvl. ${levelNum}</span>
+          <span class="card-attr">${badge.attr}</span>
         </div>
+
+        <div class="card-body">
+          <div class="card-illustration">
+            <svg viewBox="0 0 24 24" style="stroke: ${badge.color}">${badge.icon}</svg>
+          </div>
+          <div class="card-holo"></div>
+        </div>
+
+        <div class="card-footer">
+          <div class="card-name">${badge.name}</div>
+          <div class="card-type">${badge.type}</div>
+        </div>
+        
+        ${isLocked ? '<div class="card-lock-overlay">🔒 BLOQUEADO</div>' : ''}
       </div>
     `;
   });
@@ -276,7 +284,7 @@ window.openShareModal = function(idx) {
         </button>
         <button class="btn-share btn-copy" onclick="window.copyShareLink(${idx})">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          COPIAR ENLACE
+          COMPARTIR LOGRO
         </button>
       </div>
     </div>
@@ -284,61 +292,154 @@ window.openShareModal = function(idx) {
 };
 
 window.downloadBadge = async function(idx) {
+  // Ensure fonts are ready
+  await document.fonts.ready;
+  
   const badge = BADGE_COLLECTION[idx];
   const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
   const name = (profile.name || 'Estudiante').toUpperCase();
   const canvas = document.getElementById('share-canvas');
   const ctx = canvas.getContext('2d');
   
-  // 1. Background
-  const grad = ctx.createLinearGradient(0, 0, 1200, 630);
-  grad.addColorStop(0, '#0f172a');
-  grad.addColorStop(1, '#1e293b');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1200, 630);
+  const W = 600;
+  const H = 1000;
   
-  // 2. Deco
-  ctx.strokeStyle = 'rgba(39, 126, 255, 0.15)';
-  ctx.lineWidth = 1;
+  // Clear & Base Background
+  ctx.fillStyle = '#050508';
+  ctx.fillRect(0, 0, W, H);
+  
+  // 1. Card Body
+  ctx.fillStyle = '#12121e';
   ctx.beginPath();
-  for(let i=0; i<1200; i+=60) { ctx.moveTo(i, 0); ctx.lineTo(i, 630); }
-  for(let i=0; i<630; i+=60) { ctx.moveTo(0, i); ctx.lineTo(1200, i); }
+  ctx.roundRect(30, 30, 540, 940, 40);
+  ctx.fill();
+  
+  // Border
+  ctx.strokeStyle = badge.color;
+  ctx.lineWidth = 6;
   ctx.stroke();
 
-  // 3. Texts
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#277eff';
-  ctx.font = 'bold 24px Inter';
-  ctx.fillText('JÓVENES STEM® · LOGRO OFICIAL', 600, 100);
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = '900 100px Outfit';
-  ctx.fillText(badge.name, 600, 280);
-  
-  ctx.font = 'bold 36px Inter';
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  ctx.fillText(`NIVEL CIENTÍFICO #${idx+1}`, 600, 350);
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 50px Inter';
-  ctx.fillText(name, 600, 480);
-  
-  ctx.font = '18px Inter';
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.fillText('CERTIFICADO POR ALBERTO YÉPIZ · PROYECTO JSWEB', 600, 560);
+  // 2. Glow / Holo
+  const holoGrad = ctx.createRadialGradient(W/2, H/2, 100, W/2, H/2, 500);
+  holoGrad.addColorStop(0, `${badge.color}33`);
+  holoGrad.addColorStop(1, 'transparent');
+  ctx.fillStyle = holoGrad;
+  ctx.fillRect(30, 30, 540, 940);
 
-  // 4. Download
+  // 3. Header
+  ctx.fillStyle = badge.color;
+  ctx.beginPath();
+  ctx.roundRect(60, 70, 140, 40, 20);
+  ctx.fill();
+  
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 22px Outfit, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`LVL. ${idx + 1}`, 130, 98);
+  
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '800 16px Inter, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(badge.attr, 530, 96);
+
+  // 4. Center Illustration
+  ctx.fillStyle = '#0a0a12';
+  ctx.beginPath();
+  ctx.roundRect(60, 140, 480, 500, 25);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Draw Icon
+  ctx.save();
+  ctx.translate(150, 220);
+  ctx.scale(12.5, 12.5);
+  ctx.strokeStyle = badge.color;
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const p = new Path2D(badge.icon.match(/d="([^"]+)"/)?.[1] || '');
+  ctx.stroke(p);
+  const circles = badge.icon.matchAll(/cx="([^"]+)" cy="([^"]+)" r="([^"]+)"/g);
+  for (const c of circles) {
+    ctx.beginPath(); ctx.arc(parseFloat(c[1]), parseFloat(c[2]), parseFloat(c[3]), 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.restore();
+
+  // 5. Footer: Badge Info
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 48px Outfit, sans-serif';
+  ctx.fillText(badge.name, 70, 710);
+  
+  ctx.fillStyle = badge.color;
+  ctx.font = '800 20px Inter, sans-serif';
+  ctx.fillText(badge.type, 70, 750);
+
+  // 6. Certificate / User Info
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fillRect(60, 790, 480, 2);
+  
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.font = '700 18px Inter, sans-serif';
+  ctx.fillText('CERTIFICADO STEM OTORGADO A:', W/2, 835);
+  
+  ctx.fillStyle = '#fff';
+  ctx.font = '900 42px Outfit, sans-serif';
+  ctx.fillText(name, W/2, 895);
+
+  // 7. Credits
+  ctx.globalAlpha = 0.4;
+  ctx.font = '900 14px Inter, sans-serif';
+  ctx.fillText('JÓVENESSTEM® v5.0 · ALBERTO YÉPIZ · STEM-ID: ' + Math.random().toString(36).substr(2, 9).toUpperCase(), W/2, 955);
+  ctx.globalAlpha = 1.0;
+
+  // Final Download
   const link = document.createElement('a');
-  link.download = `JS-Logro-${badge.name.replace(/\s/g, '-')}.png`;
-  link.href = canvas.toDataURL('image/png');
+  link.download = `STEM-Card-${name}-${badge.name.replace(/\s/g, '-')}.png`;
+  link.href = canvas.toDataURL('image/png', 1.0);
   link.click();
 };
 
 window.copyShareLink = function(idx) {
   const badge = BADGE_COLLECTION[idx];
-  const text = `¡Acabo de desbloquear el nivel "${badge.name}" en JóvenesSTEM! 🚀 #STEM #Educacion`;
+  const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+  const name = profile.name || 'Estudiante';
+  
+  const text = `🚀 ¡Acabo de desbloquear el nivel "${badge.name}" en JóvenesSTEM! \n\nSoy ${name} y estoy avanzando en mi ruta científica. Mira mi logro oficial aquí: https://yepzhi.com/jsweb/ \n\n#STEM #Educacion #JovenesSTEM`;
+  
   navigator.clipboard.writeText(text).then(() => {
-    alert('Texto de logro copiado para compartir!');
+    // Show premium toast
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      padding: 16px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--primary);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      z-index: 10000;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      text-align: center;
+      animation: slide-up 0.4s ease-out;
+    `;
+    toast.innerHTML = `
+      <div style="font-weight:900; color:var(--primary); margin-bottom:4px;">✨ ¡TEXTO COPIADO!</div>
+      <div style="opacity:0.8;">¡Descarga tu badge y pega este texto en tu post! 🚀</div>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.animation = 'slide-down 0.4s ease-in forwards';
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
   });
 };
 
@@ -398,10 +499,10 @@ async function renderDashboard() {
   if (doneCount >= 100) document.getElementById('ms-100')?.classList.add('unlocked');
   if (doneCount >= totalModules) document.getElementById('ms-final')?.classList.add('unlocked');
 
-  // Next Module Link
+  // Next Module Link - Redirects to the modules list and scrolls to the specific module
   const nextLink = document.getElementById('hero-module-link');
   if (nextLink && nextModule) {
-    nextLink.href = `tutor.html?id=${nextModule.id}`;
+    nextLink.href = `modules.html#module-${nextModule.id}`;
   }
 }
 

@@ -7,18 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=500">
+  <link rel="stylesheet" href="styles.css?v=513">
   <!-- Fix: Global ONNX Runtime for HD Voice (Piper TTS) -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/ort.min.js"></script>
   <script>
-    window.ort = {
-      env: {
-        wasm: {
-          wasmPaths: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/',
-          numThreads: 1, // Avoid SharedArrayBuffer requirement
-          proxy: false
-        }
-      }
-    };
+    // Robust configuration for ONNX Runtime to prevent 404s and multi-threading issues
+    if (window.ort) {
+      ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/';
+      ort.env.wasm.numThreads = 1; 
+      ort.env.wasm.simd = false; // Disable SIMD to increase compatibility across older browsers
+      console.log("ORT Global Configured:", ort.env.wasm);
+    }
   </script>
   <style>
     body { background-color: var(--surface); }
@@ -256,8 +255,14 @@
       <div id="loading-reader" class="text-center mt-8 text-muted">Cargando material de estudio...</div>
       
       <div id="article-content" style="display:none;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:8px;">
-          <span class="badge badge-active">LECTURA PRINCIPAL</span>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <a href="modules.html" class="btn-secondary" style="display:inline-flex; align-items:center; gap:8px; padding: 6px 14px; font-size: 0.7rem; border-radius: 10px; text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>Regresar</span>
+            </a>
+            <span class="badge badge-active">LECTURA PRINCIPAL</span>
+          </div>
           <button id="reader-mode-btn" class="reader-btn" title="Modo Lectura Oscura" style="display:none; width:auto; padding:0 12px; gap:6px; height:28px; font-size:0.68rem; font-weight:800; letter-spacing:0.04em;">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             MODO LECTURA
@@ -277,7 +282,6 @@
               <span class="slider"></span>
               <span class="switch-label">Subrayar</span>
             </label>
-            <span class="data-usage-notice" id="data-notice" style="display:none;">Voz HD ~25MB</span>
             <button id="tts-play" class="tts-btn" title="Reproducir">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
@@ -380,7 +384,7 @@
     </button>
   </div>
 
-  <script type="module" src="app.js?v=500"></script>
+  <script type="module" src="app.js?v=514"></script>
   <script type="module" src="tutor.js?v=3"></script>
   
   <audio id="success-sound" preload="auto">
