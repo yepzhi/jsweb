@@ -33,11 +33,18 @@ export class TTSManager {
     try {
       if (this.onStateChange) this.onStateChange('loading-neural');
       
-      // Upgrade: Using onnxruntime-web 1.19.0 to match the global config and jsDelivr paths
-      await import('https://esm.sh/onnxruntime-web@1.19.0');
+      // We rely on the global 'ort' loaded in tutor.html to avoid version conflicts and 404s
+      // If it's not there, we try to load it, but the script tag is the most reliable way.
+      if (!window.ort) {
+        await import('https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/ort.min.js');
+      }
       
-      const { TtsSession } = await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.4');
-      this.piper = await TtsSession.create({ voiceId: this.voiceModel });
+      // Pinning dependency via esm.sh to ensure compatibility with our global ORT 1.19.0
+      const { TtsSession } = await import('https://esm.sh/@mintplex-labs/piper-tts-web@1.0.4?deps=onnxruntime-web@1.19.0');
+      
+      this.piper = await TtsSession.create({ 
+        voiceId: this.voiceModel
+      });
       this.isNeuralActive = true;
       this.piperLoading = false;
       if (this.onStateChange) this.onStateChange('neural-ready');
