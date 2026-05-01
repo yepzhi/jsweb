@@ -50,8 +50,11 @@ export function injectGlobalNav() {
             </div>
           ` : `
             <a href="index.html#proceso" class="nav-link hide-mobile">Metodología</a>
-            <a href="index.html#pricing" class="nav-link hide-mobile">Precios</a>
-            <a href="login.html" class="nav-btn-primary">Ingresar</a>
+            <a href="index.html#standards" class="nav-link hide-mobile">Alineación</a>
+            <a href="index.html#portal" class="nav-link hide-mobile">Portal AI</a>
+            <a href="index.html#pricing" class="nav-link hide-mobile">Pricing</a>
+            <a href="login.html" class="nav-link">Ingresar</a>
+            <a href="register.html" class="nav-btn-primary">Crear Cuenta</a>
           `}
         </div>
       </div>
@@ -78,7 +81,7 @@ export function injectGlobalFooter() {
         
         <div class="footer-meta">
           <p class="copyright">&copy; 2026 jóvenesSTEM. Todos los derechos reservados.</p>
-          <span class="footer-version">v5.1.0 (CLERK + FIRESTORE)</span>
+          <span class="footer-version">v5.6</span>
         </div>
       </div>
     </div>

@@ -77,7 +77,7 @@ window.requireAuth = async function() {
   const clerk = await waitForClerk();
   if (!clerk.user) {
     const returnTo = encodeURIComponent(window.location.href);
-    window.location.replace(`/jsweb/login?return=${returnTo}`);
+    window.location.replace(`login.html?return=${returnTo}`);
     return null;
   }
   return clerk.user;
@@ -99,12 +99,12 @@ window.syncClerkNav = async function() {
     container.id = 'clerk-user-btn';
     container.style.cssText = 'display:flex;align-items:center;gap:12px;';
     navLinks.innerHTML = `
-      <a href="/jsweb/modules" class="nav-link">Explorar</a>
-      <a href="/jsweb/dashboard" class="nav-link">Dashboard</a>
+      <a href="modules.html" class="nav-link">Explorar</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
     `;
     navLinks.appendChild(container);
     clerk.mountUserButton(container, {
-      afterSignOutUrl: '/jsweb/',
+      afterSignOutUrl: 'index.html',
       appearance: CLERK_APPEARANCE,
     });
   }
@@ -114,26 +114,26 @@ window.syncClerkNav = async function() {
 window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = false) {
   const clerk = await waitForClerk();
   // If already signed in → go to dashboard
-  if (clerk.user) { window.location.replace('/jsweb/dashboard'); return; }
+  if (clerk.user) { window.location.replace('dashboard.html'); return; }
   const el = document.getElementById(containerId);
   if (!el) return;
   clerk.mountSignIn(el, {
     appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-    afterSignInUrl: '/jsweb/dashboard',
-    signUpUrl: '/jsweb/register',
+    afterSignInUrl: 'dashboard.html',
+    signUpUrl: 'register.html',
   });
 };
 
 // ── Mount Sign-Up (Dark Theme — register.html) ───────────────
 window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = false) {
   const clerk = await waitForClerk();
-  if (clerk.user) { window.location.replace('/jsweb/dashboard'); return; }
+  if (clerk.user) { window.location.replace('dashboard.html'); return; }
   const el = document.getElementById(containerId);
   if (!el) return;
   clerk.mountSignUp(el, {
     appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-    afterSignUpUrl: '/jsweb/dashboard',
-    signInUrl: '/jsweb/login',
+    afterSignUpUrl: 'dashboard.html',
+    signInUrl: 'login.html',
   });
 };
 
@@ -146,7 +146,7 @@ window.getClerkUser = function() {
 window.clerkSignOut = async function() {
   const clerk = await waitForClerk();
   await clerk.signOut();
-  window.location.replace('/jsweb/');
+  window.location.replace('index.html');
 };
 
 console.log('[JóvenesSTEM] auth.js loaded ✓');
