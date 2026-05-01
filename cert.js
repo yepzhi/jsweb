@@ -43,7 +43,7 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     
     firstPage.drawText(nombreCompleto, {
         x: (width - nombreWidth) / 2,
-        y: 315, // Centrado en el espacio en blanco superior
+        y: 330, // Subido ~0.5 cm
         size: nombreSize,
         font: fontBold,
         color: colorName,
@@ -51,13 +51,13 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
 
     // 2. DETALLES DE HORAS Y EVALUACIÓN
     const horasEstimadas = Math.max(10, Math.floor(completionsCount * 1.5));
-    const detallesText = `${horasEstimadas} horas de estudio. Evaluaciones con 90% de calificaciones promedio aprobatorias.`;
+    const detallesText = `${horasEstimadas} horas de estudio, ${completionsCount} módulos y evaluaciones de nivel con 90% de calificaciones promedio aprobatorias.`;
     const detallesSize = 11.5;
     const detallesWidth = fontItalic.widthOfTextAtSize(detallesText, detallesSize);
     
     firstPage.drawText(detallesText, {
         x: (width - detallesWidth) / 2,
-        y: 180, // Debajo del logo, arriba de las firmas
+        y: 186, // Subido ~0.2 cm
         size: detallesSize,
         font: fontItalic,
         color: colorText,
@@ -72,7 +72,7 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     const leftLineCenterX = width * 0.25 + 30;
     firstPage.drawText(fechaText, {
         x: leftLineCenterX - (fechaWidth / 2),
-        y: 165, // Arriba de la línea
+        y: 159, // Bajado ~0.2 cm
         size: fechaSize,
         font: fontRegular,
         color: colorText,
@@ -86,7 +86,7 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     const rightLineCenterX = width * 0.75 - 30;
     firstPage.drawText(instructorText, {
         x: rightLineCenterX - (instructorWidth / 2),
-        y: 165, // Arriba de la línea
+        y: 159, // Bajado ~0.2 cm
         size: instructorSize,
         font: fontBold,
         color: colorText,
