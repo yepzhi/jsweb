@@ -20,19 +20,17 @@ export default {
         const userId = body.userId || 'anonymous';
         const userContext = body.userContext || {}; // { name, xp, completions: [] }
 
-        // Inject dynamic personality based on student progress
+        // Inject dynamic personality (Lean version for token saving)
         const personalizedInstruction = `
           ${body.system_instruction?.parts[0]?.text || ''}
           
-          DATOS DEL ALUMNO ACTUAL:
+          CONTEXTO DEL ESTUDIANTE:
           - Nombre: ${userContext.name || 'Estudiante'}
-          - Nivel de Experiencia (XP): ${userContext.xp || 0}
-          - Módulos Completados: ${(userContext.completions || []).join(', ')}
+          - Nivel (XP): ${userContext.xp || 0}
           
-          INSTRUCCIÓN DE MEMORIA:
-          Usa el nombre del alumno ocasionalmente para crear cercanía. 
-          Si el alumno ya completó módulos relacionados, usa ese conocimiento para crear analogías.
-          Ajusta la complejidad de tus preguntas socráticas basándote en su XP (a mayor XP, preguntas más profundas).
+          REGLA SOCRÁTICA: 
+          Sé breve. Guía a ${userContext.name || 'el estudiante'} usando el contenido del módulo actual. 
+          No menciones temas de otros módulos a menos que el estudiante lo haga.
         `.trim();
 
         // Prepare payload for Gemini 2.0 Flash
