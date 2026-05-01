@@ -59,9 +59,12 @@ const CLERK_APPEARANCE_DARK = {
 // ── Wait for Clerk to be ready ───────────────────────────────
 async function waitForClerk() {
   await new Promise(resolve => {
-    const check = () => (window.Clerk && window.Clerk.loaded ? resolve() : setTimeout(check, 50));
+    const check = () => (window.Clerk ? resolve() : setTimeout(check, 50));
     check();
   });
+  if (!window.Clerk.loaded) {
+    await window.Clerk.load();
+  }
   return window.Clerk;
 }
 
