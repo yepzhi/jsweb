@@ -81,7 +81,7 @@ export function injectGlobalFooter() {
         
         <div class="footer-meta">
           <p class="copyright">&copy; 2026 jóvenesSTEM. Todos los derechos reservados.</p>
-          <span class="footer-version">v5.0.0 (HIFI COMPLETE)</span>
+          <span class="footer-version">v5.1.0 (CLERK + FIRESTORE)</span>
         </div>
       </div>
     </div>
