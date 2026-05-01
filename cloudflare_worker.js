@@ -13,29 +13,51 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // --- STEMBOT AI PROXY (Secure Gemini Integration) ---
+    // --- STEMBOT AI TUTOR (Proxy to Gemini with Context Injection) ---
     if (path === '/api/tutor' && request.method === 'POST') {
       try {
         const body = await request.json();
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+        const userId = body.userId || 'anonymous';
+        const userContext = body.userContext || {}; // { name, xp, completions: [] }
 
-        const geminiResponse = await fetch(geminiUrl, {
+        // Inject dynamic personality based on student progress
+        const personalizedInstruction = `
+          ${body.system_instruction?.parts[0]?.text || ''}
+          
+          DATOS DEL ALUMNO ACTUAL:
+          - Nombre: ${userContext.name || 'Estudiante'}
+          - Nivel de Experiencia (XP): ${userContext.xp || 0}
+          - Módulos Completados: ${(userContext.completions || []).join(', ')}
+          
+          INSTRUCCIÓN DE MEMORIA:
+          Usa el nombre del alumno ocasionalmente para crear cercanía. 
+          Si el alumno ya completó módulos relacionados, usa ese conocimiento para crear analogías.
+          Ajusta la complejidad de tus preguntas socráticas basándote en su XP (a mayor XP, preguntas más profundas).
+        `.trim();
+
+        // Prepare payload for Gemini 2.0 Flash
+        const geminiPayload = {
+          contents: body.contents,
+          system_instruction: { parts: [{ text: personalizedInstruction }] },
+          generationConfig: body.generationConfig || { temperature: 0.7, maxOutputTokens: 500 }
+        };
+
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(geminiPayload)
         });
 
-        const data = await geminiResponse.json();
+        const data = await geminiRes.json();
+        
+        // Optional: Here we could trigger an async fetch to save chat to Firestore
+        // for long-term memory, but we'll start with session-based memory + context injection.
+
         return new Response(JSON.stringify(data), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
-          }
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
       } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), { 
+        return new Response(JSON.stringify({ error: err.message }), {
           status: 500,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });

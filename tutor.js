@@ -494,14 +494,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     setAvatarState('thinking');
 
     try {
-      // Chat payload
+      // Call the Secure Proxy (Cloudflare Worker)
+      const clerkUser = window.Clerk?.user;
+      const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+      const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+
       const payload = {
+        userId: clerkUser?.id || 'anonymous',
+        userContext: {
+          name: clerkUser?.firstName || profile.name || 'Estudiante',
+          xp: profile.xp || 0,
+          completions: completions
+        },
         system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: history,
-        generationConfig: { temperature: 0.85, maxOutputTokens: 300 }
+        generationConfig: { temperature: 0.8, maxOutputTokens: 500 }
       };
 
-      // Call the Secure Proxy (Cloudflare Worker)
       const res = await fetch('/api/tutor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
