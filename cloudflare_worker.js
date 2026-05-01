@@ -62,6 +62,19 @@ export default {
       }
     }
 
+    // --- AUTH CONFIG (Clerk Publishable Key from Worker env vars) ---
+    if (path === '/api/auth-config') {
+      return new Response(JSON.stringify({ 
+        publishableKey: env.CLERK_PUBLISHABLE_KEY 
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'public, max-age=3600',
+        }
+      });
+    }
+
     // --- FIREBASE CONFIG (Serves client config from Worker env vars — not in git) ---
     if (path === '/api/firebase-config') {
       const config = {

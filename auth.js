@@ -63,8 +63,44 @@ async function waitForClerk() {
     check();
   });
   if (!window.Clerk.loaded) {
+    // Fetch key from worker
+    let publishableKey = null;
+    try {
+      const res = await fetch('/api/auth-config');
+      const data = await res.json();
+      publishableKey = data.publishableKey;
+    } catch (err) {
+      console.error('[Auth] Failed to fetch Clerk key from worker:', err);
+    }
+
     await window.Clerk.load({
-      ui: { ClerkUI: window.__internal_ClerkUICtor }
+      publishableKey: publishableKey,
+      ui: { ClerkUI: window.__internal_ClerkUICtor },
+      localization: {
+        socialButtonsBlockButton: "Continuar con {{provider|titleize}}",
+        dividerText: "o también",
+        formFieldLabel__emailAddress: "Correo electrónico",
+        formFieldLabel__password: "Contraseña",
+        formFieldLabel__firstName: "Nombre",
+        formFieldLabel__lastName: "Apellido",
+        formButtonPrimary: "Continuar",
+        signIn: {
+          start: {
+            title: "Iniciar sesión",
+            subtitle: "¡Bienvenido de nuevo! Inicia sesión para continuar.",
+            actionText: "¿No tienes cuenta?",
+            actionLink: "Regístrate"
+          }
+        },
+        signUp: {
+          start: {
+            title: "Crea tu cuenta",
+            subtitle: "¡Bienvenido! Completa los detalles para comenzar.",
+            actionText: "¿Ya tienes cuenta?",
+            actionLink: "Inicia sesión"
+          }
+        }
+      }
     });
   }
   return window.Clerk;

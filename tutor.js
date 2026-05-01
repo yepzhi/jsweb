@@ -480,6 +480,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     if(e.key === 'Enter' && textInput.value) processUserInput();
   });
 
+  // --- Rating System Logic ---
+  const ratingSection = document.getElementById('rating-section');
+  const starBtns = document.querySelectorAll('.star-btn');
+  let currentRating = 0;
+
+  starBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rating = parseInt(btn.getAttribute('data-star'));
+      currentRating = rating;
+      
+      // Update UI
+      starBtns.forEach(s => {
+        const sVal = parseInt(s.getAttribute('data-star'));
+        if (sVal <= rating) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+
+      console.log(`[Rating] User rated module ${moduleId} with ${rating} stars.`);
+      
+      // Save locally
+      const ratings = JSON.parse(localStorage.getItem('js_module_ratings') || '{}');
+      ratings[moduleId] = rating;
+      localStorage.setItem('js_module_ratings', JSON.stringify(ratings));
+
+      // Optional: Save to Cloud / Firestore if available
+      if (window.Clerk?.user && window.saveModuleComplete) {
+        // We could extend saveModuleComplete or add a new one
+        console.log('[Rating] Attempting to sync rating to cloud...');
+      }
+      
+      // Optional: Visual confirmation
+      addMessage('bot', `¡Gracias por calificar este módulo con ${rating} estrellas! Tu opinión nos ayuda a mejorar.`);
+    });
+  });
+
   // LLM Logic
   async function processUserInput() {
     const text = textInput.value.trim();
@@ -529,7 +567,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (responseText.includes('[APTO_PARA_AVANZAR]')) {
         responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
         controls.style.display = 'none';
+        
+        // Show Rating Section then next button
+        if (ratingSection) ratingSection.style.display = 'block';
         nextBtn.style.display = 'block';
+        
         reReadBtn.style.display = 'none';
         setAvatarState('celebrating');
         

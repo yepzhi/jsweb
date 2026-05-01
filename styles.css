@@ -511,13 +511,14 @@ a { text-decoration: none; color: inherit; }
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 40px;
 }
-.nav-logo { text-decoration: none; display: flex; align-items: center; }
+.nav-logo { text-decoration: none; display: flex; align-items: center; flex-shrink: 0; }
 .logo-text { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.03em; color: var(--text-color); }
 .logo-text em { font-style: normal; color: var(--primary); }
-.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links { display: flex; align-items: center; gap: 24px; flex: 1; justify-content: flex-start; }
 .nav-link { color: var(--text-muted); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: color 0.2s; }
 .nav-link:hover { color: var(--primary); }
 .nav-btn-primary { background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }

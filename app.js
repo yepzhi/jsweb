@@ -45,16 +45,16 @@ export function injectGlobalNav() {
           ${currentUser || isAppPage ? `
             <a href="modules.html" class="nav-link">Explorar</a>
             <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <div class="nav-user-orb" onclick="window.location.href='profile.html'">
+            <div class="nav-user-orb" onclick="window.location.href='profile.html'" style="margin-left: auto;">
               <span>${firstLetter}</span>
             </div>
           ` : `
             <a href="index.html#proceso" class="nav-link hide-mobile">Metodología</a>
             <a href="index.html#standards" class="nav-link hide-mobile">Alineación</a>
-            <a href="index.html#portal" class="nav-link hide-mobile">Portal AI</a>
+            <a href="index.html#portal" class="nav-link hide-mobile">Dashboard</a>
             <a href="index.html#pricing" class="nav-link hide-mobile">Pricing</a>
             <a href="login.html" class="nav-link">Ingresar</a>
-            <a href="register.html" class="nav-btn-primary">Crear Cuenta</a>
+            <a href="register.html" class="nav-btn-primary" style="margin-left: auto;">Crear Cuenta</a>
           `}
         </div>
       </div>
