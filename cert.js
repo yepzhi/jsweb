@@ -21,7 +21,7 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     // Colores
-    const colorName = rgb(0.12, 0.23, 0.45); // Azul más vivo y elegante
+    const colorName = rgb(0.0, 0.65, 0.80); // Electric Cyan Cool
     const colorText = rgb(0.25, 0.25, 0.25);
     const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
