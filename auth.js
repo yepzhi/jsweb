@@ -16,7 +16,7 @@ const CLERK_APPEARANCE = {
     colorInputText: '#0a0a0a',
   },
   elements: {
-    rootBox:               { width: '100%' },
+    rootBox:               { width: '100%', display: 'flex', justifyContent: 'center' },
     card:                  { boxShadow: 'none', padding: '0', borderRadius: '0', background: 'transparent' },
     headerTitle:           { fontFamily: "'Outfit', sans-serif", fontWeight: '800', fontSize: '1.6rem', letterSpacing: '-0.03em' },
     headerSubtitle:        { color: '#949494', fontSize: '0.875rem' },
@@ -41,7 +41,7 @@ const CLERK_APPEARANCE_DARK = {
     colorNeutral: '#ffffff',
   },
   elements: {
-    rootBox:               { width: '100%' },
+    rootBox:               { width: '100%', display: 'flex', justifyContent: 'center' },
     card:                  { boxShadow: 'none', padding: '0', borderRadius: '0', background: 'transparent', border: 'none' },
     headerTitle:           { fontFamily: "'Outfit', sans-serif", fontWeight: '800', fontSize: '2rem', letterSpacing: '-0.03em', color: '#ffffff' },
     headerSubtitle:        { color: 'rgba(255,255,255,0.5)' },
