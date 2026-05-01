@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=513">
+  <link rel="stylesheet" href="styles.css?v=515">
 </head>
 <body>
   <header id="global-nav"></header>
@@ -87,7 +87,34 @@
     <!-- Hidden Canvas for Image Generation -->
     <canvas id="share-canvas" width="600" height="1000" style="display:none;"></canvas>
 
-  <script type="module" src="app.js?v=514"></script>
+  <!-- Clerk Scripts -->
+  <script
+    defer
+    crossorigin="anonymous"
+    src="https://current-chimp-14.clerk.accounts.dev/npm/@clerk/ui@1/dist/ui.browser.js"
+    type="text/javascript"
+  ></script>
+  <script
+    defer
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_Y3VycmVudC1jaGltcC0xNC5jbGVyay5hY2NvdW50cy5kZXYk"
+    src="https://current-chimp-14.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+  <script src="auth.js?v=500" defer></script>
+  <script>
+    window.addEventListener('load', async function () {
+      const user = await window.requireAuth();
+      if (!user) return;
+      // Update dashboard user name from Clerk
+      const nameEl = document.getElementById('dash-user-name');
+      if (nameEl) {
+        nameEl.textContent = user.firstName || user.emailAddresses?.[0]?.emailAddress?.split('@')[0] || 'Estudiante';
+      }
+      await window.syncClerkNav();
+    });
+  </script>
+  <script type="module" src="app.js?v=515"></script></script>
   <footer id="global-footer"></footer>
 </body>
 </html>
