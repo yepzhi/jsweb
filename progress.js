@@ -19,7 +19,43 @@ import {
   arrayUnion, increment
 } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 
-import { firebaseConfig } from './firebase-config.js';
+// Load Firebase config from Cloudflare Worker env vars (not stored in git)
+// Falls back to local firebase-config.js for local dev (not committed to git)
+async function getFirebaseConfig() {
+  // In production, fetch from Worker (config lives in Worker env vars)
+  try {
+    const res = await fetch('/api/firebase-config');
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg.apiKey && cfg.apiKey !== 'undefined') return cfg;
+    }
+  } catch (_) { /* ignore */ }
+
+  // Dev fallback: try importing local firebase-config.js (gitignored)
+  try {
+    const mod = await import('./firebase-config.js');
+    return mod.firebaseConfig;
+  } catch (_) {
+    console.warn('[Progress] No Firebase config available. Progress will use localStorage only.');
+    return null;
+  }
+}
+
+const firebaseConfig = await getFirebaseConfig();
+
+
+// Init Firebase (only if config is available)
+if (!firebaseConfig) {
+  console.warn('[Progress] Firebase config missing — running in localStorage-only mode.');
+  window.progressReady = true;
+  window.dispatchEvent(new CustomEvent('progressReady'));
+  // Stub out all cloud functions to be no-ops
+  window.loadProgress = async () => null;
+  window.saveModuleComplete = async () => {};
+  window.addXPCloud = async () => {};
+  window.checkCertificate = async () => false;
+  throw new Error('Firebase config unavailable — localStorage fallback active.');
+}
 
 // Init Firebase (avoid double-init if app already loaded)
 const _app = getApps().length === 0
