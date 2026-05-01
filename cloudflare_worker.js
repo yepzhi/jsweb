@@ -33,14 +33,14 @@ export default {
           No menciones temas de otros módulos a menos que el estudiante lo haga.
         `.trim();
 
-        // Prepare payload for the absolute LATEST Flash model (Experimental 2.0)
+        // Prepare payload for the brand new Gemini 3 Flash (State of the Art)
         const geminiPayload = {
           contents: body.contents,
           system_instruction: { parts: [{ text: personalizedInstruction }] },
           generationConfig: body.generationConfig || { temperature: 0.7, maxOutputTokens: 500 }
         };
 
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${env.GEMINI_API_KEY}`, {
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(geminiPayload)
