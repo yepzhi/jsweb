@@ -66,7 +66,7 @@ async function waitForClerk() {
   console.log('[Auth] Fetching configuration from worker...');
   let publishableKey = null;
   try {
-    const res = await fetch('/api/auth-config');
+    const res = await fetch('/js_clerk_config');
     const data = await res.json();
     publishableKey = data.publishableKey;
   } catch (err) {
