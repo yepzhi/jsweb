@@ -57,30 +57,49 @@ const CLERK_APPEARANCE_DARK = {
 };
 
 // ── Wait for Clerk to be ready ───────────────────────────────
+// ── Wait for Clerk to be ready ───────────────────────────────
 async function waitForClerk() {
+  // If already loaded, return it
+  if (window.Clerk && window.Clerk.loaded) return window.Clerk;
+
+  // 1. Fetch key from worker first
+  console.log('[Auth] Fetching configuration from worker...');
+  let publishableKey = null;
+  try {
+    const res = await fetch('/api/auth-config');
+    const data = await res.json();
+    publishableKey = data.publishableKey;
+  } catch (err) {
+    console.error('[Auth] Failed to fetch Clerk key:', err);
+  }
+
+  if (!publishableKey) {
+    console.error('[Auth] CRITICAL: No publishable key found. Auth will not work.');
+    return null;
+  }
+
+  // 2. Dynamically inject Clerk script with the key
+  if (!window.Clerk) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
+      script.async = true;
+      script.setAttribute('data-clerk-publishable-key', publishableKey);
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  // 3. Wait for Clerk object to be available
   await new Promise(resolve => {
-    // Check for window.Clerk only
     const check = () => (window.Clerk ? resolve() : setTimeout(check, 50));
     check();
   });
 
+  // 4. Initialize Clerk
   if (!window.Clerk.loaded) {
-    console.log('[Auth] Fetching config...');
-    let publishableKey = null;
-    try {
-      const res = await fetch('/api/auth-config');
-      const data = await res.json();
-      publishableKey = data.publishableKey;
-    } catch (err) {
-      console.error('[Auth] Failed to fetch Clerk key:', err);
-    }
-
-    if (!publishableKey) {
-      console.warn('[Auth] No publishable key found. Clerk may not load correctly.');
-    }
-
     const loadOptions = {
-      publishableKey: publishableKey,
       localization: {
         socialButtonsBlockButton: "Continuar con {{provider|titleize}}",
         dividerText: "o también",
@@ -108,18 +127,14 @@ async function waitForClerk() {
       }
     };
 
-    // Only add UI ctor if it exists (legacy support)
-    if (window.__internal_ClerkUICtor) {
-      loadOptions.ui = { ClerkUI: window.__internal_ClerkUICtor };
-    }
-
     try {
       await window.Clerk.load(loadOptions);
-      console.log('[Auth] Clerk loaded successfully ✓');
+      console.log('[Auth] Clerk initialized successfully ✓');
     } catch (err) {
-      console.error('[Auth] Error loading Clerk:', err);
+      console.error('[Auth] Error initializing Clerk:', err);
     }
   }
+
   return window.Clerk;
 }
 
@@ -227,5 +242,10 @@ window.clerkSignOut = async function() {
   await clerk.signOut();
   window.location.replace('index.html');
 };
+
+// ── Auto-init ────────────────────────────────────────────────
+window.addEventListener('load', async () => {
+  await window.syncClerkNav();
+});
 
 console.log('[JóvenesSTEM] auth.js loaded ✓');
