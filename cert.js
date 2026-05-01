@@ -20,8 +20,9 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    // Colores
-    const colorName = rgb(0.0, 0.65, 0.80); // Electric Cyan Cool
+    // Colores para gradiente del nombre
+    const gradStart = { r: 0.0, g: 0.75, b: 0.90 };  // Electric Cyan #00BFE6
+    const gradEnd   = { r: 0.15, g: 0.25, b: 0.65 };  // Deep Royal Blue #2640A6
     const colorText = rgb(0.25, 0.25, 0.25);
     const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
 
@@ -29,7 +30,7 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
     const firstPage = pages[0];
     const { width, height } = firstPage.getSize();
 
-    // 1. NOMBRE DEL ALUMNO
+    // 1. NOMBRE DEL ALUMNO — Gradient Effect (char-by-char)
     const nombreCompleto = userName.toUpperCase();
     const maxNombreWidth = width * 0.8;
     
@@ -41,13 +42,27 @@ export async function generateAndDownloadCertificate(userName, completionsCount)
         nombreWidth = fontBold.widthOfTextAtSize(nombreCompleto, nombreSize);
     }
     
-    firstPage.drawText(nombreCompleto, {
-        x: (width - nombreWidth) / 2,
-        y: 330, // Subido ~0.5 cm
+    // Draw each character with interpolated gradient color
+    const chars = nombreCompleto.split('');
+    const totalChars = chars.length;
+    let cursorX = (width - nombreWidth) / 2;
+    
+    for (let i = 0; i < totalChars; i++) {
+      const t = totalChars > 1 ? i / (totalChars - 1) : 0;
+      const r_val = gradStart.r + (gradEnd.r - gradStart.r) * t;
+      const g_val = gradStart.g + (gradEnd.g - gradStart.g) * t;
+      const b_val = gradStart.b + (gradEnd.b - gradStart.b) * t;
+      
+      firstPage.drawText(chars[i], {
+        x: cursorX,
+        y: 330,
         size: nombreSize,
         font: fontBold,
-        color: colorName,
-    });
+        color: rgb(r_val, g_val, b_val),
+      });
+      
+      cursorX += fontBold.widthOfTextAtSize(chars[i], nombreSize);
+    }
 
     // 2. DETALLES DE HORAS Y EVALUACIÓN
     const horasEstimadas = Math.max(10, Math.floor(completionsCount * 1.5));
