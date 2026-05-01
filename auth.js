@@ -59,23 +59,28 @@ const CLERK_APPEARANCE_DARK = {
 // ── Wait for Clerk to be ready ───────────────────────────────
 async function waitForClerk() {
   await new Promise(resolve => {
-    const check = () => (window.Clerk && window.__internal_ClerkUICtor ? resolve() : setTimeout(check, 50));
+    // Check for window.Clerk only
+    const check = () => (window.Clerk ? resolve() : setTimeout(check, 50));
     check();
   });
+
   if (!window.Clerk.loaded) {
-    // Fetch key from worker
+    console.log('[Auth] Fetching config...');
     let publishableKey = null;
     try {
       const res = await fetch('/api/auth-config');
       const data = await res.json();
       publishableKey = data.publishableKey;
     } catch (err) {
-      console.error('[Auth] Failed to fetch Clerk key from worker:', err);
+      console.error('[Auth] Failed to fetch Clerk key:', err);
     }
 
-    await window.Clerk.load({
+    if (!publishableKey) {
+      console.warn('[Auth] No publishable key found. Clerk may not load correctly.');
+    }
+
+    const loadOptions = {
       publishableKey: publishableKey,
-      ui: { ClerkUI: window.__internal_ClerkUICtor },
       localization: {
         socialButtonsBlockButton: "Continuar con {{provider|titleize}}",
         dividerText: "o también",
@@ -101,7 +106,19 @@ async function waitForClerk() {
           }
         }
       }
-    });
+    };
+
+    // Only add UI ctor if it exists (legacy support)
+    if (window.__internal_ClerkUICtor) {
+      loadOptions.ui = { ClerkUI: window.__internal_ClerkUICtor };
+    }
+
+    try {
+      await window.Clerk.load(loadOptions);
+      console.log('[Auth] Clerk loaded successfully ✓');
+    } catch (err) {
+      console.error('[Auth] Error loading Clerk:', err);
+    }
   }
   return window.Clerk;
 }
