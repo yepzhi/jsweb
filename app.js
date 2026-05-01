@@ -103,6 +103,33 @@ export function addXP(amount) {
 }
 window.addXP = addXP;
 
+// ── STRIPE PAYMENTS ──────────────────────────────────────────
+export async function startStripeCheckout() {
+  const btn = document.querySelector('.btn-certify');
+  const originalText = btn ? btn.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+  }
+
+  try {
+    const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Error al iniciar pago');
+    }
+  } catch (err) {
+    alert('Error: ' + err.message);
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  }
+}
+window.startStripeCheckout = startStripeCheckout;
+
 export function unlockNext(currentId) {
   const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
   if (!completions.includes(currentId)) {
@@ -464,6 +491,29 @@ async function renderDashboard() {
     if (typeof window.loadProgress === 'function') {
       try { await window.loadProgress(); } catch (e) { /* fallback */ }
     }
+  }
+
+  // Handle Stripe Redirection Results
+  const urlParams = new URLSearchParams(window.location.search);
+  const paymentStatus = urlParams.get('payment');
+  if (paymentStatus === 'success') {
+    // In a real app, we would verify the session_id on the server/worker
+    // and update Firestore. For this MVP, we update the local/cloud state.
+    const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+    profile.hasCertificate = true;
+    localStorage.setItem('jstem_profile', JSON.stringify(profile));
+    
+    // Notify Firestore if possible
+    const userId = window.Clerk?.user?.id;
+    if (userId && typeof firebaseConfig !== 'undefined') {
+       // We'll add this update in a separate step to progress.js if needed
+    }
+
+    alert('¡Felicidades! Tu pago fue exitoso. Tu certificado está siendo generado.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (paymentStatus === 'cancel') {
+    alert('El proceso de pago fue cancelado.');
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 
   const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');

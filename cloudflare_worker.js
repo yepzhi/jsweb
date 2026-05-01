@@ -62,6 +62,43 @@ export default {
       });
     }
 
+    // --- STRIPE CHECKOUT (Creates payment session for $19 MXN) ---
+    if (path === '/api/stripe/checkout' && request.method === 'POST') {
+      try {
+        const formData = new URLSearchParams();
+        formData.append('line_items[0][price_data][currency]', 'mxn');
+        formData.append('line_items[0][price_data][product_data][name]', 'Certificación Oficial JóvenesSTEM');
+        formData.append('line_items[0][price_data][product_data][description]', 'Validación de competencias STEM alineada a NGSS y RENAC.');
+        formData.append('line_items[0][price_data][unit_amount]', '1900'); // $19.00 MXN
+        formData.append('line_items[0][quantity]', '1');
+        formData.append('mode', 'payment');
+        formData.append('success_url', 'https://yepzhi.com/jsweb/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}');
+        formData.append('cancel_url', 'https://yepzhi.com/jsweb/dashboard?payment=cancel');
+
+        const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData.toString()
+        });
+
+        const session = await stripeRes.json();
+        
+        if (session.error) throw new Error(session.error.message);
+
+        return new Response(JSON.stringify({ url: session.url }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     // Handle Pre-flight requests for CORS
     if (request.method === 'OPTIONS') {
       return new Response(null, {
