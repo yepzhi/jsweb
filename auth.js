@@ -63,7 +63,9 @@ async function waitForClerk() {
     check();
   });
   if (!window.__clerkLoaded) {
-    await window.Clerk.load();
+    await window.Clerk.load({
+      ui: { ClerkUI: window.__internal_ClerkUICtor }
+    });
     window.__clerkLoaded = true;
   }
   return window.Clerk;
