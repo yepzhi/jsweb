@@ -59,82 +59,103 @@ const CLERK_APPEARANCE_DARK = {
 // ── Wait for Clerk to be ready ───────────────────────────────
 async function waitForClerk() {
   await new Promise(resolve => {
-    const check = () => (window.Clerk ? resolve() : setTimeout(check, 40));
+    const check = () => (window.Clerk && window.Clerk.loaded ? resolve() : setTimeout(check, 50));
     check();
   });
-  if (!window.__clerkLoaded) {
-    await window.Clerk.load({
-      ui: { ClerkUI: window.__internal_ClerkUICtor }
-    });
-    window.__clerkLoaded = true;
-  }
   return window.Clerk;
 }
 
 // ── Route Protection ─────────────────────────────────────────
 // Call on protected pages — redirects to login if no session.
 window.requireAuth = async function() {
-  const clerk = await waitForClerk();
-  if (!clerk.user) {
-    const returnTo = encodeURIComponent(window.location.href);
-    window.location.replace(`login.html?return=${returnTo}`);
+  try {
+    const clerk = await waitForClerk();
+    if (!clerk.user) {
+      const returnTo = encodeURIComponent(window.location.href);
+      window.location.replace(`login.html?return=${returnTo}`);
+      return null;
+    }
+    return clerk.user;
+  } catch (err) {
+    console.error('[Auth] Error in requireAuth:', err);
     return null;
   }
-  return clerk.user;
 };
 
 // ── Update global nav based on auth state ───────────────────
 window.syncClerkNav = async function() {
-  const clerk = await waitForClerk();
-  const navLinks = document.querySelector('.nav-links');
-  if (!clerk.user || !navLinks) return;
+  try {
+    const clerk = await waitForClerk();
+    const navLinks = document.querySelector('.nav-links');
+    if (!clerk.user || !navLinks) return;
 
-  const u = clerk.user;
-  const initials = (u.firstName?.[0] || u.emailAddresses?.[0]?.emailAddress?.[0] || 'U').toUpperCase();
+    const u = clerk.user;
+    const initials = (u.firstName?.[0] || u.emailAddresses?.[0]?.emailAddress?.[0] || 'U').toUpperCase();
 
-  // Replace the "Ingresar" button area with UserButton + user orb
-  const existing = navLinks.querySelector('#clerk-user-btn');
-  if (!existing) {
-    const container = document.createElement('div');
-    container.id = 'clerk-user-btn';
-    container.style.cssText = 'display:flex;align-items:center;gap:12px;';
-    navLinks.innerHTML = `
-      <a href="modules.html" class="nav-link">Explorar</a>
-      <a href="dashboard.html" class="nav-link">Dashboard</a>
-    `;
-    navLinks.appendChild(container);
-    clerk.mountUserButton(container, {
-      afterSignOutUrl: 'index.html',
-      appearance: CLERK_APPEARANCE,
-    });
+    // Replace the "Ingresar" button area with UserButton + user orb
+    const existing = navLinks.querySelector('#clerk-user-btn');
+    if (!existing) {
+      const container = document.createElement('div');
+      container.id = 'clerk-user-btn';
+      container.style.cssText = 'display:flex;align-items:center;gap:12px;';
+      navLinks.innerHTML = `
+        <a href="modules.html" class="nav-link">Explorar</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+      `;
+      navLinks.appendChild(container);
+      clerk.mountUserButton(container, {
+        afterSignOutUrl: 'index.html',
+        appearance: CLERK_APPEARANCE,
+      });
+    }
+  } catch (err) {
+    console.error('[Auth] Error in syncClerkNav:', err);
   }
 };
 
 // ── Mount Sign-In (Light Theme — login.html) ─────────────────
 window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = false) {
-  const clerk = await waitForClerk();
-  // If already signed in → go to dashboard
-  if (clerk.user) { window.location.replace('dashboard.html'); return; }
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  clerk.mountSignIn(el, {
-    appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-    afterSignInUrl: 'dashboard.html',
-    signUpUrl: 'register.html',
-  });
+  try {
+    const clerk = await waitForClerk();
+    if (clerk.user) { window.location.replace('dashboard.html'); return; }
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    
+    // Ensure container is empty before mounting
+    el.innerHTML = '';
+    
+    clerk.mountSignIn(el, {
+      appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
+      afterSignInUrl: 'dashboard.html',
+      signUpUrl: 'register.html',
+    });
+  } catch (err) {
+    console.error('[Auth] Error mounting Sign-In:', err);
+    const el = document.getElementById(containerId);
+    if (el) el.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444; font-weight:600;">Error al cargar el inicio de sesión. Por favor, intenta refrescar la página.</div>';
+  }
 };
 
 // ── Mount Sign-Up (Dark Theme — register.html) ───────────────
 window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = false) {
-  const clerk = await waitForClerk();
-  if (clerk.user) { window.location.replace('dashboard.html'); return; }
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  clerk.mountSignUp(el, {
-    appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-    afterSignUpUrl: 'dashboard.html',
-    signInUrl: 'login.html',
-  });
+  try {
+    const clerk = await waitForClerk();
+    if (clerk.user) { window.location.replace('dashboard.html'); return; }
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    
+    el.innerHTML = '';
+    
+    clerk.mountSignUp(el, {
+      appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
+      afterSignUpUrl: 'dashboard.html',
+      signInUrl: 'login.html',
+    });
+  } catch (err) {
+    console.error('[Auth] Error mounting Sign-Up:', err);
+    const el = document.getElementById(containerId);
+    if (el) el.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444; font-weight:600;">Error al cargar el registro. Por favor, intenta refrescar la página.</div>';
+  }
 };
 
 // ── Get current user (sync helper) ──────────────────────────
