@@ -6,6 +6,7 @@
  * app.js - JóvenesSTEM Platform Core
  * Handles unified navigation and dynamic module rendering.
  */
+import { generateAndDownloadCertificate } from './cert.js?v=540';
 
 // Global state
 let currentUser = null;
@@ -569,6 +570,41 @@ async function renderDashboard() {
   const nextLink = document.getElementById('hero-module-link');
   if (nextLink && nextModule) {
     nextLink.href = `modules.html#module-${nextModule.id}`;
+  }
+
+  // Inject Certificate Download Button if paid
+  const certContainer = document.getElementById('cert-action-container');
+  if (certContainer && profile.hasCertificate) {
+    if (!document.getElementById('btn-download-cert')) {
+      const btnCert = document.createElement('button');
+      btnCert.id = 'btn-download-cert';
+      btnCert.className = 'btn-primary';
+      btnCert.style.display = 'inline-flex';
+      btnCert.style.alignItems = 'center';
+      btnCert.style.gap = '8px';
+      btnCert.style.background = 'linear-gradient(135deg, #00a896 0%, #028090 100%)';
+      btnCert.style.boxShadow = '0 8px 30px rgba(0, 168, 150, 0.35)';
+      btnCert.style.border = 'none';
+      btnCert.style.cursor = 'pointer';
+      btnCert.innerHTML = `
+        <span>Descargar Certificado PDF</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      `;
+      btnCert.onclick = () => {
+        const userName = window.Clerk?.user?.firstName || profile.name || 'Estudiante';
+        btnCert.disabled = true;
+        btnCert.querySelector('span').textContent = 'Generando...';
+        generateAndDownloadCertificate(userName, completions.length).then(() => {
+          btnCert.disabled = false;
+          btnCert.querySelector('span').textContent = 'Descargar Certificado PDF';
+        });
+      };
+      certContainer.appendChild(btnCert);
+    }
   }
 }
 

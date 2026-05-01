@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=520">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
   <header id="global-nav"></header>
@@ -31,10 +32,12 @@
         <h1 class="text-4xl font-head font-black tracking-tight mb-2">¡Hola, <span id="dash-user-name">Estudiante</span>!</h1>
         <p id="dash-rank" class="text-primary font-bold mb-4">ASPIRANTE STEM</p>
         <p class="text-muted mb-6" style="max-width: 500px;">Estás en el camino hacia tu <strong>Certificación Oficial JóvenesSTEM</strong>. Sigue explorando para desbloquear tu diploma reconocido por NGSS y RENAC.</p>
-        <a id="hero-module-link" href="modules.html" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
-          <span>Continuar mi ruta</span>
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div id="cert-action-container" style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a id="hero-module-link" href="modules.html" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+            <span>Continuar mi ruta</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
