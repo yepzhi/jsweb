@@ -96,9 +96,9 @@ export function addXP(amount) {
   const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
   profile.xp = (profile.xp || 0) + amount;
   localStorage.setItem('jstem_profile', JSON.stringify(profile));
-  
-  // Trigger a custom event for UI updates if needed
   window.dispatchEvent(new CustomEvent('xpUpdated', { detail: profile.xp }));
+  // Cloud sync (non-blocking)
+  if (typeof window.addXPCloud === 'function') window.addXPCloud(amount);
   console.log(`XP Added: ${amount}. Total: ${profile.xp}`);
 }
 window.addXP = addXP;
@@ -109,6 +109,8 @@ export function unlockNext(currentId) {
     completions.push(currentId);
     localStorage.setItem('js_completed_modules', JSON.stringify(completions));
   }
+  // Cloud sync (non-blocking)
+  if (typeof window.saveModuleComplete === 'function') window.saveModuleComplete(currentId);
   console.log(`Module ${currentId} completed/unlocked.`);
 }
 window.unlockNext = unlockNext;
@@ -450,6 +452,20 @@ async function renderDashboard() {
   const percentEl = document.getElementById('dash-percent');
   if (!percentEl) return;
 
+  // 0. Load from Firestore if user is signed in (overrides localStorage)
+  if (typeof window.loadProgress === 'function') {
+    try { await window.loadProgress(); } catch (e) { /* fallback to localStorage */ }
+  } else {
+    // Wait briefly for progress.js to finish loading
+    await new Promise(resolve => {
+      const timeout = setTimeout(() => resolve(), 1500);
+      window.addEventListener('progressReady', () => { clearTimeout(timeout); resolve(); }, { once: true });
+    });
+    if (typeof window.loadProgress === 'function') {
+      try { await window.loadProgress(); } catch (e) { /* fallback */ }
+    }
+  }
+
   const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
   const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
   const data = await fetchModules();
@@ -514,21 +530,17 @@ window.logout = async () => {
 
 // Setup Auth bypass (Local Storage Only)
 function checkLocalAuth() {
+  // Auth is now handled by Clerk via requireAuth() in page scripts.
+  // This function updates UI elements with the user's name.
+  const clerkUser = window.Clerk?.user;
   const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
-  const path = window.location.pathname;
-  const protectedPaths = ['profile.html']; // Only strictly personal data is protected
-  const isProtected = protectedPaths.some(p => path.includes(p));
-  
-  if (isProtected && !profile.name) {
-    console.warn('Acceso restringido. Redirigiendo a login...');
-    window.location.href = 'login.html';
-  }
+  const userName = clerkUser?.firstName
+    || clerkUser?.emailAddresses?.[0]?.emailAddress?.split('@')[0]
+    || profile.name
+    || 'Invitado';
 
-  // Dashboard specifics
   const nameEl = document.getElementById('dash-user-name');
-  if (nameEl) {
-    nameEl.textContent = profile.name || 'Invitado';
-  }
+  if (nameEl) nameEl.textContent = userName;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
