@@ -1,9 +1,5 @@
 /**
  * app.js - JóvenesSTEM Platform Core
- * Handles unified navigation, Firebase Auth sync, and dynamic module rendering.
- */
-/**
- * app.js - JóvenesSTEM Platform Core
  * Handles unified navigation and dynamic module rendering.
  */
 import { generateAndDownloadCertificate } from './cert.js?v=540';
