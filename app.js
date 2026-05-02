@@ -150,6 +150,23 @@ async function renderModulesList() {
   if(!container) return;
   
   const modules = await fetchModules();
+  
+  // Progress Sync: Priority to Cloud, fallback to localStorage
+  let completions = [];
+  try {
+    const localData = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+    completions = localData;
+    if (window.loadProgress) {
+      const cloudData = await window.loadProgress();
+      if (cloudData && cloudData.completedModules) {
+        completions = cloudData.completedModules;
+        localStorage.setItem('js_completed_modules', JSON.stringify(completions));
+      }
+    }
+  } catch (err) {
+    console.error('[App] Error loading progress:', err);
+  }
+
   let html = '';
 
   modules.chapters.forEach(ch => {

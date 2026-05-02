@@ -146,7 +146,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
       
     if (contentEl) {
-      contentEl.innerHTML = mainBody + footerHtml;
+      // Check if already completed
+      const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+      const isAlreadyDone = completions.includes(String(moduleId));
+      
+      let completionBanner = '';
+      if (isAlreadyDone) {
+        completionBanner = `
+          <div class="completion-banner" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <div style="color: #22c55e;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            </div>
+            <div>
+              <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.9rem; color: #22c55e; letter-spacing: 0.05em; text-transform: uppercase;">Módulo Completado</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Ya has demostrado maestría en este tema con el StemBot.</div>
+            </div>
+          </div>
+        `;
+      }
+
+      contentEl.innerHTML = completionBanner + mainBody + footerHtml;
       contentEl.style.whiteSpace = 'normal'; // Allow HTML layout
     }
 
@@ -507,10 +526,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       ratings[moduleId] = rating;
       localStorage.setItem('js_module_ratings', JSON.stringify(ratings));
 
-      // Optional: Save to Cloud / Firestore if available
-      if (window.Clerk?.user && window.saveModuleComplete) {
-        // We could extend saveModuleComplete or add a new one
-        console.log('[Rating] Attempting to sync rating to cloud...');
+      // Save to Cloud / Firestore
+      if (typeof window.saveModuleRating === 'function') {
+        window.saveModuleRating(moduleId, rating);
       }
       
       // Optional: Visual confirmation

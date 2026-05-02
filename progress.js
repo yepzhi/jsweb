@@ -188,6 +188,21 @@ window.addXPCloud = async function (amount) {
   }
 };
 
+window.saveModuleRating = async function (moduleId, rating) {
+  const userId = getClerkUserId();
+  if (!userId) return;
+  try {
+    const ref = doc(db, 'users', userId);
+    await setDoc(ref, {
+      ratings: { [moduleId]: rating },
+      lastActive: new Date().toISOString()
+    }, { merge: true });
+    console.log(`[Progress] Rating saved to Cloud: ${moduleId} = ${rating}`);
+  } catch (err) {
+    console.error('[Progress] Error saving rating:', err);
+  }
+};
+
 /**
  * checkCertificate() — Check if user has paid for certificate.
  */
