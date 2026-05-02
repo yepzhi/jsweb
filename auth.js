@@ -85,7 +85,7 @@ async function waitForClerk() {
     if (!window.Clerk) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
+        script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js";
         script.setAttribute('data-clerk-publishable-key', publishableKey);
         script.async = true;
         script.crossOrigin = 'anonymous';
@@ -132,7 +132,10 @@ async function waitForClerk() {
       };
 
       try {
-        await window.Clerk.load(loadOptions);
+        await window.Clerk.load({
+          ...loadOptions,
+          publishableKey: publishableKey
+        });
         console.log('[Auth] Clerk initialized successfully ✓');
       } catch (err) {
         console.error('[Auth] Error initializing Clerk:', err);
