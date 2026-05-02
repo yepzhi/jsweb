@@ -58,87 +58,91 @@ const CLERK_APPEARANCE_DARK = {
 
 // ── Wait for Clerk to be ready ───────────────────────────────
 // ── Wait for Clerk to be ready ───────────────────────────────
+let clerkLoadingPromise = null;
+
 async function waitForClerk() {
-  // If already loaded, return it
   if (window.Clerk && window.Clerk.loaded) return window.Clerk;
+  if (clerkLoadingPromise) return clerkLoadingPromise;
 
-  // 1. Fetch key from worker first
-  console.log('[Auth] Fetching configuration from worker...');
-  let publishableKey = null;
-  try {
-    const res = await fetch('api/clerk-config');
-    const data = await res.json();
-    publishableKey = data.publishableKey;
-  } catch (err) {
-    console.error('[Auth] Failed to fetch Clerk key:', err);
-  }
+  clerkLoadingPromise = (async () => {
+    // 1. Fetch key from worker first
+    console.log('[Auth] Fetching configuration from worker...');
+    let publishableKey = null;
+    try {
+      const res = await fetch('api/clerk-config');
+      const data = await res.json();
+      publishableKey = data.publishableKey;
+    } catch (err) {
+      console.error('[Auth] Failed to fetch Clerk key:', err);
+    }
 
-  if (!publishableKey) {
-    console.error('[Auth] CRITICAL: No publishable key found. Auth will not work.');
-    return null;
-  }
+    if (!publishableKey) {
+      console.error('[Auth] CRITICAL: No publishable key found. Auth will not work.');
+      return null;
+    }
 
-  // 2. Dynamically inject Clerk script with the key
-  if (!window.Clerk) {
-    await new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
-      script.async = true;
-      script.setAttribute('data-clerk-publishable-key', publishableKey);
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  }
+    // 2. Dynamically inject Clerk script
+    if (!window.Clerk) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
+        script.setAttribute('data-clerk-publishable-key', publishableKey);
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
 
-  // 3. Wait for Clerk object to be available
-  await new Promise(resolve => {
-    const check = () => (window.Clerk ? resolve() : setTimeout(check, 50));
-    check();
-  });
+    // 3. Wait for Clerk object and initialize
+    let checkCount = 0;
+    while (!window.Clerk && checkCount < 100) {
+      await new Promise(r => setTimeout(r, 50));
+      checkCount++;
+    }
 
-  // 4. Initialize Clerk
-  if (!window.Clerk.loaded) {
-    const loadOptions = {
-      localization: {
-        socialButtonsBlockButton: "Continuar con {{provider|titleize}}",
-        dividerText: "o también",
-        formFieldLabel__emailAddress: "Correo electrónico",
-        formFieldLabel__password: "Contraseña",
-        formFieldLabel__firstName: "Nombre",
-        formFieldLabel__lastName: "Apellido",
-        formButtonPrimary: "Continuar",
-        signIn: {
-          start: {
-            title: "Iniciar sesión",
-            subtitle: "¡Bienvenido de nuevo! Inicia sesión para continuar.",
-            actionText: "¿No tienes cuenta?",
-            actionLink: "Regístrate"
-          }
-        },
-        signUp: {
-          start: {
-            title: "Crea tu cuenta",
-            subtitle: "¡Bienvenido! Completa los detalles para comenzar.",
-            actionText: "¿Ya tienes cuenta?",
-            actionLink: "Inicia sesión"
+    if (!window.Clerk.loaded) {
+      const loadOptions = {
+        localization: {
+          socialButtonsBlockButton: "Continuar con {{provider|titleize}}",
+          dividerText: "o también",
+          formFieldLabel__emailAddress: "Correo electrónico",
+          formFieldLabel__password: "Contraseña",
+          formFieldLabel__firstName: "Nombre",
+          formFieldLabel__lastName: "Apellido",
+          formButtonPrimary: "Continuar",
+          signIn: {
+            start: {
+              title: "Iniciar sesión",
+              subtitle: "¡Bienvenido de nuevo! Inicia sesión para continuar.",
+              actionText: "¿No tienes cuenta?",
+              actionLink: "Regístrate"
+            }
+          },
+          signUp: {
+            start: {
+              title: "Crea tu cuenta",
+              subtitle: "¡Bienvenido! Completa los detalles para comenzar.",
+              actionText: "¿Ya tienes cuenta?",
+              actionLink: "Inicia sesión"
+            }
           }
         }
+      };
+
+      try {
+        await window.Clerk.load(loadOptions);
+        console.log('[Auth] Clerk initialized successfully ✓');
+      } catch (err) {
+        console.error('[Auth] Error initializing Clerk:', err);
       }
-    };
-
-    try {
-      await window.Clerk.load({
-        ...loadOptions,
-        standardBrowser: true
-      });
-      console.log('[Auth] Clerk initialized successfully ✓');
-    } catch (err) {
-      console.error('[Auth] Error initializing Clerk:', err);
     }
-  }
 
-  return window.Clerk;
+    return window.Clerk;
+  })();
+
+  return clerkLoadingPromise;
 }
 
 // ── Route Protection ─────────────────────────────────────────
