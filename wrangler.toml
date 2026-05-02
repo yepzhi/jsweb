@@ -1,0 +1,14 @@
+name = "jsweb"
+main = "cloudflare_worker.js"
+compatibility_date = "2026-04-11"
+
+[vars]
+CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsueWVwemhpLmNvbSQ"
+FIREBASE_PROJECT_ID = "jsweb-b14f8"
+FIREBASE_APP_ID = "1:218554230933:web:396ef863b0ebc7d949139c"
+FIREBASE_MESSAGING_SENDER_ID = "218554230933"
+FIREBASE_MEASUREMENT_ID = "G-HGW4XK8JW0"
+
+[[routes]]
+pattern = "yepzhi.com/*"
+custom_domain = true
