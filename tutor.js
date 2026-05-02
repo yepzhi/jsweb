@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nextBtn = document.getElementById('next-module-btn');
   const controls = document.getElementById('input-controls');
 
+  // Anti-Cheating: Block Paste
+  if (textInput) {
+    textInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      alert('⚠️ Por honestidad académica, no puedes pegar texto. ¡Escribe tus propias ideas!');
+    });
+  }
+
   const tts = new TTSManager();
   const ttsPlay = document.getElementById('tts-play');
   const ttsPause = document.getElementById('tts-pause');
