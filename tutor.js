@@ -119,17 +119,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (line.includes('🔖')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
-          label = 'Bluebook';
-          content = content.replace('**🔖', '').replace('🔖', '').replace('**', '').replace('Bluebook v1 ·', '').trim();
+          label = 'Bluebook v1';
+          content = content.replace('**🔖', '').replace('🔖', '').replace('**', '').trim();
         } else if (line.includes('📐')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="m2 22 1-1h3l9-9"></path><path d="M3 21v-3l9-9"></path><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-3-3Z"></path></svg>`;
-          label = 'NGSS';
+          label = 'NGSS Alignment';
           content = content.replace('**📐', '').replace('📐', '').replace('**', '').replace('NGSS:', '').trim();
         } else if (line.includes('📋')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`;
-          label = 'RENAC';
-          content = content.replace('**📋', '').replace('📋', '').replace('**', '').replace('RENAC / ', '').replace('RENAC:', '').trim();
-          if (content.includes('EC009')) content = 'SEP-CONOCER: ' + content;
+          label = 'Competencia';
+          content = 'Alineado a competencias RENAC EC EC009';
         } else if (line.includes('💡')) {
           const concepts = content.replace('**💡', '').replace('💡', '').replace('**', '').replace(/Standards World:|Estándares:|World of Standards:/g, '').trim().split(' · ').join(', ');
           footerHtml += `
