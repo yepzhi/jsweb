@@ -170,6 +170,14 @@ async function renderModulesList() {
       const targetUrl = isLocked ? '#' : `tutor.html?id=${m.id}`;
       const badgeCls = isLocked ? 'badge-dev' : 'badge-active';
       const badgeTxt = isLocked ? 'EN DESARROLLO' : 'DISPONIBLE';
+      const isDone = completions.includes(String(m.id));
+      
+      // Palomita verde SVG
+      const checkSvg = `
+        <div class="done-check" style="color:#22c55e; filter: drop-shadow(0 0 5px rgba(34,197,94,0.4));">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+      `;
       
       // Use ch.icon and ch.color for the card accent
       const accentColor = ch.color || 'var(--primary)';
@@ -179,7 +187,10 @@ async function renderModulesList() {
         <a id="module-${m.id}" href="${targetUrl}" class="card ${isLocked ? 'card-locked' : ''}" style="text-decoration:none; color:inherit; border-top: 3px solid ${accentColor};">
           <div class="module-header">
             <div class="flex justify-between items-center mb-2">
-               <span class="badge ${badgeCls}">${badgeTxt}</span>
+               <div class="flex items-center gap-2">
+                 <span class="badge ${badgeCls}">${badgeTxt}</span>
+                 ${isDone ? checkSvg : ''}
+               </div>
                <div style="color:${accentColor}; width:18px; height:18px;">${iconSvg}</div>
             </div>
             <h4 class="module-title font-head font-bold">${m.title}</h4>
