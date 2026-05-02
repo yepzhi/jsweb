@@ -82,7 +82,7 @@ async function waitForClerk() {
   if (!window.Clerk) {
     await new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
+      script.src = `https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js`;
       script.async = true;
       script.setAttribute('data-clerk-publishable-key', publishableKey);
       script.onload = resolve;
