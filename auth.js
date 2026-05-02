@@ -82,7 +82,7 @@ async function waitForClerk() {
   if (!window.Clerk) {
     await new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js";
+      script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
       script.async = true;
       script.setAttribute('data-clerk-publishable-key', publishableKey);
       script.onload = resolve;
@@ -180,7 +180,7 @@ window.syncClerkNav = async function() {
       `;
       navLinks.appendChild(container);
       clerk.mountUserButton(container, {
-        afterSignOutUrl: 'index.html',
+        fallbackRedirectUrl: 'index.html',
         appearance: CLERK_APPEARANCE,
       });
     }
@@ -202,7 +202,7 @@ window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = f
     
     clerk.mountSignIn(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      afterSignInUrl: 'dashboard.html',
+      fallbackRedirectUrl: 'dashboard.html',
       signUpUrl: 'register.html',
     });
   } catch (err) {
@@ -224,7 +224,7 @@ window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = f
     
     clerk.mountSignUp(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      afterSignUpUrl: 'dashboard.html',
+      fallbackRedirectUrl: 'dashboard.html',
       signInUrl: 'login.html',
     });
   } catch (err) {
