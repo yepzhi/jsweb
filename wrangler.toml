@@ -11,4 +11,5 @@ FIREBASE_MEASUREMENT_ID = "G-HGW4XK8JW0"
 
 [[routes]]
 pattern = "yepzhi.com/*"
-custom_domain = true
+zone_name = "yepzhi.com"
+
