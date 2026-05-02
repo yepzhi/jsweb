@@ -7,7 +7,7 @@
 // CSS para ocultar branding y mejorar diseño
 const style = document.createElement('style');
 style.textContent = `
-  .cl-footer, .cl-internal-b3fm6y, .cl-internal-1dauvpw { display: none !important; }
+  .cl-footer, .cl-internal-b3fm6y, .cl-internal-1dauvpw, .cl-internal-1xxocff { display: none !important; }
   .cl-card { border: none !important; box-shadow: none !important; }
 `;
 document.head.appendChild(style);
