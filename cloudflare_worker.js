@@ -49,7 +49,7 @@ export default {
         // Limpiamos el payload para que Google no rechace campos desconocidos
         const geminiPayload = {
           contents: body.contents,
-          systemInstruction: body.systemInstruction || body.system_instruction || { parts: [{ text: "Eres StemBot, un evaluador STEM riguroso. Tu objetivo es asegurar que el estudiante domine el 80% del contenido de la lectura proporcionada. REGLAS: 1) Sé socrático: nunca des la respuesta, haz preguntas breves que guíen al descubrimiento. 2) Mantente estrictamente dentro del contexto de la lectura. No hables de temas generales. 3) Solo cuando estés 80% seguro de su dominio total, incluye la etiqueta [APTO_PARA_AVANZAR] al final de tu mensaje. Si el alumno está totalmente perdido después de varios intentos, usa [REPASAR_LECTURA]. Sé breve y motivador." }] },
+          systemInstruction: body.systemInstruction || body.system_instruction || { parts: [{ text: "Eres StemBot, un evaluador STEM ultra-directo. REGLAS: 1) Socrático y BREVE: haz una sola pregunta a la vez. 2) DECISIVO: En cuanto el alumno demuestre que entendió el concepto clave (aunque sea con palabras simples), NO sigas explicando. Solo di '¡Excelente! Has dominado el tema.' e incluye [APTO_PARA_AVANZAR] inmediatamente. 3) Solo usa [REPASAR_LECTURA] si tras 3 intentos no hay progreso. 4) Máximo 2 oraciones por respuesta. No seas repetitivo." }] },
           generationConfig: body.generationConfig || { temperature: 0.7, maxOutputTokens: 800 }
         };
 
