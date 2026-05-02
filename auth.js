@@ -85,7 +85,7 @@ async function waitForClerk() {
     if (!window.Clerk) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = "https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js";
+        script.src = "https://clerk.yepzhi.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js";
         script.setAttribute('data-clerk-publishable-key', publishableKey);
         script.async = true;
         script.crossOrigin = 'anonymous';
