@@ -1,5 +1,5 @@
 /**
- * auth.js — Clerk Authentication Wrapper for JóvenesSTEM v5.0
+ * auth.js — Clerk Authentication Wrapper for JóvenesSTEM v5.4.2
  * Provides route protection and Clerk UI mounting helpers.
  * Requires Clerk <script> tags loaded BEFORE this file.
  */
