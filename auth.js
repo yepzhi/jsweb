@@ -128,7 +128,10 @@ async function waitForClerk() {
     };
 
     try {
-      await window.Clerk.load(loadOptions);
+      await window.Clerk.load({
+        ...loadOptions,
+        standardBrowser: true
+      });
       console.log('[Auth] Clerk initialized successfully ✓');
     } catch (err) {
       console.error('[Auth] Error initializing Clerk:', err);
