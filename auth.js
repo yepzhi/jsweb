@@ -4,14 +4,6 @@
  * Requires Clerk <script> tags loaded BEFORE this file.
  */
 
-// CSS para ocultar branding y mejorar diseño
-const style = document.createElement('style');
-style.textContent = `
-  .cl-footer, .cl-internal-b3fm6y, .cl-internal-1dauvpw, .cl-internal-1xxocff { display: none !important; }
-  .cl-card { border: none !important; box-shadow: none !important; }
-`;
-document.head.appendChild(style);
-
 const CLERK_APPEARANCE = {
   variables: {
     colorPrimary: '#277eff',
@@ -33,7 +25,6 @@ const CLERK_APPEARANCE = {
     formFieldInput:        { borderRadius: '12px', border: '1.5px solid rgba(0,0,0,0.10)', fontSize: '0.95rem' },
     footerActionLink:      { color: '#277eff', fontWeight: '700' },
     identityPreviewEditButton: { color: '#277eff' },
-    footer:                { display: 'none' },
   }
 };
 
@@ -62,7 +53,6 @@ const CLERK_APPEARANCE_DARK = {
     dividerLine:           { background: 'rgba(255,255,255,0.1)' },
     dividerText:           { color: 'rgba(255,255,255,0.3)' },
     otpCodeFieldInput:     { borderRadius: '10px', border: '1.5px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: '#ffffff' },
-    footer:                { display: 'none' },
   }
 };
 
