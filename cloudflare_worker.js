@@ -5,7 +5,7 @@
 
 const cleanUrlProjects = [
   'jsweb', 'jovenesstem', 'propass', 'entrytest', 'nearly', 
-  'proassistant', 'visitors', 'sensorapp', 'lot', 'neosys', 'ldgen2', 'ldgen'
+  'proassistant', 'visitors', 'sensorapp', 'lot', 'neosys', 'ldgen2', 'ldgen', 'citas'
 ];
 
 export default {
