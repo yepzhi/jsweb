@@ -27,7 +27,8 @@ export default {
     }
 
     // 2. API FIREBASE (Configuración dinámica)
-    if (path.includes("firebase-config")) {
+    // Only intercept pure API calls — NOT static .js files like /citas/firebase-config.js
+    if (path.includes("firebase-config") && !path.endsWith('.js')) {
       const config = {
         apiKey: env.FIREBASE_API_KEY,
         authDomain: `${env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
