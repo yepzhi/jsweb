@@ -180,14 +180,14 @@ window.syncClerkNav = async function() {
     if (!existing) {
       const container = document.createElement('div');
       container.id = 'clerk-user-btn';
-      container.style.cssText = 'display:flex;align-items:center;gap:12px;';
+      container.style.cssText = 'display:flex;align-items:center;gap:12px;margin-left:auto;';
       navLinks.innerHTML = `
         <a href="modules.html" class="nav-link">Explorar</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
       `;
       navLinks.appendChild(container);
       clerk.mountUserButton(container, {
-        fallbackRedirectUrl: 'index.html',
+        fallbackRedirectUrl: '/jsweb/dashboard',
         appearance: CLERK_APPEARANCE,
       });
     }
@@ -209,7 +209,7 @@ window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = f
     
     clerk.mountSignIn(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      fallbackRedirectUrl: 'dashboard.html',
+      fallbackRedirectUrl: '/jsweb/dashboard',
       signUpUrl: 'register.html',
     });
   } catch (err) {
@@ -231,7 +231,7 @@ window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = f
     
     clerk.mountSignUp(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      fallbackRedirectUrl: 'dashboard.html',
+      fallbackRedirectUrl: '/jsweb/dashboard',
       signInUrl: 'login.html',
     });
   } catch (err) {

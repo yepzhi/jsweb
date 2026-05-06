@@ -72,7 +72,7 @@ export function injectGlobalFooter() {
 
   const year = new Date().getFullYear();
   footer.innerHTML = `
-    <div class="global-footer minimalist">
+    <div class="global-footer">
       <div class="footer-container">
         <div class="footer-brand">
           <span class="logo-text">JóvenesSTEM<em>®</em></span>
@@ -80,7 +80,7 @@ export function injectGlobalFooter() {
         </div>
         
         <div class="footer-meta">
-          <p class="copyright">&copy; 2026 jóvenesSTEM. Todos los derechos reservados.</p>
+          <p class="copyright">&copy; ${year} jóvenesSTEM. Todos los derechos reservados.</p>
           <span class="footer-version">v5.6</span>
         </div>
       </div>
