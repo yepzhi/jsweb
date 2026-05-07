@@ -98,17 +98,20 @@ export default {
     newResponse.headers.delete("Content-Security-Policy");
     newResponse.headers.delete("X-Content-Security-Policy");
 
-    // Definimos nuestra regla (Permite blob: para Workers de Clerk y UI de CDN)
+    // Definimos nuestra regla (Permite Power BI y Microsoft)
     const csp = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:;",
       "worker-src 'self' blob:;",
       "style-src 'self' 'unsafe-inline' https:;",
       "img-src 'self' data: https: blob:;",
-      "connect-src 'self' https:;"
+      "connect-src 'self' https: *.powerbi.com *.microsoft.com *.clerk.accounts.dev;",
+      "frame-src 'self' https://app.powerbi.com https://*.powerbi.com https://*.microsoft.com https://*.clerk.accounts.dev;"
     ].join(" ");
 
     newResponse.headers.set("Content-Security-Policy", csp);
-    newResponse.headers.set("X-Frame-Options", "SAMEORIGIN");
+    // Remove X-Frame-Options to allow the page itself to be framed if needed, 
+    // and to avoid conflicts with embedded content.
+    newResponse.headers.delete("X-Frame-Options");
     
     return newResponse;
   }
