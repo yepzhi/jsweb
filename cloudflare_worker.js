@@ -54,11 +54,26 @@ export default {
           generationConfig: body.generationConfig || { temperature: 0.7, maxOutputTokens: 800 }
         };
 
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
+        if (body.cachedContent) {
+          geminiPayload.cachedContent = body.cachedContent;
+        }
+
+        let geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(geminiPayload)
         });
+
+        // Fallback: If cached content fails (e.g., expired or invalid), retry without it
+        if (!geminiRes.ok && body.cachedContent) {
+          console.warn("[Worker] Context caching failed. Retrying without cache.");
+          delete geminiPayload.cachedContent;
+          geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(geminiPayload)
+          });
+        }
 
         const data = await geminiRes.json();
         return new Response(JSON.stringify(data), {
@@ -67,6 +82,18 @@ export default {
       } catch (e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500 });
       }
+    }
+
+    // 3.5. API CONFIG (Para Rate Limits y Precios Dinámicos)
+    if (path.includes("/api/config") && request.method === 'GET') {
+      return new Response(JSON.stringify({
+        STEMBOT_MAX_MSGS_PER_MODULE: env.STEMBOT_MAX_MSGS_PER_MODULE || "15",
+        STEMBOT_MAX_MSGS_PER_DAY: env.STEMBOT_MAX_MSGS_PER_DAY || "80",
+        CERT_UNLOCK_THRESHOLD: env.CERT_UNLOCK_THRESHOLD || "0.80",
+        CERT_PRICE_MXN: env.CERT_PRICE_MXN || "49"
+      }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
     }
 
     // 4. LÓGICA DE RUTAS LIMPIAS (Redirección .html forzada)

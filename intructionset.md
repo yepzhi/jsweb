@@ -39,7 +39,7 @@ Transformar JóvenesSTEM de un programa presencial a una **plataforma web de apr
 - **Privacidad total** — todo el procesamiento ocurre localmente
 - Costo de operación ~$87 MXN/mes de luz (backend en casa)
 - Alineado a **NGSS + RENAC + BlueBook v1**
-- Precio accesible: $19-39 MXN por alumno
+- Precio accesible: $49-89 MXN por alumno
 
 ### Usuarios objetivo
 | Segmento | Edad | Contexto |
@@ -1277,7 +1277,7 @@ PASO ACTUAL: {step} (retrieval / socratic / teach-back)
 | Khan Academy | Básico | No | No | Sí | Sí | Gratis |
 | Coursera | No | No | No | Parcial | Sí | $500+ MXN |
 | Platzi | No | No | No | Sí | Sí | $200 MXN/mes |
-| **JóvenesSTEM Web** | **Avanzado** | **Sí** | **Sí** | **Sí** | **Sí** | **$19-39 MXN** |
+| **JóvenesSTEM Web** | **Avanzado** | **Sí** | **Sí** | **Sí** | **Sí** | **$49-89 MXN** |
 
 ---
 

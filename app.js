@@ -612,37 +612,63 @@ async function renderDashboard() {
     nextLink.href = `modules.html#module-${nextModule.id}`;
   }
 
+  // Configurar umbral de certificación
+  let certUnlockThreshold = 0.80;
+  try {
+    const configRes = await fetch('/api/config');
+    if (configRes.ok) {
+      const configData = await configRes.json();
+      certUnlockThreshold = parseFloat(configData.CERT_UNLOCK_THRESHOLD) || 0.80;
+    }
+  } catch (e) { console.error('Config fetch failed', e); }
+
   // Inject Certificate Download Button if paid
   const certContainer = document.getElementById('cert-action-container');
   if (certContainer && profile.hasCertificate) {
     if (!document.getElementById('btn-download-cert')) {
       const btnCert = document.createElement('button');
       btnCert.id = 'btn-download-cert';
-      btnCert.className = 'btn-primary';
-      btnCert.style.display = 'inline-flex';
-      btnCert.style.alignItems = 'center';
-      btnCert.style.gap = '8px';
-      btnCert.style.background = 'linear-gradient(135deg, #00a896 0%, #028090 100%)';
-      btnCert.style.boxShadow = '0 8px 30px rgba(0, 168, 150, 0.35)';
-      btnCert.style.border = 'none';
-      btnCert.style.cursor = 'pointer';
-      btnCert.innerHTML = `
-        <span>Descargar Certificado PDF</span>
-        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-      `;
-      btnCert.onclick = () => {
-        const userName = window.Clerk?.user?.firstName || profile.name || 'Estudiante';
+      const completionRatio = totalModules > 0 ? doneCount / totalModules : 0;
+
+      if (completionRatio < certUnlockThreshold) {
+        btnCert.className = 'btn-secondary';
         btnCert.disabled = true;
-        btnCert.querySelector('span').textContent = 'Generando...';
-        generateAndDownloadCertificate(userName, completions.length).then(() => {
-          btnCert.disabled = false;
-          btnCert.querySelector('span').textContent = 'Descargar Certificado PDF';
-        });
-      };
+        btnCert.style.width = '100%';
+        btnCert.style.padding = '14px';
+        btnCert.style.borderRadius = '14px';
+        btnCert.style.opacity = '0.7';
+        btnCert.style.cursor = 'not-allowed';
+        btnCert.style.background = 'rgba(255,255,255,0.05)';
+        btnCert.style.border = '1px solid rgba(255,255,255,0.1)';
+        btnCert.style.color = '#fff';
+        btnCert.innerHTML = `<span style="font-size:0.85rem">Alcanza el ${Math.round(certUnlockThreshold * 100)}% para descargar (Llevas ${Math.round(completionRatio * 100)}%)</span>`;
+      } else {
+        btnCert.className = 'btn-primary';
+        btnCert.style.display = 'inline-flex';
+        btnCert.style.alignItems = 'center';
+        btnCert.style.gap = '8px';
+        btnCert.style.background = 'linear-gradient(135deg, #00a896 0%, #028090 100%)';
+        btnCert.style.boxShadow = '0 8px 30px rgba(0, 168, 150, 0.35)';
+        btnCert.style.border = 'none';
+        btnCert.style.cursor = 'pointer';
+        btnCert.innerHTML = `
+          <span>Descargar Certificado PDF</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        `;
+        btnCert.onclick = () => {
+          const userName = window.Clerk?.user?.firstName || profile.name || 'Estudiante';
+          btnCert.disabled = true;
+          btnCert.querySelector('span').textContent = 'Generando...';
+          generateAndDownloadCertificate(userName, completions.length).then(() => {
+            btnCert.disabled = false;
+            btnCert.querySelector('span').textContent = 'Descargar Certificado PDF';
+          });
+        };
+      }
       certContainer.appendChild(btnCert);
     }
   }

@@ -98,6 +98,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   let isRecording = false;
   let userMessageCount = 0; // Track user interactions for minimum threshold
 
+  // Config variables (loaded from API)
+  let maxMsgsPerModule = 15;
+  let maxMsgsPerDay = 80;
+
+  try {
+    const configRes = await fetch('/api/config');
+    if (configRes.ok) {
+      const configData = await configRes.json();
+      if(configData) {
+        maxMsgsPerModule = parseInt(configData.STEMBOT_MAX_MSGS_PER_MODULE) || 15;
+        maxMsgsPerDay = parseInt(configData.STEMBOT_MAX_MSGS_PER_DAY) || 80;
+      }
+    }
+  } catch(e) { console.error('[StemBot] Config load failed', e); }
+
+  const today = new Date().toISOString().split('T')[0];
+  let dailyUsage = JSON.parse(localStorage.getItem('js_daily_msgs') || '{}');
+  if(dailyUsage.date !== today) {
+    dailyUsage = { date: today, count: 0 };
+    localStorage.setItem('js_daily_msgs', JSON.stringify(dailyUsage));
+  }
+
   // Load Module Data
   if (typeof fetchModules !== 'function') {
     console.error('Critical: fetchModules is not available.');
@@ -519,9 +541,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const text = textInput.value.trim();
     if (!text) return;
 
+    if (userMessageCount >= maxMsgsPerModule) {
+      addMessage('bot', '⚠️ Has alcanzado el límite de mensajes para este módulo. Intenta continuar con el siguiente módulo o vuelve a empezar.');
+      return;
+    }
+    if (dailyUsage.count >= maxMsgsPerDay) {
+      addMessage('bot', '⚠️ Has alcanzado el límite diario de mensajes del STEMBot. ¡Vuelve mañana para seguir explorando!');
+      return;
+    }
+
     addMessage('user', text);
     textInput.value = '';
     userMessageCount++;
+    dailyUsage.count++;
+    localStorage.setItem('js_daily_msgs', JSON.stringify(dailyUsage));
     
     // Format history for Gemini API
     history.push({ role: 'user', parts: [{ text }] });
