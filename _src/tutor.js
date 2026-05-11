@@ -1,0 +1,727 @@
+import { TTSManager } from './tts.js?v=6';
+/**
+ * tutor.js - StemBot AI Vanilla Integration
+ * Uses window globals from app.js to avoid caching issues.
+ */
+
+// ⚠️ SEGURIDAD: La API KEY ahora se maneja en el Cloudflare Worker (env.GEMINI_API_KEY)
+// El frontend solo llama al endpoint local /api/tutor
+
+const SYSTEM_PROMPT = `
+Eres StemBot, el tutor personal de JóvenesSTEM, creado por Alberto Yépiz.
+
+MISIÓN:
+Guiar a estudiantes mexicanos de 6-18 años a través del conocimiento
+STEM del BlueBook v1 usando el método socrático. Tu objetivo no es
+dar respuestas — es hacer que el alumno las descubra.
+
+PERSONALIDAD:
+- Entusiasta y curioso.
+- Paciente — nunca te frustras con errores.
+- Celebras cada descubrimiento genuinamente.
+- Usas analogías con tecnología moderna (videojuegos, YouTube, Roblox).
+- Hablas en español mexicano natural.
+
+MÉTODO SOCRÁTICO — TU REGLA DE ORO:
+NUNCA des la respuesta directamente. Siempre guía con preguntas hacia el descubrimiento.
+
+ESTRUCTURA DE RESPUESTA:
+1. Reconoce lo que dijo el alumno brevemente.
+2. Haz UNA pregunta para profundizar o guiar.
+3. Máximo 2-3 oraciones totales.
+
+EVALUACIÓN INFERENCIAL (MUY ESTRICTO):
+Debes evaluar silenciosamente la comprensión del alumno basada en sus respuestas.
+
+REGLAS ABSOLUTAS DE EVALUACIÓN:
+1. NUNCA apruebes en las primeras 2 interacciones. Necesitas al menos 3 respuestas del alumno para poder evaluar correctamente.
+2. Antes de aprobar, el alumno DEBE haber demostrado comprensión de AL MENOS el 80% de los conceptos clave del módulo, NO solo de un concepto aislado.
+3. Cuando determines que el alumno cumple el umbral, tu respuesta DEBE ser EXCLUSIVAMENTE un mensaje de felicitación y cierre. NO hagas preguntas nuevas. NO dejes temas abiertos. Solo felicita y agrega la etiqueta.
+4. La etiqueta "[APTO_PARA_AVANZAR]" SIEMPRE va al FINAL de tu respuesta, y esa respuesta NO debe contener ninguna pregunta.
+5. Si el alumno da respuestas vagas, genéricas o que solo repiten lo que le dijiste, eso NO cuenta como comprensión demostrada.
+6. Si el alumno está muy perdido, dice no saber nada, o su comprensión es menor al 50% de forma persistente después de 3+ intentos, OBLIGATORIAMENTE agrega la etiqueta "[REPASAR_LECTURA]" al final.
+
+EJEMPLO DE RESPUESTA DE APROBACIÓN CORRECTA:
+"¡Excelente trabajo! Has demostrado que comprendes [conceptos]. Estás listo para avanzar al siguiente módulo. ¡Sigue así! [APTO_PARA_AVANZAR]"
+
+EJEMPLO DE RESPUESTA DE APROBACIÓN INCORRECTA (NUNCA hagas esto):
+"¡Muy bien! ¿Y qué opinas sobre X? [APTO_PARA_AVANZAR]"  ← INCORRECTO: tiene pregunta + aprobación.
+`.trim();
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!document.getElementById('chat-messages')) return;
+  
+  // Use window globals for maximum reliability in dev
+  const injectGlobalNav = window.injectGlobalNav;
+  const fetchModules = window.fetchModules;
+
+  if (typeof injectGlobalNav === 'function') injectGlobalNav();
+
+  // Hide footer on tutor page — it's a full-height app view
+  const globalFooter = document.getElementById('global-footer');
+  if (globalFooter) globalFooter.style.display = 'none';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const moduleId = urlParams.get('id');
+  const titleEl = document.getElementById('module-title');
+  const chatEl = document.getElementById('chat-messages');
+  const avatar = document.getElementById('bot-avatar');
+  
+  const titleElLarge = document.getElementById('module-title-large');
+  const contentEl = document.getElementById('module-content');
+  const keypointsEl = document.getElementById('module-keypoints');
+  const loadingReader = document.getElementById('loading-reader');
+  const articleWrapper = document.getElementById('article-content');
+  const alignmentFooter = document.getElementById('alignment-footer');
+  
+  const textInput = document.getElementById('text-input');
+  const sendBtn = document.getElementById('send-btn');
+  const micBtn = document.getElementById('mic-btn');
+  const nextBtn = document.getElementById('next-module-btn');
+  const controls = document.getElementById('input-controls');
+
+  // Anti-Cheating: Block Paste
+  if (textInput) {
+    textInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      alert('⚠️ Por honestidad académica, no puedes pegar texto. ¡Escribe tus propias ideas!');
+    });
+  }
+
+  const tts = new TTSManager();
+  const ttsPlay = document.getElementById('tts-play');
+  const ttsPause = document.getElementById('tts-pause');
+  const ttsStop = document.getElementById('tts-stop');
+  const ttsMsg = document.getElementById('tts-msg');
+
+  let history = [];
+  let isRecording = false;
+  let userMessageCount = 0; // Track user interactions for minimum threshold
+
+  // Config variables (loaded from API)
+  let maxMsgsPerModule = 15;
+  let maxMsgsPerDay = 80;
+
+  try {
+    const configRes = await fetch('/api/config');
+    if (configRes.ok) {
+      const configData = await configRes.json();
+      if(configData) {
+        maxMsgsPerModule = parseInt(configData.STEMBOT_MAX_MSGS_PER_MODULE) || 15;
+        maxMsgsPerDay = parseInt(configData.STEMBOT_MAX_MSGS_PER_DAY) || 80;
+      }
+    }
+  } catch(e) { console.error('[StemBot] Config load failed', e); }
+
+  const today = new Date().toISOString().split('T')[0];
+  let dailyUsage = JSON.parse(localStorage.getItem('js_daily_msgs') || '{}');
+  if(dailyUsage.date !== today) {
+    dailyUsage = { date: today, count: 0 };
+    localStorage.setItem('js_daily_msgs', JSON.stringify(dailyUsage));
+  }
+
+  // Load Module Data
+  if (typeof fetchModules !== 'function') {
+    console.error('Critical: fetchModules is not available.');
+    return;
+  }
+  const data = await fetchModules();
+  let currentModule = null;
+  data.chapters.forEach(ch => {
+    const found = ch.modules.find(m => String(m.id) === String(moduleId));
+    if(found) currentModule = found;
+  });
+
+  if (currentModule) {
+    if (titleElLarge) titleElLarge.textContent = `${currentModule.id} ${currentModule.title}`;
+    
+    // Support HTML and priority for fullText in the reader pane
+    const rawContent = currentModule.fullText || currentModule.content || 'Sin contenido de lectura.';
+    
+    let mainBody = rawContent.split('---')[0]
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .split('\n\n')
+      .map(p => p.trim() ? `<p style="margin-bottom:1.2rem;">${p.replace(/\n/g, '<br>')}</p>` : '')
+      .join('');
+
+    const footerRaw = rawContent.includes('---') ? rawContent.split('---')[1] : '';
+    let footerHtml = '';
+
+    if (footerRaw) {
+      const lines = footerRaw.split('\n').filter(l => l.trim());
+      footerHtml = `<div class="standards-model-card">`;
+      
+      lines.forEach(line => {
+        let icon = '';
+        let label = '';
+        let content = line.trim();
+
+        if (line.includes('🔖')) {
+          icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
+          label = 'Bluebook v1';
+          content = content.replace('**🔖', '').replace('🔖', '').replace('**', '').trim();
+        } else if (line.includes('📐')) {
+          icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="m2 22 1-1h3l9-9"></path><path d="M3 21v-3l9-9"></path><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-3-3Z"></path></svg>`;
+          label = 'NGSS Alignment';
+          content = content.replace('**📐', '').replace('📐', '').replace('**', '').replace('NGSS:', '').trim();
+        } else if (line.includes('📋')) {
+          icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`;
+          label = 'Competencia';
+          content = 'Alineado a competencias RENAC EC EC009';
+        } else if (line.includes('💡')) {
+          const concepts = content.replace('**💡', '').replace('💡', '').replace('**', '').replace(/Standards World:|Estándares:|World of Standards:/g, '').trim().split(' · ').join(', ');
+          footerHtml += `
+            <div class="standard-world-box">
+              <span class="standard-world-label">Estándares Evaluados</span>
+              <div style="font-size:0.85rem; color:var(--text-color); line-height:1.4;">${concepts}</div>
+            </div>
+          `;
+          return;
+        }
+
+        if (icon) {
+          footerHtml += `
+            <div class="standard-item">
+              <div class="standard-icon">${icon}</div>
+              <div style="font-size:0.8rem;"><span class="standard-label">${label}</span> ${content}</div>
+            </div>
+          `;
+        }
+      });
+      footerHtml += `</div>`;
+    }
+      
+    if (contentEl) {
+      // Check if already completed
+      const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+      const isAlreadyDone = completions.includes(String(moduleId));
+      
+      let completionBanner = '';
+      if (isAlreadyDone) {
+        completionBanner = `
+          <div class="completion-banner" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+            <div style="color: #22c55e;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            </div>
+            <div>
+              <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; color: #22c55e; letter-spacing: 0.02em;">Módulo completado</div>
+            </div>
+          </div>
+        `;
+      }
+
+      contentEl.innerHTML = completionBanner + mainBody + footerHtml;
+      contentEl.style.whiteSpace = 'normal'; // Allow HTML layout
+    }
+
+    if (keypointsEl && currentModule.keyPoints) {
+      keypointsEl.style.listStyle = 'none';
+      keypointsEl.style.paddingLeft = '0';
+      keypointsEl.innerHTML = currentModule.keyPoints.map(kp =>
+        `<span style="display:inline-block; background:rgba(39,126,255,0.08); border:1px solid rgba(39,126,255,0.2); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; margin:3px 4px; letter-spacing:0.02em;">${kp}</span>`
+      ).join('');
+      const botStandards = document.getElementById('bot-standards');
+      if(botStandards) botStandards.style.display = 'block';
+    }
+
+    if (loadingReader) loadingReader.style.display = 'none';
+    if (articleWrapper) articleWrapper.style.display = 'block';
+
+    const rawReadingText = currentModule.fullText || currentModule.content || '';
+    const readingText = rawReadingText.split('---')[0];
+
+    // --- HIGHLIGHTING HELPERS ---
+    const highlightToggle = document.getElementById('tts-highlight-toggle');
+    let wordsSpans = [];
+
+    function prepareHighlighting() {
+      if (!contentEl || wordsSpans.length > 0) return;
+      
+      contentEl.innerHTML = mainBody;
+      let wordIndex = 0;
+      
+      function traverse(node) {
+        if (node.nodeType === 3) {
+           const text = node.nodeValue;
+           // Split while keeping delimiters (spaces)
+           const parts = text.split(/(\s+)/);
+           if (parts.length === 1 && !parts[0].trim()) return; 
+           
+           const fragment = document.createDocumentFragment();
+           for (let i = 0; i < parts.length; i++) {
+              let part = parts[i];
+              if (part.trim().length > 0) {
+                 // It is a word. Check if next part is whitespace to include it.
+                 let nextPart = (i + 1 < parts.length && parts[i+1].trim().length === 0) ? parts[i+1] : '';
+                 const span = document.createElement('span');
+                 span.className = 'word-span';
+                 span.id = `word-${wordIndex++}`;
+                 span.textContent = part + nextPart;
+                 span.onclick = (e) => {
+                   e.stopPropagation();
+                   const idx = parseInt(span.id.replace('word-', ''));
+                   tts.seekToWord(idx, readingText);
+                 };
+                 fragment.appendChild(span);
+                 if (nextPart) i++; // Skip the whitespace we just consumed
+              } else {
+                 // It is leading whitespace (no word before it in this node)
+                 fragment.appendChild(document.createTextNode(part));
+              }
+           }
+           node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === 1) {
+           Array.from(node.childNodes).forEach(traverse);
+        }
+      }
+      
+      Array.from(contentEl.childNodes).forEach(traverse);
+      
+      // Re-append footer unhighlighted
+      const footerContainer = document.createElement('div');
+      footerContainer.innerHTML = footerHtml;
+      contentEl.appendChild(footerContainer);
+      
+      wordsSpans = contentEl.querySelectorAll('.word-span');
+    }
+
+    function clearHighlighting() {
+      if (!contentEl) return;
+      contentEl.innerHTML = mainBody + footerHtml;
+      wordsSpans = [];
+    }
+
+    if (highlightToggle) {
+      highlightToggle.addEventListener('change', () => {
+        if (highlightToggle.checked) prepareHighlighting();
+        else clearHighlighting();
+      });
+    }
+
+    // Activate reader mode button if module has fullText
+    const readerModeBtn = document.getElementById('reader-mode-btn');
+    if (currentModule.fullText && readerModeBtn) {
+      readerModeBtn.style.display = 'flex';
+      readerModeBtn.addEventListener('click', () => {
+        if (typeof openReader === 'function') {
+          openReader(currentModule, window.location.href);
+        }
+      });
+    }
+
+    // --- TTS Handlers ---
+    if (ttsPlay && currentModule) {
+      tts.onStateChange = (state) => {
+        const toolbar = document.getElementById('tts-toolbar');
+        if (state === 'playing') {
+          ttsPlay.style.display = 'none';
+          ttsPause.style.display = 'flex';
+          ttsMsg.textContent = 'REPRODUCIENDO...';
+          ttsMsg.parentElement.style.color = 'var(--primary)';
+          
+          if (highlightToggle.checked) prepareHighlighting();
+        } else if (state === 'paused') {
+          ttsPlay.style.display = 'flex';
+          ttsPause.style.display = 'none';
+          ttsMsg.textContent = 'PAUSADO';
+        } else {
+          ttsPlay.style.display = 'flex';
+          ttsPause.style.display = 'none';
+          ttsMsg.textContent = 'LECTURA DISPONIBLE';
+          ttsMsg.parentElement.style.color = '';
+          clearHighlighting();
+        }
+        
+        // --- Floating Bar Sync ---
+        const floatBar = document.getElementById('floating-tts-bar');
+        const floatPlay = document.getElementById('float-play');
+        const floatPause = document.getElementById('float-pause');
+        const floatStatus = document.getElementById('float-status');
+        
+        if (floatBar) {
+          if (state === 'playing') {
+            floatBar.classList.remove('hidden');
+            floatPlay.style.display = 'none';
+            floatPause.style.display = 'flex';
+            floatStatus.textContent = 'REPRODUCIENDO';
+          } else if (state === 'paused') {
+            floatBar.classList.remove('hidden');
+            floatPlay.style.display = 'flex';
+            floatPause.style.display = 'none';
+            floatStatus.textContent = 'PAUSADO';
+          } else {
+            floatBar.classList.add('hidden');
+          }
+        }
+      };
+
+      tts.onWord = (idx) => {
+        if (!highlightToggle.checked || !wordsSpans.length) return;
+        
+        for (let i = 0; i < wordsSpans.length; i++) {
+          wordsSpans[i].classList.remove('word-active');
+          if (i < idx) {
+            wordsSpans[i].classList.add('word-past');
+          } else {
+            wordsSpans[i].classList.remove('word-past');
+          }
+        }
+        
+        if (wordsSpans[idx]) {
+          wordsSpans[idx].classList.remove('word-past');
+          wordsSpans[idx].classList.add('word-active');
+          wordsSpans[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+
+      ttsPlay.addEventListener('click', () => {
+        if (tts.isPaused) tts.resume();
+        else tts.speak(readingText);
+      });
+
+      ttsPause.addEventListener('click', () => tts.pause());
+      ttsStop.addEventListener('click', () => tts.stop());
+
+      // --- Floating Handlers ---
+      const floatPlay = document.getElementById('float-play');
+      const floatPause = document.getElementById('float-pause');
+      const floatStop = document.getElementById('float-stop');
+
+      if (floatPlay) floatPlay.addEventListener('click', () => tts.resume());
+      if (floatPause) floatPause.addEventListener('click', () => tts.pause());
+      if (floatStop) floatStop.addEventListener('click', () => tts.stop());
+    }
+
+  } else {
+    if (titleElLarge) titleElLarge.textContent = 'Módulo no encontrado';
+    if (loadingReader) loadingReader.textContent = 'Error al cargar módulo.';
+    addMessage('bot', 'Hubo un problema cargando este módulo.');
+  }
+
+  // --- Pedagogical Lock Logic ---
+  const readyBtn = document.getElementById('ready-btn');
+  const chatOverlay = document.getElementById('chat-overlay');
+  const reReadBtn = document.getElementById('re-read-btn');
+  
+  if (readyBtn && chatOverlay) {
+    readyBtn.addEventListener('click', () => {
+      if (contentEl) contentEl.classList.add('text-blurred');
+      if (alignmentFooter) alignmentFooter.classList.add('text-blurred');
+      readyBtn.style.display = 'none';
+      chatOverlay.style.display = 'none';
+      if (reReadBtn) reReadBtn.style.display = 'block';
+      
+      if (currentModule) {
+        addMessage('bot', `¡Genial! Has terminado tu lectura sobre ${currentModule.title}. Ahora dime con tus propias palabras en el Tutor AI, ¿qué te pareció lo más interesante de este tema? Trata de definir cada uno de los conceptos evaluados para que el bot analice tu comprensión y puedas continuar.`);
+      }
+    });
+  }
+
+  if (reReadBtn) {
+    reReadBtn.addEventListener('click', () => {
+      // Re-lock the chatbot and unlock reading
+      if (contentEl) contentEl.classList.remove('text-blurred');
+      if (alignmentFooter) alignmentFooter.classList.remove('text-blurred');
+      readyBtn.style.display = 'flex';
+      chatOverlay.style.display = 'flex';
+      reReadBtn.style.display = 'none';
+    });
+  }
+
+  // UI Helpers
+  function addMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = `msg msg-${role} fade-in`;
+    div.textContent = text;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  function setAvatarState(state) {
+    avatar.className = 'avatar';
+    if(state !== 'idle') avatar.classList.add(state);
+    
+    // We keep the SVG, just change the state class string for CSS animation
+    if (state === 'celebrating') {
+      avatar.innerHTML = `<svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="1.5" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+      avatar.style.color = "var(--warning)";
+      avatar.style.borderColor = "var(--warning)";
+    } else {
+      // Normal Bot SVG
+      avatar.innerHTML = `<svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="1.5" fill="none" class="${state === 'speaking' ? 'pulse' : ''}"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8.01" y2="16" stroke-width="3"></line><line x1="16" y1="16" x2="16.01" y2="16" stroke-width="3"></line></svg>`;
+      avatar.style.color = "";
+      avatar.style.borderColor = "";
+    }
+  }
+
+  // Web Speech API
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'es-MX';
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => {
+      isRecording = true;
+      micBtn.classList.add('active');
+      textInput.placeholder = 'Escuchando...';
+    };
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      textInput.value = transcript;
+    };
+    
+    recognition.onend = () => {
+      isRecording = false;
+      micBtn.classList.remove('active');
+      textInput.placeholder = 'Escribe tu respuesta aquí...';
+      if(textInput.value) processUserInput();
+    };
+  } else {
+    micBtn.style.display = 'none'; // hide microphone if unsupported
+  }
+
+  micBtn.addEventListener('click', () => {
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      if(recognition) recognition.start();
+    }
+  });
+
+  // Handle Text Submit
+  sendBtn.addEventListener('click', () => {
+    if(textInput.value) processUserInput();
+  });
+  textInput.addEventListener('keypress', (e) => {
+    if(e.key === 'Enter' && textInput.value) processUserInput();
+  });
+
+  // --- Rating System Logic ---
+  const ratingSection = document.getElementById('rating-section');
+  const starBtns = document.querySelectorAll('.star-btn');
+  let currentRating = 0;
+
+  starBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rating = parseInt(btn.getAttribute('data-star'));
+      currentRating = rating;
+      
+      // Update UI
+      starBtns.forEach(s => {
+        const sVal = parseInt(s.getAttribute('data-star'));
+        if (sVal <= rating) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+
+      
+      // Save locally
+      const ratings = JSON.parse(localStorage.getItem('js_module_ratings') || '{}');
+      ratings[moduleId] = rating;
+      localStorage.setItem('js_module_ratings', JSON.stringify(ratings));
+
+      // Save to Cloud / Firestore
+      if (typeof window.saveModuleRating === 'function') {
+        window.saveModuleRating(moduleId, rating);
+      }
+      
+      // Optional: Visual confirmation
+      addMessage('bot', `¡Gracias por calificar este módulo con ${rating} estrellas! Tu opinión nos ayuda a mejorar.`);
+    });
+  });
+
+  // LLM Logic
+  async function processUserInput() {
+    const text = textInput.value.trim();
+    if (!text) return;
+
+    if (userMessageCount >= maxMsgsPerModule) {
+      addMessage('bot', '⚠️ Has alcanzado el límite de mensajes para este módulo. Intenta continuar con el siguiente módulo o vuelve a empezar.');
+      return;
+    }
+    if (dailyUsage.count >= maxMsgsPerDay) {
+      addMessage('bot', '⚠️ Has alcanzado el límite diario de mensajes del STEMBot. ¡Vuelve mañana para seguir explorando!');
+      return;
+    }
+
+    addMessage('user', text);
+    textInput.value = '';
+    userMessageCount++;
+    dailyUsage.count++;
+    localStorage.setItem('js_daily_msgs', JSON.stringify(dailyUsage));
+    
+    // Format history for Gemini API
+    history.push({ role: 'user', parts: [{ text }] });
+    
+    setAvatarState('thinking');
+
+    try {
+      // Call the Secure Proxy (Cloudflare Worker)
+      const clerkUser = window.Clerk?.user;
+      const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+      const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+
+      const payload = {
+        userId: clerkUser?.id || 'anonymous',
+        userContext: {
+          name: clerkUser?.firstName || profile.name || 'Estudiante',
+          xp: profile.xp || 0,
+          completions: completions
+        },
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: history,
+        generationConfig: { temperature: 0.8, maxOutputTokens: 500 }
+      };
+
+      const res = await fetch('/api/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if(data.error) throw new Error(data.error.message);
+
+      let responseText = data.candidates[0].content.parts[0].text;
+      
+      // Update history
+      history.push({ role: 'model', parts: [{ text: responseText }] });
+      
+      // Check evaluation tag for Success
+      if (responseText.includes('[APTO_PARA_AVANZAR]')) {
+        // GATE: Require minimum 3 user messages before allowing approval
+        if (userMessageCount < 3) {
+          // Strip the tag silently — LLM approved too early
+          responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
+          console.warn(`[StemBot] Blocked premature approval at interaction #${userMessageCount}`);
+          setAvatarState('speaking');
+        } else {
+          responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
+          controls.style.display = 'none';
+          
+          // Show Rating Section then next button
+          if (ratingSection) ratingSection.style.display = 'block';
+          nextBtn.style.display = 'block';
+          
+          reReadBtn.style.display = 'none';
+          setAvatarState('celebrating');
+          
+          // --- Celebration Ceremony ---
+          celebrateSuccess();
+          
+          // Unlock next module in global progress
+          if (typeof unlockNext === 'function') {
+            unlockNext(moduleId);
+          }
+        }
+      } 
+      // Check evaluation tag for Failure
+      else if (responseText.includes('[REPASAR_LECTURA]')) {
+        responseText = responseText.replace(/\[REPASAR_LECTURA\]/g, '').trim();
+        reReadBtn.style.display = 'block';
+        setAvatarState('speaking');
+      }
+      else {
+        setAvatarState('speaking');
+      }
+
+      addMessage('bot', responseText);
+      speakText(responseText);
+
+    } catch (err) {
+      console.error(err);
+      addMessage('bot', `Error de conexión: ${err.message}`);
+      setAvatarState('idle');
+    }
+  }
+
+  function speakText(text) {
+    if (!window.speechSynthesis) {
+      setTimeout(() => setAvatarState('idle'), 2000);
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-MX';
+    utter.onend = () => {
+      // Don't override celebration
+      if (avatar.textContent !== '🎉') setAvatarState('idle');
+    };
+    window.speechSynthesis.speak(utter);
+  }
+
+  function celebrateSuccess() {
+    // 1. Confetti
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#277eff', '#00a896', '#f59e0b', '#ffffff']
+      });
+    }
+
+    // 2. Play Sound
+    const sound = document.getElementById('success-sound');
+    if (sound) {
+      sound.volume = 0.4;
+      sound.play().catch(() => {});
+    }
+
+    // 3. Add XP
+    if (typeof addXP === 'function') {
+      addXP(100);
+    }
+    
+    // 4. Visual Feedback in Chat
+    const msg = document.createElement('div');
+    msg.className = 'msg msg-bot fade-in font-bold text-center';
+    msg.style.background = 'rgba(245, 158, 11, 0.1)';
+    msg.style.borderColor = 'var(--warning)';
+    msg.innerHTML = `🏆 ¡MAESTRÍA ALCANZADA! +100 XP <br><span class="text-[10px] opacity-60">Has demostrado dominio total de los estándares.</span>`;
+    chatEl.appendChild(msg);
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    // 5. Track Completion
+    const completions = JSON.parse(localStorage.getItem('js_completed_modules') || '[]');
+    if (!completions.includes(moduleId)) {
+      completions.push(moduleId);
+      localStorage.setItem('js_completed_modules', JSON.stringify(completions));
+    }
+  }
+
+});
+
+/**
+ * ── OPEN READER (Dark Mode Overlay) ──
+ */
+window.openReader = function(module) {
+  const overlay = document.createElement('div');
+  overlay.id = 'reader-overlay';
+  overlay.style = "position:fixed; inset:0; background:#0a0a0f; z-index:20000; overflow-y:auto; padding:60px 20px; color:#e0e0e0; animation: fadeIn 0.3s ease;";
+  
+  const content = module.fullText || module.content || 'Sin contenido.';
+  const formatted = content.split('\n\n').map(p => `<p style="margin-bottom:1.5rem; line-height:1.8; font-size:1.1rem; max-width:700px; margin-left:auto; margin-right:auto;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+  overlay.innerHTML = `
+    <div style="max-width:800px; margin:0 auto; position:relative;">
+      <button onclick="document.getElementById('reader-overlay').remove()" style="position:fixed; top:20px; right:20px; background:rgba(255,255,255,0.1); border:none; color:white; width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:24px;">×</button>
+      <div style="text-align:center; margin-bottom:48px;">
+        <span style="color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:0.1em; font-size:0.8rem;">Modo Lectura Enfocada</span>
+        <h1 style="font-family:'Outfit',sans-serif; font-size:2.5rem; margin-top:10px;">${module.title}</h1>
+      </div>
+      <div class="reader-body" style="font-family:'Inter',serif;">
+        ${formatted}
+      </div>
+      <div style="text-align:center; margin-top:60px; padding-top:40px; border-top:1px solid rgba(255,255,255,0.1);">
+         <button onclick="document.getElementById('reader-overlay').remove()" class="btn-primary" style="padding:16px 40px;">Regresar al Tutor</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+};

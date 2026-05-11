@@ -13,6 +13,11 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // 0. SECURITY: Block access to source code and dev folders
+    if (path.startsWith('/_src/') || path.startsWith('/_dev/') || path === '/obfuscate.js' || path === '/package.json') {
+      return new Response("Forbidden", { status: 403 });
+    }
+
     // 1. API CLERK (Configuración dinámica)
     if (url.href.includes("clerk")) {
       return new Response(JSON.stringify({ 
