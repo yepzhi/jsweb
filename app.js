@@ -324,11 +324,11 @@ window.openShareModal = function(idx) {
   
   modal.style.display = 'flex';
   modal.innerHTML = `
-    <div class="modal-content fade-in" style="background: rgba(18, 18, 30, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); border-radius: 28px; padding: 35px; max-width: 400px; width: 90%; display: flex; flex-direction: column; align-items: center; position: relative;">
+    <div class="modal-content fade-in" style="background: rgba(18, 18, 30, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); border-radius: 28px; padding: 35px; max-width: 450px; width: 90%; display: flex; flex-direction: column; align-items: center; position: relative;">
       <button class="modal-close" onclick="document.getElementById('badge-modal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; font-size: 18px;">×</button>
       
       <!-- Card Preview -->
-      <div class="badge-card" style="--card-color: ${badge.color}; transform: scale(1.05); margin: 15px 0 25px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.4); pointer-events: none;">
+      <div class="badge-card" style="--card-color: ${badge.color}; transform: scale(1.8); margin: 80px 0 90px 0; box-shadow: 0 20px 40px rgba(0,0,0,0.5); pointer-events: none;">
         <div class="card-header">
           <span class="card-lvl">lvl. ${idx + 1}</span>
           <span class="card-attr">${badge.attr}</span>
