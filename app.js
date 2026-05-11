@@ -478,7 +478,7 @@ window.copyShareLink = function(idx) {
   const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
   const name = profile.name || 'Estudiante';
   
-  const text = `🚀 ¡Acabo de desbloquear el nivel "${badge.name}" en JóvenesSTEM! \n\nSoy ${name} y estoy avanzando en mi ruta científica. Mira mi logro oficial aquí: https://yepzhi.com/jsweb/ \n\n#STEM #Educacion #JovenesSTEM`;
+  const text = `✨ ¡Acabo de desbloquear el nivel "${badge.name}" en JóvenesSTEM! \n\nSoy ${name} y estoy avanzando en mi ruta científica. Mira mi logro oficial aquí: https://yepzhi.com/jsweb/ \n\n#STEM #Educacion #JovenesSTEM`;
   
   navigator.clipboard.writeText(text).then(() => {
     // Show premium toast
@@ -502,7 +502,7 @@ window.copyShareLink = function(idx) {
     `;
     toast.innerHTML = `
       <div style="font-weight:900; color:var(--primary); margin-bottom:4px;">✨ ¡TEXTO COPIADO!</div>
-      <div style="opacity:0.8;">¡Descarga tu badge y pega este texto en tu post! 🚀</div>
+      <div style="opacity:0.8;">¡Descarga tu badge y pega este texto en tu post! ✨</div>
     `;
     document.body.appendChild(toast);
     
