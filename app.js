@@ -324,20 +324,35 @@ window.openShareModal = function(idx) {
   
   modal.style.display = 'flex';
   modal.innerHTML = `
-    <div class="modal-content fade-in">
-      <button class="modal-close" onclick="document.getElementById('badge-modal').style.display='none'">×</button>
-      <div class="modal-badge-preview">
-        <svg viewBox="0 0 24 24" width="80" height="80" stroke="#277eff" fill="none" stroke-width="1.5">${badge.icon}</svg>
-      </div>
-      <h2 class="text-2xl font-head font-black mb-2" style="color:#fff;">${badge.name}</h2>
-      <p class="text-muted mb-6">¡Felicidades ${name}! Has alcanzado este nivel científico.</p>
+    <div class="modal-content fade-in" style="background: rgba(18, 18, 30, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); border-radius: 28px; padding: 35px; max-width: 400px; width: 90%; display: flex; flex-direction: column; align-items: center; position: relative;">
+      <button class="modal-close" onclick="document.getElementById('badge-modal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; font-size: 18px;">×</button>
       
-      <div class="share-btn-group">
-        <button class="btn-share btn-download" onclick="window.downloadBadge(${idx})">
+      <!-- Card Preview -->
+      <div class="badge-card" style="--card-color: ${badge.color}; transform: scale(1.05); margin: 15px 0 25px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.4); pointer-events: none;">
+        <div class="card-header">
+          <span class="card-lvl">lvl. ${idx + 1}</span>
+          <span class="card-attr">${badge.attr}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-illustration">
+            <svg viewBox="0 0 24 24" style="stroke: ${badge.color}">${badge.icon}</svg>
+          </div>
+          <div class="card-holo"></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-name">${badge.name}</div>
+          <div class="card-type">${badge.type}</div>
+        </div>
+      </div>
+      
+      <p class="text-muted text-center mb-6" style="font-size: 0.95rem; line-height: 1.5;">¡Felicidades <span style="color: #fff; font-weight: 700;">${name}</span>! Has alcanzado este nivel científico.</p>
+      
+      <div class="share-btn-group" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+        <button class="btn-share btn-download" onclick="window.downloadBadge(${idx})" style="width: 100%; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 700;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
           DESCARGAR LOGRO
         </button>
-        <button class="btn-share btn-copy" onclick="window.copyShareLink(${idx})">
+        <button class="btn-share btn-copy" onclick="window.copyShareLink(${idx})" style="width: 100%; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 700; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
           COMPARTIR LOGRO
         </button>
