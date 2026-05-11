@@ -30,10 +30,22 @@ ESTRUCTURA DE RESPUESTA:
 2. Haz UNA pregunta para profundizar o guiar.
 3. Máximo 2-3 oraciones totales.
 
-EVALUACIÓN INFERENCIAL (ESTRICTO):
+EVALUACIÓN INFERENCIAL (MUY ESTRICTO):
 Debes evaluar silenciosamente la comprensión del alumno basada en sus respuestas.
-1. Cuando el alumno demuestre una comprensión superior al 80% sobre el tema, DEBES incluir OBLIGATORIAMENTE la etiqueta estricta "[APTO_PARA_AVANZAR]" al final de tu respuesta.
-2. Si el alumno está muy perdido, dice no saber nada, o su comprensión es menor al 80% de forma persistente, OBLIGATORIAMENTE agrega al final de tu respuesta la etiqueta "[REPASAR_LECTURA]".
+
+REGLAS ABSOLUTAS DE EVALUACIÓN:
+1. NUNCA apruebes en las primeras 2 interacciones. Necesitas al menos 3 respuestas del alumno para poder evaluar correctamente.
+2. Antes de aprobar, el alumno DEBE haber demostrado comprensión de AL MENOS el 80% de los conceptos clave del módulo, NO solo de un concepto aislado.
+3. Cuando determines que el alumno cumple el umbral, tu respuesta DEBE ser EXCLUSIVAMENTE un mensaje de felicitación y cierre. NO hagas preguntas nuevas. NO dejes temas abiertos. Solo felicita y agrega la etiqueta.
+4. La etiqueta "[APTO_PARA_AVANZAR]" SIEMPRE va al FINAL de tu respuesta, y esa respuesta NO debe contener ninguna pregunta.
+5. Si el alumno da respuestas vagas, genéricas o que solo repiten lo que le dijiste, eso NO cuenta como comprensión demostrada.
+6. Si el alumno está muy perdido, dice no saber nada, o su comprensión es menor al 50% de forma persistente después de 3+ intentos, OBLIGATORIAMENTE agrega la etiqueta "[REPASAR_LECTURA]" al final.
+
+EJEMPLO DE RESPUESTA DE APROBACIÓN CORRECTA:
+"¡Excelente trabajo! Has demostrado que comprendes [conceptos]. Estás listo para avanzar al siguiente módulo. ¡Sigue así! [APTO_PARA_AVANZAR]"
+
+EJEMPLO DE RESPUESTA DE APROBACIÓN INCORRECTA (NUNCA hagas esto):
+"¡Muy bien! ¿Y qué opinas sobre X? [APTO_PARA_AVANZAR]"  ← INCORRECTO: tiene pregunta + aprobación.
 `.trim();
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -44,6 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const fetchModules = window.fetchModules;
 
   if (typeof injectGlobalNav === 'function') injectGlobalNav();
+
+  // Hide footer on tutor page — it's a full-height app view
+  const globalFooter = document.getElementById('global-footer');
+  if (globalFooter) globalFooter.style.display = 'none';
 
   const urlParams = new URLSearchParams(window.location.search);
   const moduleId = urlParams.get('id');
@@ -80,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let history = [];
   let isRecording = false;
+  let userMessageCount = 0; // Track user interactions for minimum threshold
 
   // Load Module Data
   if (typeof fetchModules !== 'function') {
@@ -504,6 +521,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     addMessage('user', text);
     textInput.value = '';
+    userMessageCount++;
     
     // Format history for Gemini API
     history.push({ role: 'user', parts: [{ text }] });
@@ -544,22 +562,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       // Check evaluation tag for Success
       if (responseText.includes('[APTO_PARA_AVANZAR]')) {
-        responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
-        controls.style.display = 'none';
-        
-        // Show Rating Section then next button
-        if (ratingSection) ratingSection.style.display = 'block';
-        nextBtn.style.display = 'block';
-        
-        reReadBtn.style.display = 'none';
-        setAvatarState('celebrating');
-        
-        // --- Celebration Ceremony ---
-        celebrateSuccess();
-        
-        // Unlock next module in global progress
-        if (typeof unlockNext === 'function') {
-          unlockNext(moduleId);
+        // GATE: Require minimum 3 user messages before allowing approval
+        if (userMessageCount < 3) {
+          // Strip the tag silently — LLM approved too early
+          responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
+          console.warn(`[StemBot] Blocked premature approval at interaction #${userMessageCount}`);
+          setAvatarState('speaking');
+        } else {
+          responseText = responseText.replace(/\[APTO_PARA_AVANZAR\]/g, '').trim();
+          controls.style.display = 'none';
+          
+          // Show Rating Section then next button
+          if (ratingSection) ratingSection.style.display = 'block';
+          nextBtn.style.display = 'block';
+          
+          reReadBtn.style.display = 'none';
+          setAvatarState('celebrating');
+          
+          // --- Celebration Ceremony ---
+          celebrateSuccess();
+          
+          // Unlock next module in global progress
+          if (typeof unlockNext === 'function') {
+            unlockNext(moduleId);
+          }
         }
       } 
       // Check evaluation tag for Failure
