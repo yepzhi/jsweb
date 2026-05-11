@@ -480,7 +480,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
 
-      console.log(`[Rating] User rated module ${moduleId} with ${rating} stars.`);
       
       // Save locally
       const ratings = JSON.parse(localStorage.getItem('js_module_ratings') || '{}');
@@ -611,7 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sound = document.getElementById('success-sound');
     if (sound) {
       sound.volume = 0.4;
-      sound.play().catch(e => console.log("Audio block:", e));
+      sound.play().catch(() => {});
     }
 
     // 3. Add XP

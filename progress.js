@@ -36,7 +36,6 @@ async function getFirebaseConfig() {
     const mod = await import('./firebase-config.js');
     return mod.firebaseConfig;
   } catch (_) {
-    console.warn('[Progress] No Firebase config available. Progress will use localStorage only.');
     return null;
   }
 }
@@ -46,7 +45,6 @@ const firebaseConfig = await getFirebaseConfig();
 
 // Init Firebase (only if config is available)
 if (!firebaseConfig) {
-  console.warn('[Progress] Firebase config missing — running in localStorage-only mode.');
   window.progressReady = true;
   window.dispatchEvent(new CustomEvent('progressReady'));
   // Stub out all cloud functions to be no-ops
@@ -99,7 +97,6 @@ async function ensureUserDoc(userId) {
       stripePaymentId: null,
     };
     await setDoc(ref, initData);
-    console.log('[Progress] New user document created in Firestore ✓');
     return initData;
   }
 
@@ -128,10 +125,8 @@ window.loadProgress = async function () {
       hasCertificate: data.hasCertificate || false,
     }));
 
-    console.log(`[Progress] Loaded from Firestore — ${(data.completedModules || []).length} modules, ${data.xp || 0} XP`);
     return data;
   } catch (err) {
-    console.warn('[Progress] Firestore unavailable, using localStorage fallback:', err.message);
     return null;
   }
 };
@@ -157,9 +152,7 @@ window.saveModuleComplete = async function (moduleId) {
       completedModules: arrayUnion(moduleId),
       lastActive: new Date().toISOString(),
     });
-    console.log(`[Progress] Module ${moduleId} saved to Firestore ✓`);
   } catch (err) {
-    console.warn('[Progress] Could not save module to Firestore:', err.message);
   }
 };
 
@@ -182,9 +175,7 @@ window.addXPCloud = async function (amount) {
       xp: increment(amount),
       lastActive: new Date().toISOString(),
     });
-    console.log(`[Progress] +${amount} XP synced to Firestore ✓`);
   } catch (err) {
-    console.warn('[Progress] Could not sync XP:', err.message);
   }
 };
 
@@ -197,7 +188,6 @@ window.saveModuleRating = async function (moduleId, rating) {
       ratings: { [moduleId]: rating },
       lastActive: new Date().toISOString()
     }, { merge: true });
-    console.log(`[Progress] Rating saved to Cloud: ${moduleId} = ${rating}`);
   } catch (err) {
     console.error('[Progress] Error saving rating:', err);
   }
@@ -223,4 +213,3 @@ window.checkCertificate = async function () {
 window.progressReady = true;
 window.dispatchEvent(new CustomEvent('progressReady'));
 
-console.log('[JóvenesSTEM] progress.js loaded ✓');

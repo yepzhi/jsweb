@@ -18,3 +18,15 @@ dist/
 
 # Firebase client config — values live in Cloudflare Worker env vars
 firebase-config.js
+
+# Dev tools & scripts
+_dev/
+*.bak
+
+# Firebase config (sensitive)
+firebase-config.js
+wrangler.toml
+
+# System
+.DS_Store
+.wrangler/

@@ -99,7 +99,6 @@ export function addXP(amount) {
   window.dispatchEvent(new CustomEvent('xpUpdated', { detail: profile.xp }));
   // Cloud sync (non-blocking)
   if (typeof window.addXPCloud === 'function') window.addXPCloud(amount);
-  console.log(`XP Added: ${amount}. Total: ${profile.xp}`);
 }
 window.addXP = addXP;
 
@@ -138,7 +137,6 @@ export function unlockNext(currentId) {
   }
   // Cloud sync (non-blocking)
   if (typeof window.saveModuleComplete === 'function') window.saveModuleComplete(currentId);
-  console.log(`Module ${currentId} completed/unlocked.`);
 }
 window.unlockNext = unlockNext;
 

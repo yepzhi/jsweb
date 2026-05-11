@@ -66,7 +66,6 @@ async function waitForClerk() {
 
   clerkLoadingPromise = (async () => {
     // 1. Fetch key from worker first
-    console.log('[Auth] Fetching configuration from worker...');
     let publishableKey = null;
     try {
       const res = await fetch('api/clerk-config');
@@ -136,7 +135,6 @@ async function waitForClerk() {
           ...loadOptions,
           publishableKey: publishableKey
         });
-        console.log('[Auth] Clerk initialized successfully ✓');
       } catch (err) {
         console.error('[Auth] Error initializing Clerk:', err);
       }
@@ -264,4 +262,3 @@ window.addEventListener('load', async () => {
   await window.syncClerkNav();
 });
 
-console.log('[JóvenesSTEM] auth.js loaded ✓');
