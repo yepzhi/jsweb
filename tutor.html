@@ -7,18 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=520">
-  <!-- Fix: Global ONNX Runtime for HD Voice (Piper TTS) -->
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/ort.min.js"></script>
-  <script>
-    // Robust configuration for ONNX Runtime to prevent 404s and multi-threading issues
-    if (window.ort) {
-      ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.0/dist/';
-      ort.env.wasm.numThreads = 1; 
-      ort.env.wasm.simd = false; // Disable SIMD to increase compatibility across older browsers
-      console.log("ORT Global Configured:", ort.env.wasm);
-    }
-  </script>
+  <link rel="stylesheet" href="styles.css?v=600">
   <style>
     body { background-color: var(--surface); }
     
@@ -290,7 +279,6 @@
           <div class="tts-status">
             <span class="tts-dot"></span>
             <span id="tts-msg">LECTURA DISPONIBLE</span>
-            <span class="neural-badge" id="neural-badge">Neural</span>
           </div>
           <div class="tts-actions" style="display:flex; align-items:center; gap:12px;">
             <label class="premium-switch" title="Resaltar avance de voz">

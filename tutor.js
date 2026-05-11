@@ -1,4 +1,4 @@
-import { TTSManager } from './tts.js?v=3';
+import { TTSManager } from './tts.js?v=6';
 /**
  * tutor.js - StemBot AI Vanilla Integration
  * Uses window globals from app.js to avoid caching issues.
@@ -273,29 +273,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (ttsPlay && currentModule) {
       tts.onStateChange = (state) => {
         const toolbar = document.getElementById('tts-toolbar');
-        if (state === 'playing' || state === 'playing-neural') {
+        if (state === 'playing') {
           ttsPlay.style.display = 'none';
           ttsPause.style.display = 'flex';
-          ttsMsg.textContent = state === 'playing-neural' ? 'VOZ NEURONAL ACTIVA' : 'REPRODUCIENDO...';
+          ttsMsg.textContent = 'REPRODUCIENDO...';
           ttsMsg.parentElement.style.color = 'var(--primary)';
-          if (state === 'playing-neural' && toolbar) toolbar.classList.add('neural-active');
           
           if (highlightToggle.checked) prepareHighlighting();
-        } else if (state === 'neural-ready') {
-          if (toolbar) toolbar.classList.add('neural-active');
-          const badge = document.getElementById('neural-badge');
-          if (badge) badge.style.display = 'inline-flex';
-          const notice = document.getElementById('data-notice');
-          if (notice) notice.style.display = 'none'; 
-          ttsMsg.textContent = 'MOTOR NEURONAL LISTO';
-        } else if (state === 'loading-neural') {
-          ttsMsg.textContent = 'PREPARANDO MOTOR (25MB)...';
-          ttsMsg.parentElement.style.color = 'var(--warning)';
-        } else if (state === 'neural-error') {
-          ttsMsg.textContent = 'ERROR RED/MEMORIA (VOZ LOCAL)';
-          ttsMsg.parentElement.style.color = '#ef4444';
-          const formatNotice = document.getElementById('data-notice');
-          if (formatNotice) { formatNotice.style.display = 'inline'; formatNotice.textContent = 'Fallo Motor HD'; formatNotice.style.color = '#ef4444'; }
         } else if (state === 'paused') {
           ttsPlay.style.display = 'flex';
           ttsPause.style.display = 'none';
@@ -315,11 +299,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const floatStatus = document.getElementById('float-status');
         
         if (floatBar) {
-          if (state === 'playing' || state === 'playing-neural') {
+          if (state === 'playing') {
             floatBar.classList.remove('hidden');
             floatPlay.style.display = 'none';
             floatPause.style.display = 'flex';
-            floatStatus.textContent = state === 'playing-neural' ? 'VOZ NEURONAL' : 'REPRODUCIENDO';
+            floatStatus.textContent = 'REPRODUCIENDO';
           } else if (state === 'paused') {
             floatBar.classList.remove('hidden');
             floatPlay.style.display = 'flex';
@@ -350,39 +334,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       };
 
-      ttsPlay.addEventListener('click', async () => {
-        // Smart Load on Play
-        if (!tts.isNeuralActive && !tts.piperLoading) {
-          const notice = document.getElementById('data-notice');
-          if (notice) notice.style.display = 'none'; // Clear notice on manual start
-          await tts.initPiper();
-        }
-
+      ttsPlay.addEventListener('click', () => {
         if (tts.isPaused) tts.resume();
         else tts.speak(readingText);
       });
-
-      // --- Network-Aware Auto-Load ---
-      function handleNetwork() {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        const notice = document.getElementById('data-notice');
-        
-        if (conn) {
-          // WiFi/Ethernet/High-Speed -> Silent Auto-Load
-          if (conn.type === 'wifi' || conn.type === 'ethernet' || (conn.effectiveType === '4g' && !conn.saveData)) {
-            console.log("WiFi/High-Speed detected. Silent loading neural voice...");
-            tts.initPiper();
-          } else {
-            // Cellular/Data-Saving -> Show Notice
-            if (notice) notice.style.display = 'inline';
-          }
-        } else {
-          // Fallback for browsers without Connection API (Safari) -> Show notice to be safe
-          if (notice) notice.style.display = 'inline';
-        }
-      }
-      
-      handleNetwork();
 
       ttsPause.addEventListener('click', () => tts.pause());
       ttsStop.addEventListener('click', () => tts.stop());
