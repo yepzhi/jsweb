@@ -176,10 +176,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (keypointsEl && currentModule.keyPoints) {
-      // Remove bullets and clean up list
       keypointsEl.style.listStyle = 'none';
       keypointsEl.style.paddingLeft = '0';
-      keypointsEl.innerHTML = currentModule.keyPoints.join(', ');
+      keypointsEl.innerHTML = currentModule.keyPoints.map(kp =>
+        `<span style="display:inline-block; background:rgba(39,126,255,0.08); border:1px solid rgba(39,126,255,0.2); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; margin:3px 4px; letter-spacing:0.02em;">${kp}</span>`
+      ).join('');
       const botStandards = document.getElementById('bot-standards');
       if(botStandards) botStandards.style.display = 'block';
     }
