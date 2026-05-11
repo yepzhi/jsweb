@@ -1,5 +1,5 @@
 /**
- * auth.js — Clerk Authentication Wrapper for JóvenesSTEM v5.4.2
+ * auth.js — Clerk Authentication Wrapper for JóvenesSTEM v6.1.3
  * Provides route protection and Clerk UI mounting helpers.
  * Requires Clerk <script> tags loaded BEFORE this file.
  */
@@ -180,8 +180,8 @@ window.syncClerkNav = async function() {
       container.id = 'clerk-user-btn';
       container.style.cssText = 'display:flex;align-items:center;gap:12px;flex-shrink:0;';
       navLinks.innerHTML = `
-        <a href="/jsweb/modules" class="nav-link">Explorar</a>
         <a href="/jsweb/dashboard" class="nav-link">Dashboard</a>
+        <a href="/jsweb/modules" class="nav-link">Explorar</a>
       `;
       // Spacer to push UserButton to the far right
       const spacer = document.createElement('div');

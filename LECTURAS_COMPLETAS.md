@@ -1,4 +1,4 @@
-# 📚 JóvenesSTEM — Lecturas Completas v6.1.2
+# 📚 JóvenesSTEM — Lecturas Completas v6.1.3
 > 227 módulos | 171,693 palabras | 5-7 estándares por módulo
 
 ---
