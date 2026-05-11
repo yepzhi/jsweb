@@ -43,8 +43,8 @@ export function injectGlobalNav() {
         
         <div class="nav-links">
           ${currentUser || isAppPage ? `
-            <a href="modules.html" class="nav-link">Explorar</a>
             <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="modules.html" class="nav-link">Explorar</a>
             <div class="nav-user-orb" onclick="window.location.href='profile.html'" style="margin-left: auto;">
               <span>${firstLetter}</span>
             </div>
@@ -208,7 +208,7 @@ async function renderModulesList() {
                </div>
                <div style="color:${accentColor}; width:18px; height:18px;">${iconSvg}</div>
             </div>
-            <h4 class="module-title font-head font-bold">${m.title}</h4>
+            <h4 class="module-title font-head font-bold">${m.id} ${m.title}</h4>
           </div>
           <p class="module-excerpt text-xs text-muted">${m.content || 'Explora este módulo...'}</p>
           
