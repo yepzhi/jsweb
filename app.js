@@ -81,7 +81,7 @@ export function injectGlobalFooter() {
         
         <div class="footer-meta">
           <p class="copyright">&copy; ${year} jóvenesSTEM. Todos los derechos reservados.</p>
-          <span class="footer-version">v5.6</span>
+          <span class="footer-version">v6.0</span>
         </div>
       </div>
     </div>

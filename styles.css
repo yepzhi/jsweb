@@ -976,9 +976,18 @@ a { text-decoration: none; color: inherit; }
   .global-footer .footer-container {
     flex-direction: column;
     text-align: center;
+    padding: 0 12px;
+    gap: 6px;
   }
   .global-footer .footer-meta {
     text-align: center;
+  }
+  .global-footer {
+    padding: 10px 0;
+    margin-top: 30px;
+  }
+  .global-footer .footer-tagline {
+    display: none;
   }
 }
 

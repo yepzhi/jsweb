@@ -180,14 +180,18 @@ window.syncClerkNav = async function() {
     if (!existing) {
       const container = document.createElement('div');
       container.id = 'clerk-user-btn';
-      container.style.cssText = 'display:flex;align-items:center;gap:12px;margin-left:auto;';
+      container.style.cssText = 'display:flex;align-items:center;gap:12px;flex-shrink:0;';
       navLinks.innerHTML = `
-        <a href="modules.html" class="nav-link">Explorar</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/jsweb/modules" class="nav-link">Explorar</a>
+        <a href="/jsweb/dashboard" class="nav-link">Dashboard</a>
       `;
+      // Spacer to push UserButton to the far right
+      const spacer = document.createElement('div');
+      spacer.style.cssText = 'flex:1;';
+      navLinks.appendChild(spacer);
       navLinks.appendChild(container);
       clerk.mountUserButton(container, {
-        fallbackRedirectUrl: '/jsweb/dashboard',
+        afterSignOutUrl: '/jsweb',
         appearance: CLERK_APPEARANCE,
       });
     }
@@ -209,8 +213,9 @@ window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = f
     
     clerk.mountSignIn(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      fallbackRedirectUrl: '/jsweb/dashboard',
-      signUpUrl: 'register.html',
+      afterSignInUrl: '/jsweb/dashboard',
+      afterSignUpUrl: '/jsweb/dashboard',
+      signUpUrl: '/jsweb/register',
     });
   } catch (err) {
     console.error('[Auth] Error mounting Sign-In:', err);
@@ -231,8 +236,9 @@ window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = f
     
     clerk.mountSignUp(el, {
       appearance: dark ? CLERK_APPEARANCE_DARK : CLERK_APPEARANCE,
-      fallbackRedirectUrl: '/jsweb/dashboard',
-      signInUrl: 'login.html',
+      afterSignUpUrl: '/jsweb/dashboard',
+      afterSignInUrl: '/jsweb/dashboard',
+      signInUrl: '/jsweb/login',
     });
   } catch (err) {
     console.error('[Auth] Error mounting Sign-Up:', err);
@@ -250,7 +256,7 @@ window.getClerkUser = function() {
 window.clerkSignOut = async function() {
   const clerk = await waitForClerk();
   await clerk.signOut();
-  window.location.replace('index.html');
+  window.location.replace('/jsweb');
 };
 
 // ── Auto-init ────────────────────────────────────────────────
