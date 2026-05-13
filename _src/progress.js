@@ -10,6 +10,7 @@
  *   window.saveModuleComplete(id) → Promise<void>
  *   window.addXPCloud(amount)     → Promise<void>
  *   window.checkCertificate()     → Promise<bool>
+ *   window.markCertificatePaid(id) → Promise<void>
  *   window.progressReady          → bool
  */
 
@@ -51,6 +52,7 @@ if (!firebaseConfig) {
   window.loadProgress = async () => null;
   window.saveModuleComplete = async () => {};
   window.addXPCloud = async () => {};
+  window.markCertificatePaid = async () => {};
   window.checkCertificate = async () => false;
   throw new Error('Firebase config unavailable — localStorage fallback active.');
 }
@@ -123,6 +125,8 @@ window.loadProgress = async function () {
       email: data.email || getClerkUserMeta().email,
       xp: data.xp || 0,
       hasCertificate: data.hasCertificate || false,
+      stripeCheckoutSessionId: data.stripeCheckoutSessionId || null,
+      certificatePaidAt: data.certificatePaidAt || null,
     }));
 
     return data;
@@ -193,6 +197,29 @@ window.saveModuleRating = async function (moduleId, rating) {
   }
 };
 
+window.markCertificatePaid = async function (stripeCheckoutSessionId) {
+  const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+  profile.hasCertificate = true;
+  profile.stripeCheckoutSessionId = stripeCheckoutSessionId || null;
+  profile.certificatePaidAt = new Date().toISOString();
+  localStorage.setItem('jstem_profile', JSON.stringify(profile));
+
+  const userId = getClerkUserId();
+  if (!userId) return;
+
+  try {
+    const ref = doc(db, 'users', userId);
+    await setDoc(ref, {
+      hasCertificate: true,
+      stripeCheckoutSessionId: stripeCheckoutSessionId || null,
+      certificatePaidAt: new Date().toISOString(),
+      lastActive: new Date().toISOString()
+    }, { merge: true });
+  } catch (err) {
+    console.error('[Progress] Error saving certificate payment:', err);
+  }
+};
+
 /**
  * checkCertificate() — Check if user has paid for certificate.
  */
@@ -212,4 +239,3 @@ window.checkCertificate = async function () {
 // Mark progress module as ready
 window.progressReady = true;
 window.dispatchEvent(new CustomEvent('progressReady'));
-

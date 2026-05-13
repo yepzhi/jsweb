@@ -7,6 +7,29 @@ import { generateAndDownloadCertificate } from './cert.js?v=540';
 // Global state
 let currentUser = null;
 
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function safeInlineSvg(value) {
+  const svg = String(value || '').trim();
+  if (!svg.startsWith('<svg')) return '';
+  if (/<script|on\w+=|href=|xlink:/i.test(svg)) return '';
+  return svg;
+}
+
+function safeAccentColor(value) {
+  const color = String(value || '').trim();
+  if (/^#[0-9a-f]{3,8}$/i.test(color)) return color;
+  if (/^var\(--[a-z0-9-]+\)$/i.test(color)) return color;
+  return 'var(--primary)';
+}
+
 export async function fetchModules() {
   try {
     const res = await fetch(`./data/modules.json?t=${new Date().getTime()}`);
@@ -46,7 +69,7 @@ export function injectGlobalNav() {
             <a href="dashboard.html" class="nav-link">Dashboard</a>
             <a href="modules.html" class="nav-link">Explorar</a>
             <div class="nav-user-orb" onclick="window.location.href='profile.html'" style="margin-left: auto;">
-              <span>${firstLetter}</span>
+              <span>${escapeHTML(firstLetter)}</span>
             </div>
           ` : `
             <a href="index.html#proceso" class="nav-link hide-mobile">Metodología</a>
@@ -76,7 +99,7 @@ export function injectGlobalFooter() {
       <div class="footer-container">
         <div class="footer-brand">
           <span class="logo-text">JóvenesSTEM<em>®</em></span>
-          <p class="footer-tagline">Hacia la independencia tecnológica de las Americas.</p>
+          <p class="footer-tagline">Hacia la independencia tecnológica de las Américas.</p>
         </div>
         
         <div class="footer-meta">
@@ -105,26 +128,14 @@ window.addXP = addXP;
 // ── STRIPE PAYMENTS ──────────────────────────────────────────
 export async function startStripeCheckout() {
   const btn = document.querySelector('.btn-certify');
-  const originalText = btn ? btn.textContent : '';
   if (btn) {
     btn.disabled = true;
-    btn.textContent = 'Procesando...';
   }
-
-  try {
-    const res = await fetch('/api/stripe/checkout', { method: 'POST' });
-    const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      throw new Error(data.error || 'Error al iniciar pago');
-    }
-  } catch (err) {
-    alert('Error: ' + err.message);
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = originalText;
-    }
+  
+  alert("🚧 ¡Pasarela de pago en mantenimiento / construcción!\n\nSi ya completaste tus módulos y deseas obtener tu certificado oficial JóvenesSTEM, por favor envíame un mensaje directo por WhatsApp para coordinar un depósito directo.");
+  
+  if (btn) {
+    btn.disabled = false;
   }
 }
 window.startStripeCheckout = startStripeCheckout;
@@ -175,17 +186,18 @@ async function renderModulesList() {
     
     html += `
       <div class="section-divider">
-        <h3 class="font-head font-black tracking-tight text-primary uppercase text-xs">${headerTitle}</h3>
+        <h3 class="font-head font-black tracking-tight text-primary uppercase text-xs">${escapeHTML(headerTitle)}</h3>
       </div>
       <div class="grid-centered">
     `;
 
     ch.modules.forEach(m => {
       const isLocked = m.in_development;
-      const targetUrl = isLocked ? '#' : `tutor.html?id=${m.id}`;
+      const moduleId = String(m.id || '');
+      const targetUrl = isLocked ? '#' : `tutor.html?id=${encodeURIComponent(moduleId)}`;
       const badgeCls = isLocked ? 'badge-dev' : 'badge-active';
       const badgeTxt = isLocked ? 'EN DESARROLLO' : 'DISPONIBLE';
-      const isDone = completions.includes(String(m.id));
+      const isDone = completions.includes(moduleId);
       
       // Palomita verde SVG
       const checkSvg = `
@@ -195,11 +207,11 @@ async function renderModulesList() {
       `;
       
       // Use ch.icon and ch.color for the card accent
-      const accentColor = ch.color || 'var(--primary)';
-      const iconSvg = ch.icon || '';
+      const accentColor = safeAccentColor(ch.color);
+      const iconSvg = safeInlineSvg(ch.icon);
 
       html += `
-        <a id="module-${m.id}" href="${targetUrl}" class="card ${isLocked ? 'card-locked' : ''}" style="text-decoration:none; color:inherit; border-top: 3px solid ${accentColor};">
+        <a id="module-${escapeHTML(moduleId)}" href="${escapeHTML(targetUrl)}" class="card ${isLocked ? 'card-locked' : ''}" style="text-decoration:none; color:inherit; border-top: 3px solid ${accentColor};">
           <div class="module-header">
             <div class="flex justify-between items-center mb-2">
                <div class="flex items-center gap-2">
@@ -208,12 +220,12 @@ async function renderModulesList() {
                </div>
                <div style="color:${accentColor}; width:18px; height:18px;">${iconSvg}</div>
             </div>
-            <h4 class="module-title font-head font-bold">${m.id} ${m.title}</h4>
+            <h4 class="module-title font-head font-bold">${escapeHTML(moduleId)} ${escapeHTML(m.title)}</h4>
           </div>
-          <p class="module-excerpt text-xs text-muted">${m.content || 'Explora este módulo...'}</p>
+          <p class="module-excerpt text-xs text-muted">${escapeHTML(m.content || 'Explora este módulo...')}</p>
           
           <div class="mt-4 flex justify-between items-center module-footer">
-            <span class="text-xs font-bold opacity-60">${m.duration || 7} min</span>
+            <span class="text-xs font-bold opacity-60">${escapeHTML(m.duration || 7)} min</span>
             <div class="reader-btn">
                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </div>
@@ -269,7 +281,7 @@ const BADGE_COLLECTION = [
   { name: "Digital Architect",   type: "COSMOS",  attr: "NETS",     color: "#4cc9f0", desc: "Diseño de redes",           icon: `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M10 6h4M10 18h4M7 10v4M17 10v4"/>` },
   { name: "Research Specialist", type: "COSMOS",  attr: "UNIVERSE", color: "#b5179e", desc: "Investigación científica",  icon: `<path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>` },
   { name: "Future Designer",     type: "COSMOS",  attr: "LEGEND",   color: "#80ffdb", desc: "Diseñando el mañana",       icon: `<path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 8l4 4-4 4M8 12h8"/>` },
-  { name: "Knowledge Commander", type: "COSMOS",  attr: "MITHIC",   color: "#560bad", desc: "Liderazgo STEM",            icon: `<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M6 2v18M12 8h4M12 12h4"/>` },
+  { name: "Knowledge Commander", type: "COSMOS",  attr: "MYTHIC",   color: "#560bad", desc: "Liderazgo STEM",            icon: `<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M6 2v18M12 8h4M12 12h4"/>` },
   { name: "Master of Progress",  type: "COSMOS",  attr: "GOD",      color: "#ffd700", desc: "Logro Final",               icon: `<path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><circle cx="12" cy="12" r="4"/><path d="m12 8 4 4-4 4-4-4 4-4z"/>` },
 ];
 
@@ -345,7 +357,7 @@ window.openShareModal = function(idx) {
         </div>
       </div>
       
-      <p class="text-muted text-center mb-6" style="font-size: 0.95rem; line-height: 1.5;">¡Felicidades <span style="color: #fff; font-weight: 700;">${name}</span>! Has alcanzado este nivel científico.</p>
+      <p class="text-muted text-center mb-6" style="font-size: 0.95rem; line-height: 1.5;">¡Felicidades <span style="color: #fff; font-weight: 700;">${escapeHTML(name)}</span>! Has alcanzado este nivel científico.</p>
       
       <div class="share-btn-group" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
         <button class="btn-share btn-download" onclick="window.downloadBadge(${idx})" style="width: 100%; justify-content: center; padding: 12px; border-radius: 12px; font-weight: 700;">
@@ -538,20 +550,37 @@ async function renderDashboard() {
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment');
   if (paymentStatus === 'success') {
-    // In a real app, we would verify the session_id on the server/worker
-    // and update Firestore. For this MVP, we update the local/cloud state.
-    const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
-    profile.hasCertificate = true;
-    localStorage.setItem('jstem_profile', JSON.stringify(profile));
-    
-    // Notify Firestore if possible
-    const userId = window.Clerk?.user?.id;
-    if (userId && typeof firebaseConfig !== 'undefined') {
-       // We'll add this update in a separate step to progress.js if needed
-    }
+    const sessionId = urlParams.get('session_id');
+    try {
+      if (!sessionId) throw new Error('No se recibió la sesión de Stripe.');
 
-    alert('¡Felicidades! Tu pago fue exitoso. Tu certificado está siendo generado.');
-    window.history.replaceState({}, document.title, window.location.pathname);
+      const res = await fetch(`/api/stripe/session?session_id=${encodeURIComponent(sessionId)}`);
+      const session = await res.json();
+      if (!res.ok || !session.paid) {
+        throw new Error(session.error || 'Stripe todavía no confirma el pago.');
+      }
+
+      const currentUserId = window.Clerk?.user?.id || null;
+      if (session.userId && currentUserId && session.userId !== currentUserId) {
+        throw new Error('La sesión de pago no corresponde al usuario actual.');
+      }
+
+      const profile = JSON.parse(localStorage.getItem('jstem_profile') || '{}');
+      profile.hasCertificate = true;
+      profile.stripeCheckoutSessionId = session.id;
+      profile.certificatePaidAt = new Date().toISOString();
+      localStorage.setItem('jstem_profile', JSON.stringify(profile));
+
+      if (typeof window.markCertificatePaid === 'function') {
+        await window.markCertificatePaid(session.id);
+      }
+
+      alert('¡Felicidades! Stripe confirmó tu pago. Tu certificado quedó habilitado.');
+    } catch (err) {
+      alert(`No pudimos verificar el pago automáticamente: ${err.message}`);
+    } finally {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   } else if (paymentStatus === 'cancel') {
     alert('El proceso de pago fue cancelado.');
     window.history.replaceState({}, document.title, window.location.pathname);
@@ -622,9 +651,25 @@ async function renderDashboard() {
     }
   } catch (e) { console.error('Config fetch failed', e); }
 
-  // Inject Certificate Download Button if paid
+  let hasVerifiedCertificate = false;
+  if (profile.hasCertificate && profile.stripeCheckoutSessionId) {
+    try {
+      const certRes = await fetch(`/api/stripe/session?session_id=${encodeURIComponent(profile.stripeCheckoutSessionId)}`);
+      const certSession = await certRes.json();
+      const currentUserId = window.Clerk?.user?.id || null;
+      hasVerifiedCertificate = Boolean(
+        certRes.ok &&
+        certSession.paid &&
+        (!certSession.userId || !currentUserId || certSession.userId === currentUserId)
+      );
+    } catch (err) {
+      console.error('[App] Certificate entitlement check failed:', err);
+    }
+  }
+
+  // Inject Certificate Download Button if Stripe entitlement is verified
   const certContainer = document.getElementById('cert-action-container');
-  if (certContainer && profile.hasCertificate) {
+  if (certContainer && hasVerifiedCertificate) {
     if (!document.getElementById('btn-download-cert')) {
       const btnCert = document.createElement('button');
       btnCert.id = 'btn-download-cert';
@@ -741,7 +786,7 @@ function showMilestoneModal() {
       </div>
 
       <div id="survey-footer" style="display:flex; flex-direction:column; gap:12px;">
-         <a href="https://forms.gle/vuestra_forma_de_pago" target="_blank" id="final-survey-link" style="background:var(--primary); color:white; padding:16px; border-radius:16px; font-weight:800; text-decoration:none; font-family:'Outfit',sans-serif; font-size:1rem; box-shadow:0 10px 20px rgba(39,126,255,0.3); transition:all 0.2s;">Obtener Mi Certificado</a>
+         <button id="final-survey-link" style="background:var(--primary); color:white; padding:16px; border-radius:16px; font-weight:800; text-decoration:none; font-family:'Outfit',sans-serif; font-size:1rem; box-shadow:0 10px 20px rgba(39,126,255,0.3); transition:all 0.2s; border:none; cursor:pointer;">Obtener Mi Certificado</button>
          <button id="close-milestone" style="background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.4); border:none; padding:12px; border-radius:12px; cursor:pointer; font-size:0.85rem;">Continuar practicando</button>
       </div>
       
@@ -780,6 +825,7 @@ function showMilestoneModal() {
 
   document.getElementById('final-survey-link').addEventListener('click', () => {
     localStorage.setItem('js_survey_done', 'true');
+    startStripeCheckout();
   });
   
   // Confetti!

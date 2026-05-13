@@ -68,7 +68,7 @@ async function waitForClerk() {
     // 1. Fetch key from worker first
     let publishableKey = null;
     try {
-      const res = await fetch('api/clerk-config');
+      const res = await fetch('/api/clerk-config');
       const data = await res.json();
       publishableKey = data.publishableKey;
     } catch (err) {
@@ -145,13 +145,14 @@ async function waitForClerk() {
 
   return clerkLoadingPromise;
 }
+window.waitForClerk = waitForClerk;
 
 // ── Route Protection ─────────────────────────────────────────
 // Call on protected pages — redirects to login if no session.
 window.requireAuth = async function() {
   try {
     const clerk = await waitForClerk();
-    if (!clerk.user) {
+    if (!clerk?.user) {
       const returnTo = encodeURIComponent(window.location.href);
       window.location.replace(`login.html?return=${returnTo}`);
       return null;
@@ -168,7 +169,7 @@ window.syncClerkNav = async function() {
   try {
     const clerk = await waitForClerk();
     const navLinks = document.querySelector('.nav-links');
-    if (!clerk.user || !navLinks) return;
+    if (!clerk?.user || !navLinks) return;
 
     const u = clerk.user;
     const initials = (u.firstName?.[0] || u.emailAddresses?.[0]?.emailAddress?.[0] || 'U').toUpperCase();
@@ -202,7 +203,7 @@ window.syncClerkNav = async function() {
 window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = false) {
   try {
     const clerk = await waitForClerk();
-    if (clerk.user) { window.location.replace('dashboard.html'); return; }
+    if (clerk?.user) { window.location.replace('dashboard.html'); return; }
     const el = document.getElementById(containerId);
     if (!el) return;
     
@@ -226,7 +227,7 @@ window.mountClerkSignIn = async function(containerId = 'clerk-sign-in', dark = f
 window.mountClerkSignUp = async function(containerId = 'clerk-sign-up', dark = false) {
   try {
     const clerk = await waitForClerk();
-    if (clerk.user) { window.location.replace('dashboard.html'); return; }
+    if (clerk?.user) { window.location.replace('dashboard.html'); return; }
     const el = document.getElementById(containerId);
     if (!el) return;
     
@@ -261,4 +262,3 @@ window.clerkSignOut = async function() {
 window.addEventListener('load', async () => {
   await window.syncClerkNav();
 });
-

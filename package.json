@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run check",
+    "check": "npm run validate:js && npm run validate:data",
+    "validate:js": "node scripts/validate_js.cjs",
+    "validate:data": "node scripts/validate_modules.cjs",
     "build": "node obfuscate.js"
   },
   "repository": {
@@ -20,6 +23,7 @@
   },
   "homepage": "https://github.com/yepzhi/jsweb#readme",
   "devDependencies": {
+    "acorn": "^8.15.0",
     "javascript-obfuscator": "^5.4.2"
   }
 }

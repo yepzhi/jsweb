@@ -48,6 +48,27 @@ EJEMPLO DE RESPUESTA DE APROBACIÓN INCORRECTA (NUNCA hagas esto):
 "¡Muy bien! ¿Y qué opinas sobre X? [APTO_PARA_AVANZAR]"  ← INCORRECTO: tiene pregunta + aprobación.
 `.trim();
 
+function escapeHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatModuleText(rawText) {
+  return String(rawText || '')
+    .split('\n\n')
+    .map((paragraph) => {
+      const escaped = escapeHTML(paragraph.trim())
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+      return escaped ? `<p style="margin-bottom:1.2rem;">${escaped}</p>` : '';
+    })
+    .join('');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('chat-messages')) return;
   
@@ -138,11 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Support HTML and priority for fullText in the reader pane
     const rawContent = currentModule.fullText || currentModule.content || 'Sin contenido de lectura.';
     
-    let mainBody = rawContent.split('---')[0]
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .split('\n\n')
-      .map(p => p.trim() ? `<p style="margin-bottom:1.2rem;">${p.replace(/\n/g, '<br>')}</p>` : '')
-      .join('');
+    let mainBody = formatModuleText(rawContent.split('---')[0]);
 
     const footerRaw = rawContent.includes('---') ? rawContent.split('---')[1] : '';
     let footerHtml = '';
@@ -159,17 +176,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (line.includes('🔖')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
           label = 'Bluebook v1';
-          content = content.replace('**🔖', '').replace('🔖', '').replace('**', '').trim();
+          content = escapeHTML(content.replace('**🔖', '').replace('🔖', '').replace('**', '').trim());
         } else if (line.includes('📐')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="m2 22 1-1h3l9-9"></path><path d="M3 21v-3l9-9"></path><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l-3-3Z"></path></svg>`;
           label = 'NGSS Alignment';
-          content = content.replace('**📐', '').replace('📐', '').replace('**', '').replace('NGSS:', '').trim();
+          content = escapeHTML(content.replace('**📐', '').replace('📐', '').replace('**', '').replace('NGSS:', '').trim());
         } else if (line.includes('📋')) {
           icon = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`;
           label = 'Competencia';
           content = 'Alineado a competencias RENAC EC EC009';
         } else if (line.includes('💡')) {
-          const concepts = content.replace('**💡', '').replace('💡', '').replace('**', '').replace(/Standards World:|Estándares:|World of Standards:/g, '').trim().split(' · ').join(', ');
+          const concepts = escapeHTML(content.replace('**💡', '').replace('💡', '').replace('**', '').replace(/Standards World:|Estándares:|World of Standards:/g, '').trim().split(' · ').join(', '));
           footerHtml += `
             <div class="standard-world-box">
               <span class="standard-world-label">Estándares Evaluados</span>
@@ -218,7 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       keypointsEl.style.listStyle = 'none';
       keypointsEl.style.paddingLeft = '0';
       keypointsEl.innerHTML = currentModule.keyPoints.map(kp =>
-        `<span style="display:inline-block; background:rgba(39,126,255,0.08); border:1px solid rgba(39,126,255,0.2); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; margin:3px 4px; letter-spacing:0.02em;">${kp}</span>`
+        `<span style="display:inline-block; background:rgba(39,126,255,0.08); border:1px solid rgba(39,126,255,0.2); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:700; margin:3px 4px; letter-spacing:0.02em;">${escapeHTML(kp)}</span>`
       ).join('');
       const botStandards = document.getElementById('bot-standards');
       if(botStandards) botStandards.style.display = 'block';
@@ -574,7 +591,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           xp: profile.xp || 0,
           completions: completions
         },
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        moduleContext: currentModule
+          ? `${currentModule.id} ${currentModule.title}. Conceptos clave: ${(currentModule.keyPoints || []).join(', ')}`
+          : '',
         contents: history,
         generationConfig: { temperature: 0.8, maxOutputTokens: 500 }
       };
@@ -706,14 +725,19 @@ window.openReader = function(module) {
   overlay.style = "position:fixed; inset:0; background:#0a0a0f; z-index:20000; overflow-y:auto; padding:60px 20px; color:#e0e0e0; animation: fadeIn 0.3s ease;";
   
   const content = module.fullText || module.content || 'Sin contenido.';
-  const formatted = content.split('\n\n').map(p => `<p style="margin-bottom:1.5rem; line-height:1.8; font-size:1.1rem; max-width:700px; margin-left:auto; margin-right:auto;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+  const formatted = String(content || '').split('\n\n').map(p => {
+    const escaped = escapeHTML(p.trim())
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    return escaped ? `<p style="margin-bottom:1.5rem; line-height:1.8; font-size:1.1rem; max-width:700px; margin-left:auto; margin-right:auto;">${escaped}</p>` : '';
+  }).join('');
 
   overlay.innerHTML = `
     <div style="max-width:800px; margin:0 auto; position:relative;">
       <button onclick="document.getElementById('reader-overlay').remove()" style="position:fixed; top:20px; right:20px; background:rgba(255,255,255,0.1); border:none; color:white; width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:24px;">×</button>
       <div style="text-align:center; margin-bottom:48px;">
         <span style="color:var(--primary); font-weight:800; text-transform:uppercase; letter-spacing:0.1em; font-size:0.8rem;">Modo Lectura Enfocada</span>
-        <h1 style="font-family:'Outfit',sans-serif; font-size:2.5rem; margin-top:10px;">${module.title}</h1>
+        <h1 style="font-family:'Outfit',sans-serif; font-size:2.5rem; margin-top:10px;">${escapeHTML(module.title)}</h1>
       </div>
       <div class="reader-body" style="font-family:'Inter',serif;">
         ${formatted}
